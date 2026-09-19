@@ -12,7 +12,7 @@ function setTheme(isDark) {
   localStorage.setItem('dodle-theme', isDark ? 'dark' : 'light');
 }
 
-setTheme(localStorage.getItem('dodle-theme') === 'dark');
+setTheme(localStorage.getItem('dodle-theme') !== 'light');
 themeToggle.addEventListener('click', () => setTheme(!document.body.classList.contains('dark')));
 
 function updateClearButton() {
