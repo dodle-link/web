@@ -117,3 +117,50 @@ const curiosityPatterns = [
 const curiousWords = curiosityTopics.flatMap(topic =>
   curiosityPatterns.map(pattern => pattern.replace('{topic}', topic))
 );
+
+const curiosityTopicsByLanguage = {
+  en: curiosityTopics,
+  ja: [
+    'オーロラ', '古代の図書館', 'ミツバチの会話', '深海生物', '地図の歴史',
+    '火山島', '睡眠の科学', '忘れられた発明', '言語の起源', '砂漠の生態系',
+    '音楽の数学', '最も古い木', '橋の仕組み', 'チョコレートの歴史', '雲の形',
+    '好奇心の心理学', '水中考古学', '鳥の進化', '記憶の仕組み', '珍しい気象現象'
+  ],
+  zh: [
+    '极光', '古代图书馆', '蜜蜂如何交流', '深海生物', '地图的历史',
+    '火山岛', '睡眠科学', '被遗忘的发明', '语言的起源', '沙漠生态系统',
+    '音乐的数学', '最古老的树', '桥梁的工作原理', '巧克力的历史', '云的形态',
+    '好奇心心理学', '水下考古', '鸟类的进化', '记忆的工作原理', '罕见天气现象'
+  ],
+  th: [
+    'แสงเหนือ', 'ห้องสมุดโบราณ', 'การสื่อสารของผึ้ง', 'สิ่งมีชีวิตใต้ทะเลลึก', 'ประวัติศาสตร์ของแผนที่',
+    'เกาะภูเขาไฟ', 'วิทยาศาสตร์ของการนอนหลับ', 'สิ่งประดิษฐ์ที่ถูกลืม', 'ต้นกำเนิดของภาษา', 'ระบบนิเวศทะเลทราย',
+    'คณิตศาสตร์ของดนตรี', 'ต้นไม้ที่เก่าแก่ที่สุด', 'การทำงานของสะพาน', 'ประวัติศาสตร์ช็อกโกแลต', 'รูปทรงของเมฆ',
+    'จิตวิทยาของความอยากรู้อยากเห็น', 'โบราณคดีใต้น้ำ', 'วิวัฒนาการของนก', 'การทำงานของความทรงจำ', 'ปรากฏการณ์อากาศที่หายาก'
+  ]
+};
+
+const curiosityPatternsByLanguage = {
+  en: curiosityPatterns,
+  ja: [
+    '{topic}とは？', '{topic}はどのように機能する？', 'なぜ{topic}は興味深い？', '{topic}入門', '{topic}の歴史',
+    '{topic}の科学', '{topic}の意外な事実', '{topic}の最新研究', '{topic}の珍しい例', '{topic}はどう変化してきた？'
+  ],
+  zh: [
+    '什么是{topic}？', '{topic}是如何运作的？', '为什么{topic}很有趣？', '{topic}入门指南', '{topic}的历史',
+    '{topic}背后的科学', '关于{topic}的惊人事实', '{topic}的最新研究', '{topic}最不寻常的例子', '{topic}如何随时间变化？'
+  ],
+  th: [
+    '{topic}คืออะไร', '{topic}ทำงานอย่างไร', 'ทำไม{topic}จึงน่าสนใจ', 'คู่มือเบื้องต้นเกี่ยวกับ{topic}', 'ประวัติของ{topic}',
+    'วิทยาศาสตร์เบื้องหลัง{topic}', 'ข้อเท็จจริงที่น่าประหลาดใจเกี่ยวกับ{topic}', 'งานวิจัยล่าสุดเกี่ยวกับ{topic}', 'ตัวอย่างที่แปลกที่สุดของ{topic}', '{topic}เปลี่ยนแปลงไปตามกาลเวลาอย่างไร'
+  ]
+};
+
+const curiousWordsByLanguage = Object.fromEntries(
+  Object.keys(curiosityTopicsByLanguage).map(language => [
+    language,
+    curiosityTopicsByLanguage[language].flatMap(topic =>
+      curiosityPatternsByLanguage[language].map(pattern => pattern.replace('{topic}', topic))
+    )
+  ])
+);

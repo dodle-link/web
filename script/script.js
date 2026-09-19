@@ -10,19 +10,21 @@ function init() {
   const languageToggle = document.querySelector('.language-toggle');
   const languageMenu = document.querySelector('.language-menu');
   const languageOptions = [...document.querySelectorAll('[data-language]')];
+  let currentLanguage = 'en';
 
   const translations = {
-    en: { label: 'Language', searchLabel: 'Search', searchPlaceholder: 'Search', curiousButton: "I'm Feeling Curious", clear: 'Clear search' },
-    ja: { label: '言語', searchLabel: 'ウェブを検索', searchPlaceholder: 'ウェブを検索', curiousButton: '気になる検索', clear: '検索をクリア' },
-    zh: { label: '语言', searchLabel: '搜索网页', searchPlaceholder: '搜索网页', curiousButton: '我很好奇', clear: '清除搜索' },
-    th: { label: 'ภาษา', searchLabel: 'ค้นหาเว็บ', searchPlaceholder: 'ค้นหาเว็บ', curiousButton: 'ฉันอยากรู้', clear: 'ล้างการค้นหา' }
+    en: { pageTitle: 'dodle - Search', navLabel: 'Primary navigation', themeDark: 'Switch to dark mode', themeLight: 'Switch to light mode', searchLabel: 'Search the web', searchPlaceholder: 'Search the web', searchButton: 'Search', curiousButton: "I'm Feeling Curious", clear: 'Clear search', description: 'A simple search for a less distracted web.', privacy: 'Privacy', about: 'About' },
+    ja: { pageTitle: 'dodle - 検索', navLabel: 'メインナビゲーション', themeDark: 'ダークモードに切り替え', themeLight: 'ライトモードに切り替え', searchLabel: 'ウェブを検索', searchPlaceholder: 'ウェブを検索', searchButton: '検索', curiousButton: '気になる検索', clear: '検索をクリア', description: '気を散らさずに検索できるシンプルな検索ページです。', privacy: 'プライバシー', about: '概要' },
+    zh: { pageTitle: 'dodle - 搜索', navLabel: '主导航', themeDark: '切换到深色模式', themeLight: '切换到浅色模式', searchLabel: '搜索网页', searchPlaceholder: '搜索网页', searchButton: '搜索', curiousButton: '我很好奇', clear: '清除搜索', description: '简单搜索，远离纷扰的网络。', privacy: '隐私', about: '关于' },
+    th: { pageTitle: 'dodle - ค้นหา', navLabel: 'การนำทางหลัก', themeDark: 'เปลี่ยนเป็นโหมดมืด', themeLight: 'เปลี่ยนเป็นโหมดสว่าง', searchLabel: 'ค้นหาเว็บ', searchPlaceholder: 'ค้นหาเว็บ', searchButton: 'ค้นหา', curiousButton: 'ฉันอยากรู้', clear: 'ล้างการค้นหา', description: 'การค้นหาที่เรียบง่ายสำหรับเว็บที่วุ่นวายน้อยลง', privacy: 'ความเป็นส่วนตัว', about: 'เกี่ยวกับ' }
   };
 
   function setTheme(isDark) {
     document.documentElement.classList.toggle('dark', isDark);
     document.body.classList.toggle('dark', isDark);
     themeToggle.setAttribute('aria-pressed', String(isDark));
-    themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    const language = translations[document.documentElement.lang] || translations.en;
+    themeToggle.setAttribute('aria-label', isDark ? language.themeLight : language.themeDark);
     localStorage.setItem('dodle-theme', isDark ? 'dark' : 'light');
   }
 
@@ -32,14 +34,23 @@ function init() {
   function setLanguage(language) {
     const selectedLanguage = translations[language] ? language : 'en';
     const translation = translations[selectedLanguage];
+    currentLanguage = selectedLanguage;
     document.documentElement.lang = selectedLanguage;
-    document.querySelector('.language-label').textContent = translation.label;
-    document.querySelector('[data-i18n="searchLabel"]').textContent = translation.searchLabel;
-    document.querySelector('[data-i18n="curiousButton"]').textContent = translation.curiousButton;
+    document.title = translation.pageTitle;
+    document.querySelector('meta[name="description"]').content = translation.description;
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+      const key = element.dataset.i18n;
+      if (translation[key]) element.textContent = translation[key];
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(element => {
+      const key = element.dataset.i18nAria;
+      if (translation[key]) element.setAttribute('aria-label', translation[key]);
+    });
     input.placeholder = translation.searchPlaceholder;
     clearButton.setAttribute('aria-label', translation.clear);
     languageToggle.textContent = languageOptions.find(option => option.dataset.language === selectedLanguage).textContent;
-    languageToggle.setAttribute('aria-label', `${translation.label} ${languageToggle.textContent}`);
+    languageToggle.setAttribute('aria-label', `Language ${languageToggle.textContent}`);
+    themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? translation.themeLight : translation.themeDark);
     languageOptions.forEach(option => option.setAttribute('aria-selected', String(option.dataset.language === selectedLanguage)));
     localStorage.setItem('dodle-language', selectedLanguage);
   }
@@ -74,7 +85,8 @@ function init() {
   });
 
   luckyButton.addEventListener('click', () => {
-    input.value = curiousWords[Math.floor(Math.random() * curiousWords.length)];
+    const languageWords = curiousWordsByLanguage[currentLanguage] || curiousWords;
+    input.value = languageWords[Math.floor(Math.random() * languageWords.length)];
     form.requestSubmit();
   });
 

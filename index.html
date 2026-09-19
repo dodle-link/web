@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Dodle Search" />
     <meta name="version" content="1.0.0" />
-    <title>Dodle Search</title>
+    <title>dodle - Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="preload" href="font/munson-font/Munson-MVymB.ttf" as="font" type="font/ttf" crossorigin />
     <script>
       document.documentElement.classList.toggle('dark', localStorage.getItem('dodle-theme') !== 'light');
@@ -15,8 +18,8 @@
   </head>
   <body>
     <header class="topbar">
-      <nav class="nav-links" aria-label="Primary navigation">
-        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+      <nav class="nav-links" aria-label="Primary navigation" data-i18n-aria="navLabel">
+        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" data-i18n-aria="themeDark">
           <span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg></span>
           <span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"></path></svg></span>
         </button>
@@ -44,17 +47,17 @@
           
         </form>
         <div class="search-actions">
-          <button class="search-button" form="search-form" type="submit">Search</button>
+          <button class="search-button" form="search-form" type="submit" data-i18n="searchButton">Search</button>
           <button class="lucky-button" type="button" data-i18n="curiousButton">I'm Feeling Curious</button>
         </div>
       </section>
 
-      <p class="about-copy" id="about">A simple search for a less distracted web.</p>
+      <p class="about-copy" id="about" data-i18n="description">A simple search for a less distracted web.</p>
     </main>
 
     <footer class="footer">
-      <span>© Dodle</span>
-      <div class="footer-links"><a href="#privacy">Privacy</a><a href="#about">About</a></div>
+      <span>© <span data-i18n="brand">dodle</span></span>
+      <div class="footer-links"><a href="#privacy" data-i18n="privacy">Privacy</a><a href="#about" data-i18n="about">About</a></div>
     </footer>
       <script src="script/words.js"></script>
       <script src="script/script.js"></script>
