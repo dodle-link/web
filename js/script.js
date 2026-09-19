@@ -5,6 +5,7 @@ const themeToggle = document.querySelector('.theme-toggle');
 const luckyButton = document.querySelector('.lucky-button');
 
 function setTheme(isDark) {
+  document.documentElement.classList.toggle('dark', isDark);
   document.body.classList.toggle('dark', isDark);
   themeToggle.setAttribute('aria-pressed', String(isDark));
   themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');

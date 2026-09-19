@@ -12,7 +12,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { background: var(--paper); scroll-behavior: smooth; }
 body {
   margin: 0;
   color: var(--ink);
@@ -97,7 +97,7 @@ h1 em { color: var(--coral); font-family: Georgia, serif; font-weight: 400; lett
 }
 
 /* Minimal search surface */
-body { background: var(--paper); color: var(--ink); transition: background .2s ease, color .2s ease; }
+body { background: var(--paper); color: var(--ink); }
 .topbar { max-width: none; padding: 22px 28px; }
 .brand { font-size: 16px; font-weight: 500; letter-spacing: 0; }
 .nav-links { font-size: 13px; font-weight: 400; gap: 24px; }
@@ -106,8 +106,8 @@ body { background: var(--paper); color: var(--ink); transition: background .2s e
 .theme-toggle-icon { align-items: center; display: grid; grid-area: 1 / 1; height: 20px; justify-items: center; width: 20px; }
 .theme-toggle-icon svg { height: 100%; width: 100%; }
 .theme-toggle-moon { display: none; }
-body.dark .theme-toggle-sun { display: none; }
-body.dark .theme-toggle-moon { display: grid; }
+html.dark .theme-toggle-sun, body.dark .theme-toggle-sun { display: none; }
+html.dark .theme-toggle-moon, body.dark .theme-toggle-moon { display: grid; }
 .theme-toggle:hover { border-color: var(--coral); color: var(--coral); }
 .main-content { min-height: calc(100vh - 128px); padding: 145px 24px 70px; }
 .search-stage { max-width: 584px; }
@@ -136,8 +136,19 @@ body.dark {
   --coral: #f1f3f4;
   --coral-deep: #ffffff;
 }
-body.dark .search-form { box-shadow: 0 1px 6px rgba(0, 0, 0, .5); }
+html.dark {
+  --ink: #f1f3f4;
+  --muted: #bdc1c6;
+  --line: #5f6368;
+  --paper: #202124;
+  --cream: #202124;
+  --coral: #f1f3f4;
+  --coral-deep: #ffffff;
+}
+html.dark .search-form, body.dark .search-form { box-shadow: 0 1px 6px rgba(0, 0, 0, .5); }
+html.dark .search-button, html.dark .lucky-button,
 body.dark .search-button, body.dark .lucky-button { background: #303134; border-color: #303134; }
+html.dark .search-button:hover, html.dark .lucky-button:hover,
 body.dark .search-button:hover, body.dark .lucky-button:hover { background: #3c4043; border-color: #5f6368; }
 
 @media (max-width: 700px) {
