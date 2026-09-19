@@ -1,6 +1,6 @@
-# Dodle Search v1.1.0
+# Dodle Search v1.2.0
 
-Version: `1.1.0`
+Version: `1.2.0`
 
 A minimal, distraction-free search homepage that sends queries to Google.
 
@@ -33,15 +33,14 @@ Then visit `http://localhost:8000/web/index.html`.
 
 ## Changelog
 
-See [CHANGELOG_v1.1.0.md](doc/CHANGELOG_v1.1.0.md) for the latest release
+See [CHANGELOG_v1.2.0.md](doc/CHANGELOG_v1.2.0.md) for the latest release
 history. The [v1.0.0 changelog](doc/CHANGELOG_v1.0.0.md) covers the initial
 release.
 
 ## Dodle Spider
 
 `spider/dodle.py` is a Python command-line client for HTTP and HTTPS requests.
-It handles common requests natively and uses an external transfer backend for
-advanced protocols and options.
+It provides a style request interface using Python's standard library.
 
 Run it from the Spider directory:
 
@@ -62,15 +61,17 @@ python3 -m pip install .
 dodle-spider https://example.com
 ```
 
-Native support includes GET, HEAD, POST, headers, request data, JSON, basic
-authentication, cookies, redirects, proxies, TLS verification, timeouts,
-retries, downloads, response headers, and verbose output. Verbose mode can
-expose credentials and cookies, so use it only when appropriate.
+Native support includes arbitrary methods, headers, raw and JSON request data,
+multipart forms, uploads, basic authentication, cookies, redirects, proxies,
+TLS certificates, compression, ranges, resumed downloads, timeouts, retries,
+response headers, failure handling, write-out summaries, and verbose output.
+Verbose mode can expose credentials and cookies, so use it only when
+appropriate.
 
 ## Files
+
 - `index.html` - Page structure and content
 - `css/styles.css` - Responsive layout and theme styles
 - `script/script.js` - Search controls and theme persistence
 - `spider/dodle.py` - Command-line HTTP and HTTPS client
 - `spider/pyproject.toml` - Spider package metadata
-

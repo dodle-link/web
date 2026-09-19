@@ -1,18 +1,23 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import http.cookiejar
+import json
+import mimetypes
 import os
 import ssl
 import sys
 import time
 import urllib.parse
+import uuid
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict, List, Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import (
     HTTPBasicAuthHandler,
+    HTTPRedirectHandler,
     HTTPPasswordMgrWithDefaultRealm,
     HTTPSHandler,
     ProxyHandler,
@@ -38,14 +43,19 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("-X", "--request", dest="method", default="GET", help="HTTP method (e.g., GET, POST).")
     parser.add_argument("-G", "--get", action="store_true", help="Set request method to GET.")
     parser.add_argument("-I", "--head", action="store_true", help="Set request method to HEAD.")
-    parser.add_argument("-L", "--location", action="store_true", help="Handle Location header.")
+    parser.add_argument("-L", "--location", action="store_true", help="Follow redirects.")
+    parser.add_argument("--max-redirs", type=int, default=20, help="Maximum redirects to follow (default: 20).")
     
     # Header options
     parser.add_argument("-H", "--header", action="append", default=[], help="Append HTTP headers (name:value).")
     
     # Data handling options
-    parser.add_argument("-d", "--data", "--data-raw", dest="data", action="append", default=[], help="Append raw data payload.")
+    parser.add_argument("-d", "--data", "--data-raw", dest="data", action="append", default=[], help="Append data (use @FILE or @- for a file/stdin).")
+    parser.add_argument("--data-binary", action="append", default=[], help="Append binary data (use @FILE or @-).")
     parser.add_argument("--data-urlencode", action="append", default=[], help="Append data to be URL-encoded.")
+    parser.add_argument("--json", dest="json_data", action="append", default=[], help="Send JSON data and set JSON headers.")
+    parser.add_argument("-F", "--form", action="append", default=[], help="Multipart form field (name=value or name=@FILE).")
+    parser.add_argument("-T", "--upload-file", metavar="FILE", help="Upload FILE as the request body (use - for stdin).")
     
     # Verbosity and Control
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output.")
@@ -53,6 +63,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("-k", "--insecure", action="store_true", help="Allow insecure connections (disable SSL verification).")
     parser.add_argument("-o", "--output", help="Write output to a local file instead of stdout.")
     parser.add_argument("-O", "--remote-name", action="store_true", help="Save output using the remote file's name.")
+    parser.add_argument("-i", "--include", action="store_true", help="Include response headers in output.")
+    parser.add_argument("-D", "--dump-header", metavar="FILE", help="Write response headers to FILE (use - for stdout).")
+    parser.add_argument("--fail", "--fail-with-body", dest="fail", action="store_true", help="Return an error for HTTP 4xx/5xx responses.")
+    parser.add_argument("--write-out", metavar="FORMAT", help="Print a summary after the response (supports %%{http_code}, %%{url}, %%{size_download}).")
+    parser.add_argument("--range", metavar="RANGE", help="Request a byte range, for example 0-499.")
+    parser.add_argument("-C", "--continue-at", metavar="OFFSET", type=int, help="Resume a download at OFFSET bytes.")
+    parser.add_argument("--compressed", action="store_true", help="Request and transparently decode gzip responses.")
     
     # Timeouts and Retries
     parser.add_argument("--connect-timeout", type=float, default=30.0, help="Connection timeout in seconds.")
@@ -64,6 +81,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--noproxy", action="store_true", help="Do not use proxy settings.")
     parser.add_argument("-u", "--user", help="Username[:password] for Basic Authentication.")
     parser.add_argument("-b", "--cookie", action="append", default=[], help="Append cookies (name=value or a cookie-jar file).")
+    parser.add_argument("-e", "--referer", help="Set the HTTP Referer header.")
+    parser.add_argument("-A", "--user-agent", help="Set the User-Agent header.")
+    parser.add_argument("--basic", action="store_true", help="Use HTTP Basic authentication.")
+    parser.add_argument("--cacert", metavar="FILE", help="CA certificate bundle.")
+    parser.add_argument("--cert", metavar="FILE", help="Client certificate, optionally FILE:key.")
     
     # URL handling
     parser.add_argument("--url", action="append", dest="urls", default=[], help="List of URLs to spider.")
@@ -73,23 +95,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def print_help() -> None:
     """Prints the usage help message."""
-    print("Usage: dodle-spider [options] <url1> [url2] ...")
-    print("\nNative options:")
-    print("  -X, --request <METHOD>       HTTP method (e.g., GET, POST). Default: GET.")
-    print("  -H, --header <name:value>     Append HTTP headers.")
-    print("  -d, --data, --data-raw         Append raw data payload.")
-    print("  --data-urlencode              Append data to be URL-encoded.")
-    print("  -G, --get, -I, --head, -L      Request types (GET, HEAD, Location).")
-    print("  -v, --verbose, -s, --silent    Verbosity control.")
-    print("  -k, --insecure                Allow insecure connections (disable SSL verification).")
-    print("  -u, --user                   Username for Basic Auth.")
-    print("  -b, --cookie                 Append cookies.")
-    print("  -o, --output                 Specify local output directory.")
-    print("  --remote-name                Name for remote download destination.")
-    print("  --connect-timeout, --max-time Timeouts.")
-    print("  --retry                      Number of retries.")
-    print("  --proxy, --noproxy           Proxy configuration.")
-    print("  --url                        List of URLs to crawl.")
+    print(build_parser().format_help())
 
 def parse_cookie(cookie_values: List[str]) -> Optional[str]:
     """Builds a raw 'Cookie' header value from -b/--cookie arguments.
@@ -121,6 +127,18 @@ def parse_cookie(cookie_values: List[str]) -> Optional[str]:
 
     return "; ".join(parts) if parts else None
 
+def read_argument(value: str) -> bytes:
+    """Read style @FILE/@- arguments, otherwise return literal UTF-8 data."""
+    if not value.startswith("@"):
+        return value.encode("utf-8")
+    source = value[1:]
+    if source == "-":
+        return sys.stdin.buffer.read()
+    try:
+        return Path(source).read_bytes()
+    except OSError as error:
+        raise NativeError(f"Cannot read data file {source}: {error}")
+
 def request_headers(values: List[str]) -> Dict[str, str]:
     """Parses a list of 'name:value' strings into a dictionary."""
     headers = {}
@@ -131,9 +149,49 @@ def request_headers(values: List[str]) -> Dict[str, str]:
         headers[name.strip()] = header_value.strip()
     return headers
 
-def prepare_data(args: argparse.Namespace) -> bytes | None:
+def prepare_data(args: argparse.Namespace, headers: Dict[str, str]) -> bytes | None:
     """Prepares the body data for the request."""
-    parts: List[str] = list(args.data or [])
+    if args.upload_file:
+        return read_argument("@" + args.upload_file if args.upload_file != "-" else "@-")
+
+    if args.form:
+        boundary = f"dodle-{uuid.uuid4().hex}"
+        chunks: List[bytes] = []
+        for field in args.form:
+            if "=" not in field:
+                raise NativeError(f"Malformed form field: {field}. Expected name=value")
+            name, value = field.split("=", 1)
+            if value.startswith("@"):
+                filename = value[1:]
+                content = read_argument(value)
+                content_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+                chunks.extend([
+                    f"--{boundary}\r\nContent-Disposition: form-data; name=\"{name}\"; filename=\"{Path(filename).name}\"\r\nContent-Type: {content_type}\r\n\r\n".encode(),
+                    content,
+                    b"\r\n",
+                ])
+            else:
+                chunks.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"{name}\"\r\n\r\n{value}\r\n".encode())
+        chunks.append(f"--{boundary}--\r\n".encode())
+        headers.setdefault("Content-Type", f"multipart/form-data; boundary={boundary}")
+        return b"".join(chunks)
+
+    if args.json_data:
+        values = [read_argument(value).decode("utf-8") for value in args.json_data]
+        payload = values[0] if len(values) == 1 else "[" + ",".join(values) + "]"
+        try:
+            json.loads(payload)
+        except json.JSONDecodeError as error:
+            raise NativeError(f"Invalid JSON data: {error}")
+        headers.setdefault("Content-Type", "application/json")
+        headers.setdefault("Accept", "application/json")
+        return payload.encode("utf-8")
+
+    raw_values = list(args.data or []) + list(args.data_binary or [])
+    if raw_values:
+        return b"&".join(read_argument(value) for value in raw_values)
+
+    parts: List[str] = []
 
     for entry in args.data_urlencode or []:
         if "=" in entry:
@@ -149,15 +207,36 @@ def prepare_data(args: argparse.Namespace) -> bytes | None:
 
 def handle_response(response, url: str, args: argparse.Namespace) -> None:
     """Handles the HTTP response, logging and saving content."""
+    version = getattr(response, "version", 1)
+    status = getattr(response, "status", 200)
+    reason = getattr(response, "reason", "OK")
     
     # Print response details if verbose
+    if args.include:
+        header_text = f"HTTP/{version / 10:.1f} {status} {reason}\r\n"
+        header_text += "".join(f"{name}: {value}\r\n" for name, value in response.headers.items()) + "\r\n"
+        sys.stdout.write(header_text)
     if args.verbose:
-        print(f"HTTP/{response.version / 10:.1f} {response.status} {response.reason} for {url}", file=sys.stderr)
+        print(f"HTTP/{version / 10:.1f} {status} {reason} for {url}", file=sys.stderr)
         for name, value in response.headers.items():
             print(f"  {name}: {value}", file=sys.stderr)
-        print("-" * 40, file=sys.stderr)
+        if args.verbose:
+            print("-" * 40, file=sys.stderr)
+
+    if args.dump_header:
+        header_text = f"HTTP/{version / 10:.1f} {status} {reason}\r\n"
+        header_text += "".join(f"{name}: {value}\r\n" for name, value in response.headers.items()) + "\r\n"
+        if args.dump_header == "-":
+            sys.stdout.write(header_text)
+        else:
+            try:
+                Path(args.dump_header).write_text(header_text, encoding="utf-8")
+            except OSError as error:
+                raise NativeError(f"Error saving headers to {args.dump_header}: {error}")
 
     content = response.read()
+    if args.compressed and response.headers.get("Content-Encoding", "").lower() == "gzip":
+        content = gzip.decompress(content)
     
     # Determine destination: explicit -o output, derived from -O/--remote-name, or stdout
     destination: Optional[Path] = None
@@ -169,14 +248,23 @@ def handle_response(response, url: str, args: argparse.Namespace) -> None:
 
     if destination is not None:
         try:
-            destination.write_bytes(content)
+            if args.continue_at is not None and destination.exists():
+                with destination.open("ab") as output:
+                    output.write(content)
+            else:
+                destination.write_bytes(content)
             if not args.silent:
                 print(f"Successfully saved content to: {destination}", file=sys.stderr)
         except OSError as e:
             raise NativeError(f"Error saving file to {destination}: {e}")
-    elif not args.silent:
+    else:
         # Print content to stdout if not saving to a file
         sys.stdout.buffer.write(content)
+
+    if args.write_out:
+        summary = args.write_out.replace("%{http_code}", str(status))
+        summary = summary.replace("%{url}", url).replace("%{size_download}", str(len(content)))
+        print(summary, file=sys.stderr if args.output or args.remote_name else sys.stdout)
 
 @contextmanager
 def open_connection(url: str, method: str, headers: Dict[str, str], body: bytes | None, timeout: float, args: argparse.Namespace):
@@ -186,10 +274,28 @@ def open_connection(url: str, method: str, headers: Dict[str, str], body: bytes 
     """
     handlers = []
 
-    if args.insecure:
+    if not args.location:
+        class NoRedirectHandler(HTTPRedirectHandler):
+            def redirect_request(self, request, fp, code, msg, headers, newurl):
+                return None
+
+        handlers.append(NoRedirectHandler())
+    elif args.max_redirs >= 0:
+        class LimitedRedirectHandler(HTTPRedirectHandler):
+            max_redirections = args.max_redirs
+
+        handlers.append(LimitedRedirectHandler())
+
+    if args.insecure or args.cacert or args.cert:
         ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
+        if args.insecure:
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+        if args.cacert:
+            ctx.load_verify_locations(args.cacert)
+        if args.cert:
+            cert, _, key = args.cert.partition(":")
+            ctx.load_cert_chain(cert, key or None)
         handlers.append(HTTPSHandler(context=ctx))
 
     if args.noproxy:
@@ -222,11 +328,23 @@ def run_native(args: argparse.Namespace) -> int:
         raise NativeError("No URL specified for spidering.")
 
     headers = request_headers(args.header)
+    if args.referer:
+        headers["Referer"] = args.referer
+    if args.user_agent:
+        headers["User-Agent"] = args.user_agent
+    if args.compressed:
+        headers.setdefault("Accept-Encoding", "gzip")
+    if args.range:
+        headers["Range"] = f"bytes={args.range}"
+    elif args.continue_at is not None:
+        if args.continue_at < 0:
+            raise NativeError("--continue-at requires a non-negative offset")
+        headers["Range"] = f"bytes={args.continue_at}-"
     cookie_header = parse_cookie(args.cookie)
     if cookie_header and not any(name.lower() == "cookie" for name in headers):
         headers["Cookie"] = cookie_header
 
-    body = prepare_data(args)
+    body = prepare_data(args, headers)
 
     # Determine HTTP method
     method = args.method.upper()
@@ -235,27 +353,38 @@ def run_native(args: argparse.Namespace) -> int:
     if args.get:
         method = "GET"
 
-    if method not in ("GET", "POST", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS"):
-        raise NativeError(f"Unsupported HTTP method specified: {method}")
+    if not method or any(character.isspace() for character in method):
+        raise NativeError(f"Invalid HTTP method specified: {method!r}")
 
-    timeout = args.max_time or args.connect_timeout
+    if args.get and body is not None:
+        query = body.decode("utf-8")
+        urls = [url + ("&" if "?" in url else "?") + query for url in urls]
+        body = None
+        method = "GET"
 
-    print(f"Starting spider with {len(urls)} URL(s). Method: {method}", file=sys.stderr)
+    timeout = min(args.connect_timeout, args.max_time)
+
+    if not args.silent:
+        print(f"Starting spider with {len(urls)} URL(s). Method: {method}", file=sys.stderr)
 
     for url in urls:
         max_attempts = args.retry + 1
 
         for attempt in range(1, max_attempts + 1):
             try:
-                print(f"\nAttempt {attempt}/{max_attempts}: Requesting {url} with method {method}", file=sys.stderr)
+                if not args.silent:
+                    print(f"\nAttempt {attempt}/{max_attempts}: Requesting {url} with method {method}", file=sys.stderr)
 
                 with open_connection(url, method, headers, body, timeout, args) as response:
+                    if args.fail and response.status >= 400:
+                        response.read()
+                        raise NativeError(f"HTTP {response.status} returned for {url}")
                     handle_response(response, url, args)
 
                 # Success
                 break
 
-            except (HTTPError, URLError, TimeoutError) as error:
+            except (HTTPError, URLError, TimeoutError, NativeError) as error:
                 if attempt >= max_attempts:
                     if not args.silent:
                         print(f"Fatal error for {url} after {max_attempts} attempts. Error: {error}", file=sys.stderr)
@@ -283,7 +412,7 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit(0)
 
     if args.verbose:
-        print(f"dodle-spider version 1.1.0", file=sys.stderr)
+        print(f"dodle-spider version 1.2.0", file=sys.stderr)
 
     try:
         result = run_native(args)
