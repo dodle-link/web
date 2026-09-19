@@ -33,7 +33,9 @@ Then visit `http://localhost:8000/web/index.html`.
 
 ## Changelog
 
-See [CHANGELOG_v1.0.0.md](doc/CHANGELOG_v1.0.0.md) for the release history.
+See [CHANGELOG_v1.1.0.md](doc/CHANGELOG_v1.1.0.md) for the latest release
+history. The [v1.0.0 changelog](doc/CHANGELOG_v1.0.0.md) covers the initial
+release.
 
 ## Dodle Spider
 
