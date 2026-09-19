@@ -31,7 +31,7 @@ function init() {
   });
 
   luckyButton.addEventListener('click', () => {
-    if (!input.value) input.value = 'something interesting to learn today';
+    input.value = curiousWords[Math.floor(Math.random() * curiousWords.length)];
     form.requestSubmit();
   });
 
