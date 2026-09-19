@@ -1,1 +1,13 @@
+# Python bytecode and caches
 __pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
+
+# Editor / local tooling
+.vscode/

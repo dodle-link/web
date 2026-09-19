@@ -97,6 +97,18 @@ def print_help() -> None:
     """Prints the usage help message."""
     print(build_parser().format_help())
 
+
+def normalize_url(url: str) -> str:
+    """Ensure a URL includes a scheme so bare domains like google.com work."""
+    if not url:
+        return url
+    if "://" in url:
+        return url
+    if url.startswith("//"):
+        return "https:" + url
+    return "https://" + url
+
+
 def parse_cookie(cookie_values: List[str]) -> Optional[str]:
     """Builds a raw 'Cookie' header value from -b/--cookie arguments.
 
@@ -322,8 +334,8 @@ def open_connection(url: str, method: str, headers: Dict[str, str], body: bytes 
 
 def run_native(args: argparse.Namespace) -> int:
     """Main logic to iterate through URLs and perform requests."""
-    urls = [*args.urls, *args.urls_positional]
-    
+    urls = [normalize_url(url) for url in [*args.urls, *args.urls_positional]]
+
     if not urls:
         raise NativeError("No URL specified for spidering.")
 
