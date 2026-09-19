@@ -1,6 +1,17 @@
-# Dodle Search
+# Dodle Search v1.0.0
+
+Version: `1.0.0`
 
 A minimal, distraction-free search homepage that sends queries to Google.
+
+## Repository
+
+This directory is maintained as a separate Git repository:
+
+`git@github.com:dodle-link/web.git`
+
+It is independent from the sibling `noesis` repository. Noesis browser assets
+are loaded from `https://noesis.dodle.link/noe-ui/` at runtime.
 
 ## Features
 
@@ -19,6 +30,10 @@ python3 -m http.server 8000 -d ..
 ```
 
 Then visit `http://localhost:8000/web/index.html`.
+
+## Changelog
+
+See [CHANGELOG_v1.0.0.md](doc/CHANGELOG_v1.0.0.md) for the release history.
 
 ## Files
 
