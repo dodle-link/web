@@ -35,61 +35,73 @@ class NativeError(Exception):
 
 def build_parser() -> argparse.ArgumentParser:
     """Builds the command-line argument parser."""
-    parser = argparse.ArgumentParser(add_help=False, prog="dodle-spider")
+    parser = argparse.ArgumentParser(
+        add_help=False,
+        prog="dodle-spider",
+        description="Make HTTP and HTTPS requests from the command line.",
+    )
 
-    parser.add_argument("-h", "--help", action="store_true", help="Show this help message and exit.")
+    general = parser.add_argument_group("General options")
+    general.add_argument("-h", "--help", action="store_true", help="Show this help message and exit.")
 
     # Request options
-    parser.add_argument("-X", "--request", dest="method", default="GET", help="HTTP method (e.g., GET, POST).")
-    parser.add_argument("-G", "--get", action="store_true", help="Set request method to GET.")
-    parser.add_argument("-I", "--head", action="store_true", help="Set request method to HEAD.")
-    parser.add_argument("-L", "--location", action="store_true", help="Follow redirects.")
-    parser.add_argument("--max-redirs", type=int, default=20, help="Maximum redirects to follow (default: 20).")
+    request = parser.add_argument_group("Request options")
+    request.add_argument("-X", "--request", dest="method", default="GET", help="HTTP method (e.g., GET, POST).")
+    request.add_argument("-G", "--get", action="store_true", help="Set request method to GET.")
+    request.add_argument("-I", "--head", action="store_true", help="Set request method to HEAD.")
+    request.add_argument("-L", "--location", action="store_true", help="Follow redirects.")
+    request.add_argument("--max-redirs", type=int, default=20, help="Maximum redirects to follow (default: 20).")
     
     # Header options
-    parser.add_argument("-H", "--header", action="append", default=[], help="Append HTTP headers (name:value).")
+    headers = parser.add_argument_group("Header options")
+    headers.add_argument("-H", "--header", action="append", default=[], help="Append HTTP headers (name:value).")
     
     # Data handling options
-    parser.add_argument("-d", "--data", "--data-raw", dest="data", action="append", default=[], help="Append data (use @FILE or @- for a file/stdin).")
-    parser.add_argument("--data-binary", action="append", default=[], help="Append binary data (use @FILE or @-).")
-    parser.add_argument("--data-urlencode", action="append", default=[], help="Append data to be URL-encoded.")
-    parser.add_argument("--json", dest="json_data", action="append", default=[], help="Send JSON data and set JSON headers.")
-    parser.add_argument("-F", "--form", action="append", default=[], help="Multipart form field (name=value or name=@FILE).")
-    parser.add_argument("-T", "--upload-file", metavar="FILE", help="Upload FILE as the request body (use - for stdin).")
+    data = parser.add_argument_group("Request body options")
+    data.add_argument("-d", "--data", "--data-raw", dest="data", action="append", default=[], help="Append data (use @FILE or @- for a file/stdin).")
+    data.add_argument("--data-binary", action="append", default=[], help="Append binary data (use @FILE or @-).")
+    data.add_argument("--data-urlencode", action="append", default=[], help="Append data to be URL-encoded.")
+    data.add_argument("--json", dest="json_data", action="append", default=[], help="Send JSON data and set JSON headers.")
+    data.add_argument("-F", "--form", action="append", default=[], help="Multipart form field (name=value or name=@FILE).")
+    data.add_argument("-T", "--upload-file", metavar="FILE", help="Upload FILE as the request body (use - for stdin).")
     
     # Verbosity and Control
-    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output.")
-    parser.add_argument("-s", "--silent", action="store_true", help="Suppress non-error output.")
-    parser.add_argument("-k", "--insecure", action="store_true", help="Allow insecure connections (disable SSL verification).")
-    parser.add_argument("-o", "--output", help="Write output to a local file instead of stdout.")
-    parser.add_argument("-O", "--remote-name", action="store_true", help="Save output using the remote file's name.")
-    parser.add_argument("-i", "--include", action="store_true", help="Include response headers in output.")
-    parser.add_argument("-D", "--dump-header", metavar="FILE", help="Write response headers to FILE (use - for stdout).")
-    parser.add_argument("--fail", "--fail-with-body", dest="fail", action="store_true", help="Return an error for HTTP 4xx/5xx responses.")
-    parser.add_argument("--write-out", metavar="FORMAT", help="Print a summary after the response (supports %%{http_code}, %%{url}, %%{size_download}).")
-    parser.add_argument("--range", metavar="RANGE", help="Request a byte range, for example 0-499.")
-    parser.add_argument("-C", "--continue-at", metavar="OFFSET", type=int, help="Resume a download at OFFSET bytes.")
-    parser.add_argument("--compressed", action="store_true", help="Request and transparently decode gzip responses.")
+    output = parser.add_argument_group("Output and control options")
+    output.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output.")
+    output.add_argument("-s", "--silent", action="store_true", help="Suppress non-error output.")
+    output.add_argument("-k", "--insecure", action="store_true", help="Allow insecure connections (disable SSL verification).")
+    output.add_argument("-o", "--output", help="Write output to a local file instead of stdout.")
+    output.add_argument("-O", "--remote-name", action="store_true", help="Save output using the remote file's name.")
+    output.add_argument("-i", "--include", action="store_true", help="Include response headers in output.")
+    output.add_argument("-D", "--dump-header", metavar="FILE", help="Write response headers to FILE (use - for stdout).")
+    output.add_argument("--fail", "--fail-with-body", dest="fail", action="store_true", help="Return an error for HTTP 4xx/5xx responses.")
+    output.add_argument("--write-out", metavar="FORMAT", help="Print a summary after the response (supports %%{http_code}, %%{url}, %%{size_download}).")
+    output.add_argument("--range", metavar="RANGE", help="Request a byte range, for example 0-499.")
+    output.add_argument("-C", "--continue-at", metavar="OFFSET", type=int, help="Resume a download at OFFSET bytes.")
+    output.add_argument("--compressed", action="store_true", help="Request and transparently decode gzip responses.")
     
     # Timeouts and Retries
-    parser.add_argument("--connect-timeout", type=float, default=30.0, help="Connection timeout in seconds.")
-    parser.add_argument("--max-time", type=float, default=300.0, help="Maximum time allowed for the request in seconds.")
-    parser.add_argument("--retry", type=int, default=0, help="Number of retries on failure.")
+    timing = parser.add_argument_group("Timeout and retry options")
+    timing.add_argument("--connect-timeout", type=float, default=30.0, help="Connection timeout in seconds.")
+    timing.add_argument("--max-time", type=float, default=300.0, help="Maximum time allowed for the request in seconds.")
+    timing.add_argument("--retry", type=int, default=0, help="Number of retries on failure.")
     
     # Proxy and User Auth
-    parser.add_argument("--proxy", help="HTTP/S proxy to use.")
-    parser.add_argument("--noproxy", action="store_true", help="Do not use proxy settings.")
-    parser.add_argument("-u", "--user", help="Username[:password] for Basic Authentication.")
-    parser.add_argument("-b", "--cookie", action="append", default=[], help="Append cookies (name=value or a cookie-jar file).")
-    parser.add_argument("-e", "--referer", help="Set the HTTP Referer header.")
-    parser.add_argument("-A", "--user-agent", help="Set the User-Agent header.")
-    parser.add_argument("--basic", action="store_true", help="Use HTTP Basic authentication.")
-    parser.add_argument("--cacert", metavar="FILE", help="CA certificate bundle.")
-    parser.add_argument("--cert", metavar="FILE", help="Client certificate, optionally FILE:key.")
+    auth = parser.add_argument_group("Proxy and authentication options")
+    auth.add_argument("--proxy", help="HTTP/S proxy to use.")
+    auth.add_argument("--noproxy", action="store_true", help="Do not use proxy settings.")
+    auth.add_argument("-u", "--user", help="Username[:password] for Basic Authentication.")
+    auth.add_argument("-b", "--cookie", action="append", default=[], help="Append cookies (name=value or a cookie-jar file).")
+    auth.add_argument("-e", "--referer", help="Set the HTTP Referer header.")
+    auth.add_argument("-A", "--user-agent", help="Set the User-Agent header.")
+    auth.add_argument("--basic", action="store_true", help="Use HTTP Basic authentication.")
+    auth.add_argument("--cacert", metavar="FILE", help="CA certificate bundle.")
+    auth.add_argument("--cert", metavar="FILE", help="Client certificate, optionally FILE:key.")
     
     # URL handling
-    parser.add_argument("--url", action="append", dest="urls", default=[], help="List of URLs to spider.")
-    parser.add_argument("urls_positional", nargs="*", help="URLs to spider (required).")
+    urls = parser.add_argument_group("URL options")
+    urls.add_argument("--url", action="append", dest="urls", default=[], metavar="URL", help="Add a URL to spider (repeatable).")
+    urls.add_argument("urls_positional", nargs="*", metavar="URL", help="URLs to spider.")
     
     return parser
 
