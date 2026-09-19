@@ -12,6 +12,12 @@
 }
 
 @font-face {
+  font-family: "Munson";
+  src: url("../font/munson-font/Munson-MVymB.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Boogie Blocks";
   src: url("https://noesis.dodle.link/noe-ui/fonts/boogie-blocks/boogie-blocks.ttf") format("truetype");
   font-display: swap;
@@ -117,10 +123,10 @@ html.dark .theme-toggle-moon, body.dark .theme-toggle-moon { display: grid; }
 .theme-toggle:hover { border-color: var(--coral); color: var(--coral); }
 .main-content { min-height: calc(100vh - 128px); padding: 92px 24px 70px; }
 .search-stage { max-width: 584px; }
-h1 { font-size: 76px; font-weight: 500; letter-spacing: -.08em; line-height: 1; margin: 0 0 28px; }
+h1 { font-size: 48px; font-weight: 500; letter-spacing: -.08em; line-height: 1; margin: 0 0 28px; }
 h1#page-title {
   animation: dodle-title-in 700ms cubic-bezier(.22, 1, .36, 1) both, dodle-title-float 4s ease-in-out 700ms infinite;
-  font-family: "Boogie Blocks", monospace;
+  font-family: "Munson", "Boogie Blocks", monospace;
   font-weight: 400;
   letter-spacing: .02em;
   text-transform: lowercase;
