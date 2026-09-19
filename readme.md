@@ -68,9 +68,9 @@ retries, downloads, response headers, and verbose output. Verbose mode can
 expose credentials and cookies, so use it only when appropriate.
 
 ## Files
-
 - `index.html` - Page structure and content
 - `css/styles.css` - Responsive layout and theme styles
-- `js/script.js` - Search controls and theme persistence
+- `script/script.js` - Search controls and theme persistence
 - `spider/dodle.py` - Command-line HTTP and HTTPS client
 - `spider/pyproject.toml` - Spider package metadata
+
