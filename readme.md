@@ -57,9 +57,13 @@ Install it as a command:
 
 ```sh
 cd spider
-python3 -m pip install .
-dodle-spider https://example.com
+python3 install.py
+export PATH="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin:$PATH"
+dodle google.com
 ```
+
+The installer prints the correct PATH command for your Python installation.
+Use `dodle -L google.com` when the request should follow redirects.
 
 Native support includes arbitrary methods, headers, raw and JSON request data,
 multipart forms, uploads, basic authentication, cookies, redirects, proxies,
@@ -74,4 +78,5 @@ appropriate.
 - `css/styles.css` - Responsive layout and theme styles
 - `script/script.js` - Search controls and theme persistence
 - `spider/dodle.py` - Command-line HTTP and HTTPS client
+- `spider/install.py` - Spider command installer
 - `spider/pyproject.toml` - Spider package metadata
