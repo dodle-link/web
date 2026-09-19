@@ -101,8 +101,13 @@ body { background: var(--paper); color: var(--ink); transition: background .2s e
 .brand { font-size: 16px; font-weight: 500; letter-spacing: 0; }
 .nav-links { font-size: 13px; font-weight: 400; gap: 24px; }
 .nav-links a { color: var(--ink); }
-.theme-toggle { background: transparent; border: 0; color: var(--ink); font-size: 13px; padding: 5px 0; }
-.theme-toggle:hover { text-decoration: underline; }
+.theme-toggle { align-items: center; background: transparent; border: 0; border-radius: 999px; color: var(--ink); display: inline-grid; font: inherit; height: 38px; justify-items: center; padding: 0; width: 38px; }
+.theme-toggle-icon { align-items: center; display: grid; grid-area: 1 / 1; height: 20px; justify-items: center; width: 20px; }
+.theme-toggle-icon svg { height: 100%; width: 100%; }
+.theme-toggle-moon { display: none; }
+body.dark .theme-toggle-sun { display: none; }
+body.dark .theme-toggle-moon { display: grid; }
+.theme-toggle:hover { border-color: var(--coral); color: var(--coral); }
 .main-content { min-height: calc(100vh - 128px); padding: 145px 24px 70px; }
 .search-stage { max-width: 584px; }
 h1 { font-size: 76px; font-weight: 500; letter-spacing: -.08em; line-height: 1; margin: 0 0 28px; }
@@ -138,7 +143,6 @@ body.dark .search-button:hover, body.dark .lucky-button:hover { background: #3c4
   .topbar { padding: 20px; }
   .main-content { min-height: calc(100vh - 124px); padding: 125px 20px 50px; }
   h1 { font-size: 64px; }
-  .theme-toggle span { display: none; }
   .about-copy { margin-top: 85px; }
   .footer { margin: 0; padding: 14px 20px; }
 }
