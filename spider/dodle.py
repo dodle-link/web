@@ -49,7 +49,8 @@ def build_parser() -> argparse.ArgumentParser:
     request.add_argument("-X", "--request", dest="method", default="GET", help="HTTP method (e.g., GET, POST).")
     request.add_argument("-G", "--get", action="store_true", help="Set request method to GET.")
     request.add_argument("-I", "--head", action="store_true", help="Set request method to HEAD.")
-    request.add_argument("-L", "--location", action="store_true", help="Follow redirects.")
+    request.add_argument("-L", "--location", dest="location", action="store_true", default=True, help="Follow redirects (default behavior).")
+    request.add_argument("--no-location", dest="location", action="store_false", help="Do not follow redirects.")
     request.add_argument("--max-redirs", type=int, default=20, help="Maximum redirects to follow (default: 20).")
     
     # Header options

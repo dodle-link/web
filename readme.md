@@ -63,7 +63,8 @@ dodle google.com
 ```
 
 The installer prints the correct PATH command for your Python installation.
-Use `dodle -L google.com` when the request should follow redirects.
+Redirects are followed by default, so `dodle google.com` works without `-L`.
+Use `dodle --no-location google.com` when the request should stop at the first redirect.
 
 Native support includes arbitrary methods, headers, raw and JSON request data,
 multipart forms, uploads, basic authentication, cookies, redirects, proxies,
