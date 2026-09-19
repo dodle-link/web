@@ -7,6 +7,16 @@ function init() {
   const clearButton = document.querySelector('.clear-button');
   const themeToggle = document.querySelector('.theme-toggle');
   const luckyButton = document.querySelector('.lucky-button');
+  const languageToggle = document.querySelector('.language-toggle');
+  const languageMenu = document.querySelector('.language-menu');
+  const languageOptions = [...document.querySelectorAll('[data-language]')];
+
+  const translations = {
+    en: { label: 'Language', searchLabel: 'Search', searchPlaceholder: 'Search', curiousButton: "I'm Feeling Curious", clear: 'Clear search' },
+    ja: { label: '言語', searchLabel: 'ウェブを検索', searchPlaceholder: 'ウェブを検索', curiousButton: '気になる検索', clear: '検索をクリア' },
+    zh: { label: '语言', searchLabel: '搜索网页', searchPlaceholder: '搜索网页', curiousButton: '我很好奇', clear: '清除搜索' },
+    th: { label: 'ภาษา', searchLabel: 'ค้นหาเว็บ', searchPlaceholder: 'ค้นหาเว็บ', curiousButton: 'ฉันอยากรู้', clear: 'ล้างการค้นหา' }
+  };
 
   function setTheme(isDark) {
     document.documentElement.classList.toggle('dark', isDark);
@@ -18,6 +28,39 @@ function init() {
 
   setTheme(localStorage.getItem('dodle-theme') !== 'light');
   themeToggle.addEventListener('click', () => setTheme(!document.body.classList.contains('dark')));
+
+  function setLanguage(language) {
+    const selectedLanguage = translations[language] ? language : 'en';
+    const translation = translations[selectedLanguage];
+    document.documentElement.lang = selectedLanguage;
+    document.querySelector('.language-label').textContent = translation.label;
+    document.querySelector('[data-i18n="searchLabel"]').textContent = translation.searchLabel;
+    document.querySelector('[data-i18n="curiousButton"]').textContent = translation.curiousButton;
+    input.placeholder = translation.searchPlaceholder;
+    clearButton.setAttribute('aria-label', translation.clear);
+    languageToggle.textContent = languageOptions.find(option => option.dataset.language === selectedLanguage).textContent;
+    languageToggle.setAttribute('aria-label', `${translation.label} ${languageToggle.textContent}`);
+    languageOptions.forEach(option => option.setAttribute('aria-selected', String(option.dataset.language === selectedLanguage)));
+    localStorage.setItem('dodle-language', selectedLanguage);
+  }
+
+  function closeLanguageMenu() {
+    languageMenu.hidden = true;
+    languageToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  languageToggle.addEventListener('click', () => {
+    languageMenu.hidden = !languageMenu.hidden;
+    languageToggle.setAttribute('aria-expanded', String(!languageMenu.hidden));
+  });
+  languageOptions.forEach(option => option.addEventListener('click', () => {
+    setLanguage(option.dataset.language);
+    closeLanguageMenu();
+  }));
+  document.addEventListener('click', event => {
+    if (!event.target.closest('.language-switcher')) closeLanguageMenu();
+  });
+  setLanguage(localStorage.getItem('dodle-language') || 'en');
 
   function updateClearButton() {
     clearButton.classList.toggle('visible', input.value.length > 0);
