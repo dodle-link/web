@@ -12,16 +12,16 @@ A minimal, distraction-free search homepage that sends queries to Google.
 
 ## Run locally
 
-This is a static site with no build step or dependencies. Open `index.html` directly in a browser, or serve the directory with any static file server:
+This is a static site with no build step or dependencies. Serve the repository root with a static file server so the shared Noe pixel module can load from `noesis/noe-ui` without `file:` URL restrictions:
 
 ```sh
-python3 -m http.server
+python3 -m http.server 8000 -d ..
 ```
 
-Then visit `http://localhost:8000`.
+Then visit `http://localhost:8000/web/index.html`.
 
 ## Files
 
 - `index.html` - Page structure and content
-- `styles.css` - Responsive layout and theme styles
-- `script.js` - Search controls and theme persistence
+- `css/styles.css` - Responsive layout and theme styles
+- `js/script.js` - Search controls and theme persistence
