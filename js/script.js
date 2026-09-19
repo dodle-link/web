@@ -25,11 +25,36 @@ clearButton.addEventListener('click', () => {
   input.focus();
 });
 
+function interpretQuery(value) {
+  let query = value.trim();
+  if (!query) return query;
+
+  // drop conversational wrappers so the rest of the operators can match cleanly
+  query = query.replace(/^(?:please\s+)?(?:can you\s+)?(?:search for|look up|find me|find|show me|tell me about)\s+/gi, '');
+
+  query = query.replace(/\b(?:on|from|at)\s+([\w-]+(?:\.[\w-]+)+)\b/gi, 'site:$1');
+  query = query.replace(/\b(pdf|docx?|xlsx?|pptx?|csv|txt)\b/gi, (_, extension) => `filetype:${extension.toLowerCase()}`);
+
+  // support both bare years and full dates for after/before
+  query = query.replace(/\bafter\s+(\d{4}-\d{2}-\d{2})\b/gi, 'after:$1');
+  query = query.replace(/\bbefore\s+(\d{4}-\d{2}-\d{2})\b/gi, 'before:$1');
+  query = query.replace(/\bafter\s+(\d{4})\b/gi, 'after:$1-01-01');
+  query = query.replace(/\bbefore\s+(\d{4})\b/gi, 'before:$1-01-01');
+
+  query = query.replace(/\b(?:without|excluding|except)\s+([\w-]+)\b/gi, '-$1');
+  query = query.replace(/\bdefine\s+([\w\s]+)$/gi, 'define:$1');
+  query = query.replace(/\s+or\s+/gi, ' OR ');
+  query = query.replace(/\babout\s+/gi, '');
+
+  return query.replace(/\s+/g, ' ').trim();
+}
+
 luckyButton.addEventListener('click', () => {
   if (!input.value) input.value = 'something interesting to learn today';
   form.requestSubmit();
 });
 
 form.addEventListener('submit', () => {
+  input.value = interpretQuery(input.value);
   form.target = '_blank';
 });
