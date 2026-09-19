@@ -109,7 +109,7 @@ body { background: var(--paper); color: var(--ink); }
 html.dark .theme-toggle-sun, body.dark .theme-toggle-sun { display: none; }
 html.dark .theme-toggle-moon, body.dark .theme-toggle-moon { display: grid; }
 .theme-toggle:hover { border-color: var(--coral); color: var(--coral); }
-.main-content { min-height: calc(100vh - 128px); padding: 145px 24px 70px; }
+.main-content { min-height: calc(100vh - 128px); padding: 92px 24px 70px; }
 .search-stage { max-width: 584px; }
 h1 { font-size: 76px; font-weight: 500; letter-spacing: -.08em; line-height: 1; margin: 0 0 28px; }
 .search-form { background: var(--cream); border-color: var(--line); border-radius: 24px; box-shadow: 0 1px 6px rgba(32, 33, 36, .16); margin: 0; max-width: none; padding: 5px 18px; }
@@ -119,8 +119,12 @@ h1 { font-size: 76px; font-weight: 500; letter-spacing: -.08em; line-height: 1; 
 .search-form input::placeholder { color: var(--muted); }
 .clear-button { color: var(--muted); }
 .search-actions { display: flex; gap: 12px; justify-content: center; margin-top: 29px; }
-.search-button, .lucky-button { background: #f8f9fa; border: 1px solid #f8f9fa; border-radius: 4px; color: var(--ink); font-size: 14px; font-weight: 400; padding: 10px 16px; }
-.search-button:hover, .lucky-button:hover { background: #f1f3f4; border-color: #dadce0; color: var(--ink); transform: none; }
+.search-button, .lucky-button { border-radius: 6px; font-size: 14px; font-weight: 600; padding: 10px 16px; transition: background .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.search-button { background: var(--ink); border: 1px solid var(--ink); color: var(--paper); }
+.lucky-button { background: var(--paper); border: 1px solid var(--line); color: var(--ink); }
+.search-button:hover { background: var(--coral-deep); border-color: var(--coral-deep); color: var(--paper); transform: none; }
+.lucky-button:hover { background: #f8f9fa; border-color: #9aa0a6; color: var(--ink); transform: none; }
+.search-button:focus-visible, .lucky-button:focus-visible, .theme-toggle:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
 .about-copy { color: var(--muted); font-size: 12px; margin: 105px 0 0; text-align: center; }
 .footer { border-top: 1px solid var(--line); color: var(--muted); max-width: none; padding: 14px 28px; }
 .footer-links { gap: 20px; }
@@ -146,14 +150,14 @@ html.dark {
   --coral-deep: #ffffff;
 }
 html.dark .search-form, body.dark .search-form { box-shadow: 0 1px 6px rgba(0, 0, 0, .5); }
-html.dark .search-button, html.dark .lucky-button,
-body.dark .search-button, body.dark .lucky-button { background: #303134; border-color: #303134; }
-html.dark .search-button:hover, html.dark .lucky-button:hover,
-body.dark .search-button:hover, body.dark .lucky-button:hover { background: #3c4043; border-color: #5f6368; }
+html.dark .search-button, body.dark .search-button { background: #f1f3f4; border-color: #f1f3f4; color: #202124; }
+html.dark .lucky-button, body.dark .lucky-button { background: transparent; border-color: #5f6368; color: #f1f3f4; }
+html.dark .search-button:hover, body.dark .search-button:hover { background: #ffffff; border-color: #ffffff; color: #202124; }
+html.dark .lucky-button:hover, body.dark .lucky-button:hover { background: #303134; border-color: #bdc1c6; }
 
 @media (max-width: 700px) {
   .topbar { padding: 20px; }
-  .main-content { min-height: calc(100vh - 124px); padding: 125px 20px 50px; }
+  .main-content { min-height: calc(100vh - 124px); padding: 84px 20px 50px; }
   h1 { font-size: 64px; }
   .about-copy { margin-top: 85px; }
   .footer { margin: 0; padding: 14px 20px; }
