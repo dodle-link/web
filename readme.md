@@ -12,7 +12,7 @@ A minimal, distraction-free search homepage that sends queries to Google.
 
 ## Run locally
 
-This is a static site with no build step or dependencies. Serve the repository root with a static file server so the shared Noe pixel module can load from `noesis/noe-ui` without `file:` URL restrictions:
+This is a static site with no build step or dependencies. Serve it with a static file server. The Noe pixel JavaScript and CSS are loaded from the hosted Noesis UI, not from a local `noesis` checkout:
 
 ```sh
 python3 -m http.server 8000 -d ..
