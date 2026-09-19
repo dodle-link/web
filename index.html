@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dodle Search" />
+    <title>Dodle Search</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Dodle home">dodle</a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">◐ <span>Dark mode</span></button>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <section class="search-stage" aria-labelledby="page-title">
+        <h1 id="page-title">dodle</h1>
+
+        <form class="search-form" id="search-form" action="https://www.google.com/search" method="get" role="search">
+          <label class="sr-only" for="search-input">Search the web</label>
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="search-input" name="q" type="search" placeholder="Search the web" autocomplete="off" spellcheck="false" />
+          <button class="clear-button" type="button" aria-label="Clear search">×</button>
+          
+        </form>
+        <div class="search-actions">
+          <button class="search-button" form="search-form" type="submit">Dodle Search</button>
+          <button class="lucky-button" type="button">I'm Feeling Curious</button>
+        </div>
+      </section>
+
+      <p class="about-copy" id="about">A simple search for a less distracted web.</p>
+    </main>
+
+    <footer class="footer">
+      <span>© 2025 Dodle</span>
+      <div class="footer-links"><a href="#privacy">Privacy</a><a href="#about">About</a></div>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
