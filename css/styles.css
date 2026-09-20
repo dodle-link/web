@@ -146,9 +146,11 @@ h1#page-title {
 .search-button, .lucky-button { border-radius: 6px; font-size: 14px; font-weight: 600; padding: 10px 16px; transition: background .2s ease, border-color .2s ease, box-shadow .2s ease; }
 .search-button { background: var(--ink); border: 1px solid var(--ink); color: var(--paper); }
 .lucky-button { background: var(--paper); border: 1px solid var(--line); color: var(--ink); }
-.search-button:hover { background: var(--coral-deep); border-color: var(--coral-deep); color: var(--paper); transform: none; }
-.lucky-button:hover { background: #f8f9fa; border-color: #9aa0a6; color: var(--ink); transform: none; }
+.search-button:disabled, .lucky-button:disabled { cursor: not-allowed; opacity: .55; }
+.search-button:not(:disabled):hover { background: var(--coral-deep); border-color: var(--coral-deep); color: var(--paper); transform: none; }
+.lucky-button:not(:disabled):hover { background: #f8f9fa; border-color: #9aa0a6; color: var(--ink); transform: none; }
 .search-button:focus-visible, .lucky-button:focus-visible, .theme-toggle:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
+.search-status { color: var(--muted); font-size: 12px; min-height: 18px; margin: 8px 0 -26px; text-align: center; }
 .about-copy { color: var(--muted); font-size: 12px; margin: 105px 0 0; text-align: center; }
 .footer { border-top: 1px solid var(--line); color: var(--muted); max-width: none; padding: 14px 28px; }
 .footer-links { gap: 20px; }
