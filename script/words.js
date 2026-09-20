@@ -102,26 +102,13 @@ const curiosityTopics = [
 ];
 
 const curiosityPatterns = [
-  'What is {topic}?',
-  'How does {topic} work?',
-  'Why is {topic} important?',
-  'A beginner guide to {topic}',
-  'The history of {topic}',
-  'The science behind {topic}',
-  'Surprising facts about {topic}',
-  'The latest research on {topic}',
-  'The most unusual examples of {topic}',
-  'How {topic} has changed over time',
-  'The key ideas behind {topic}',
-  'Common questions about {topic}',
-  'The benefits and challenges of {topic}',
-  'The people who shaped {topic}',
-  'A visual explanation of {topic}',
-  'The future of {topic}',
+  '{topic}',
+  'Interesting facts about {topic}',
   'How {topic} affects everyday life',
-  'The most important discoveries about {topic}',
-  'A timeline of {topic}',
-  'What we still do not know about {topic}'
+  'The future of {topic}',
+  'What can we learn from {topic}?',
+  'Key ideas behind {topic}',
+  'Common questions about {topic}'
 ];
 
 const additionalCuriositySubjects = [
@@ -154,9 +141,36 @@ const expandedCuriosityTopics = additionalCuriositySubjects.flatMap(subject =>
 
 const allCuriosityTopics = [...curiosityTopics, ...expandedCuriosityTopics];
 
-const curiousWords = allCuriosityTopics.flatMap(topic =>
-  curiosityPatterns.map(pattern => pattern.replace('{topic}', topic))
-);
+const normalizePrompt = prompt => prompt.replace(/\s+/g, ' ').trim();
+
+const buildPrompts = (topics, patterns) => [...new Set(
+  topics.flatMap(topic => patterns.map(pattern =>
+    normalizePrompt(pattern.replace('{topic}', topic))
+  ))
+)].filter(prompt => prompt && !prompt.includes('{topic}') && !prompt.includes('{subject}'));
+
+const localizedPromptPatterns = {
+  ja: [
+    '{topic}', '{topic}の意外な事実', '{topic}と日常生活', '{topic}の未来', '{topic}について知っておきたいこと'
+  ],
+  zh: [
+    '{topic}', '关于{topic}的有趣事实', '{topic}如何影响日常生活', '{topic}的未来', '关于{topic}的常见问题'
+  ],
+  th: [
+    '{topic}', 'ข้อเท็จจริงที่น่าสนใจเกี่ยวกับ{topic}', '{topic}กับชีวิตประจำวัน', 'อนาคตของ{topic}', 'คำถามที่พบบ่อยเกี่ยวกับ{topic}'
+  ],
+  ko: [
+    '{topic}', '{topic}에 관한 흥미로운 사실', '{topic}가 일상에 미치는 영향', '{topic}의 미래', '{topic}에 관한 자주 묻는 질문'
+  ],
+  fr: [
+    '{topic}', 'Faits intéressants sur {topic}', 'Comment {topic} influence la vie quotidienne', "L'avenir de {topic}", 'Questions fréquentes sur {topic}'
+  ],
+  de: [
+    '{topic}', 'Interessante Fakten über {topic}', 'Wie {topic} den Alltag beeinflusst', 'Die Zukunft von {topic}', 'Häufige Fragen zu {topic}'
+  ]
+};
+
+const curiousWords = buildPrompts(allCuriosityTopics, curiosityPatterns);
 
 const expandLocalizedTopics = (topics, subjects, angles) => [
   ...topics,
@@ -318,10 +332,15 @@ const curiosityPatternsByLanguage = {
 };
 
 const curiousWordsByLanguage = Object.fromEntries(
-  Object.keys(curiosityTopicsByLanguage).map(language => [
+  Object.entries(curiosityTopicsByLanguage).map(([language, topics]) => [
     language,
-    curiosityTopicsByLanguage[language].flatMap(topic =>
-      curiosityPatternsByLanguage[language].map(pattern => pattern.replace('{topic}', topic))
-    )
+    buildPrompts(topics, localizedPromptPatterns[language] || curiosityPatterns)
   ])
 );
+
+Object.entries(curiousWordsByLanguage).forEach(([language, prompts]) => {
+  if (!prompts.length) console.warn(`No curiosity prompts available for ${language}`);
+  if (prompts.some(prompt => prompt.includes('{'))) {
+    console.warn(`Unresolved placeholder in curiosity prompts for ${language}`);
+  }
+});

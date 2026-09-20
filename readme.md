@@ -1,4 +1,4 @@
-# Dodle Search v1.2.0
+# Dodle Search v1.3.0
 
 Version: `1.2.0`
 
@@ -18,7 +18,7 @@ are loaded from `https://noesis.dodle.link/noe-ui/` at runtime.
 - Clean responsive layout for desktop and mobile
 - Dark mode enabled by default
 - Light mode preference persisted in `localStorage`
-- Search suggestions and a "I'm Feeling Curious" shortcut
+- Search suggestions and a "I'm Feeling Curious" shortcut with localized, deduplicated prompts
 - Search results open in a new tab
 
 ## Run locally
@@ -33,7 +33,7 @@ Then visit `http://localhost:8000/web/index.html`.
 
 ## Changelog
 
-See [CHANGELOG_v1.2.0.md](doc/CHANGELOG_v1.2.0.md) for the latest release
+See [CHANGELOG_v1.3.0.md](doc/CHANGELOG_v1.3.0.md) for the latest release
 history. The [v1.0.0 changelog](doc/CHANGELOG_v1.0.0.md) covers the initial
 release.
 
