@@ -342,13 +342,6 @@ const curiosityPatternsByLanguage = {
   ]
 };
 
-const curiousWordsByLanguage = Object.fromEntries(
-  Object.entries(curiosityTopicsByLanguage).map(([language, topics]) => [
-    language,
-    buildPromptList(topics, localizedPromptPatterns[language] || curiosityPatterns)
-  ])
-);
-
 const curiosityQueryContextsByLanguage = {
   en: [
     'for beginners', 'in everyday life', 'through history', 'from a scientific perspective', 'with real examples',
@@ -381,19 +374,22 @@ const curiosityQueryContextsByLanguage = {
   ]
 };
 
+const PROMPT_SOURCE_LENGTH = 100000;
+const LARGE_TOPIC_SET_THRESHOLD = 500;
+const LARGE_TOPIC_SET_CONTEXT_COUNT = 10;
+
 const createCuriosityPromptSource = (topics, patterns, contexts) => {
-  const contextCount = topics.length >= 500 ? 10 : contexts.length;
-  const length = 100000;
+  const contextCount = topics.length >= LARGE_TOPIC_SET_THRESHOLD ? LARGE_TOPIC_SET_CONTEXT_COUNT : contexts.length;
   const combinations = topics.length * patterns.length * contextCount;
 
-  if (combinations < length) {
+  if (combinations < PROMPT_SOURCE_LENGTH) {
     throw new Error(`Not enough curiosity prompt combinations: ${combinations}`);
   }
 
   return {
-    length,
+    length: PROMPT_SOURCE_LENGTH,
     get(index) {
-      if (!Number.isInteger(index) || index < 0 || index >= length) return undefined;
+      if (!Number.isInteger(index) || index < 0 || index >= this.length) return undefined;
 
       const topicPatternCount = topics.length * patterns.length;
       const contextIndex = Math.floor(index / topicPatternCount);
@@ -404,32 +400,31 @@ const createCuriosityPromptSource = (topics, patterns, contexts) => {
       return normalizePrompt(`${prompt} ${contexts[contextIndex]}`);
     },
     getRandom() {
-      return this.get(Math.floor(Math.random() * length));
+      return this.get(Math.floor(Math.random() * this.length));
     }
   };
 };
 
-const lazyCuriousWordsByLanguage = Object.fromEntries(
-  Object.entries(curiosityTopicsByLanguage).map(([language, topics]) => [
-    language,
-    createCuriosityPromptSource(
-      topics,
-      curiosityPatternsByLanguage[language] || curiosityPatterns,
-      curiosityQueryContextsByLanguage[language] || curiosityQueryContextsByLanguage.en
-    )
-  ])
-);
+// Build and self-validate both the localized prompt lists and lazy prompt sources in a single pass per language.
+const curiousWordsByLanguage = {};
+const lazyCuriousWordsByLanguage = {};
 
-Object.entries(lazyCuriousWordsByLanguage).forEach(([language, source]) => {
-  const samples = [source.get(0), source.get(1), source.get(source.length - 1)];
-  if (source.length !== 100000 || samples.some(prompt => !prompt || prompt.includes('{'))) {
-    throw new Error(`Invalid curiosity prompt source for ${language}`);
-  }
-});
-
-Object.entries(curiousWordsByLanguage).forEach(([language, prompts]) => {
+for (const [language, topics] of Object.entries(curiosityTopicsByLanguage)) {
+  const prompts = buildPromptList(topics, localizedPromptPatterns[language] || curiosityPatterns);
+  curiousWordsByLanguage[language] = prompts;
   if (!prompts.length) console.warn(`No curiosity prompts available for ${language}`);
   if (prompts.some(prompt => prompt.includes('{'))) {
     console.warn(`Unresolved placeholder in curiosity prompts for ${language}`);
   }
-});
+
+  const source = createCuriosityPromptSource(
+    topics,
+    curiosityPatternsByLanguage[language] || curiosityPatterns,
+    curiosityQueryContextsByLanguage[language] || curiosityQueryContextsByLanguage.en
+  );
+  lazyCuriousWordsByLanguage[language] = source;
+  const samples = [source.get(0), source.get(1), source.get(source.length - 1)];
+  if (source.length !== PROMPT_SOURCE_LENGTH || samples.some(prompt => !prompt || prompt.includes('{'))) {
+    throw new Error(`Invalid curiosity prompt source for ${language}`);
+  }
+}
