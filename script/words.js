@@ -217,6 +217,55 @@ const curiosityTopicsByLanguage = {
     'ประวัติของ{subject}', 'วิทยาศาสตร์ของ{subject}', 'อนาคตของ{subject}', 'ต้นกำเนิดของ{subject}',
     'จิตวิทยาของ{subject}', 'เทคโนโลยีเบื้องหลัง{subject}', 'ความหมายทางวัฒนธรรมของ{subject}',
     'ผลกระทบของ{subject}ต่อสิ่งแวดล้อม', 'การค้นพบที่สำคัญเกี่ยวกับ{subject}', '{subject}กับชีวิตประจำวัน'
+  ]),
+  ko: expandLocalizedTopics([
+    '오로라', '고대 도서관', '벌의 의사소통', '심해 생물', '지도의 역사', '화산섬',
+    '수면의 과학', '잊힌 발명품', '언어의 기원', '사막 생태계', '음악의 수학',
+    '가장 오래된 나무', '다리의 원리', '초콜릿의 역사', '구름의 형태', '호기심의 심리학',
+    '수중 고고학', '새의 진화', '기억의 작동 원리', '희귀한 기상 현상'
+  ], [
+    '천문학', '의학', '건축', '농업', '음악', '고고학', '수학', '교통', '공학', '컴퓨터 과학',
+    '교육', '심리학', '생태학', '지질학', '해양학', '사진', '영화', '신화', '회화', '조각',
+    '패션', '음식 문화', '금융', '무역', '민주주의', '법률', '스포츠', '게임', '공예', '발명',
+    '소재', '에너지', '기후', '날씨', '진화', '동물', '식물', '도시', '탐험', '소통'
+  ], [
+    '{subject}의 역사', '{subject}의 과학', '{subject}의 미래', '{subject}의 기원',
+    '{subject}의 심리학', '{subject}를 뒷받침하는 기술', '{subject}의 문화적 의미',
+    '{subject}가 환경에 미치는 영향', '{subject}의 중요한 발견', '{subject}와 일상생활'
+  ]),
+  fr: expandLocalizedTopics([
+    'les aurores boréales', 'les bibliothèques anciennes', 'la communication des abeilles', 'les créatures des grands fonds',
+    "l'histoire des cartes", 'les îles volcaniques', 'la science du sommeil', 'les inventions oubliées',
+    "l'origine du langage", 'les écosystèmes désertiques', 'les mathématiques de la musique', 'les arbres les plus anciens',
+    'le fonctionnement des ponts', "l'histoire du chocolat", 'les formations nuageuses', 'la psychologie de la curiosité',
+    "l'archéologie sous-marine", "l'évolution des oiseaux", 'le fonctionnement de la mémoire', 'les phénomènes météorologiques rares'
+  ], [
+    'astronomie', 'médecine', 'architecture', 'agriculture', 'musique', 'archéologie', 'mathématiques', 'transports',
+    'ingénierie', 'informatique', 'éducation', 'psychologie', 'écologie', 'géologie', 'océanographie', 'photographie',
+    'cinéma', 'mythologie', 'peinture', 'sculpture', 'mode', 'gastronomie', 'finance', 'commerce', 'démocratie',
+    'droit', 'sport', 'jeux', 'artisanat', 'inventions', 'matériaux', 'énergie', 'climat', 'météo', 'évolution',
+    'animaux', 'plantes', 'villes', 'exploration', 'communication'
+  ], [
+    "l'histoire de {subject}", 'la science de {subject}', "l'avenir de {subject}", "les origines de {subject}",
+    'la psychologie de {subject}', 'la technologie derrière {subject}', 'la signification culturelle de {subject}',
+    "l'impact environnemental de {subject}", 'les découvertes importantes sur {subject}', 'comment {subject} façonne la vie quotidienne'
+  ]),
+  de: expandLocalizedTopics([
+    'das Nordlicht', 'alte Bibliotheken', 'wie Bienen kommunizieren', 'Tiefseebewohner', 'die Geschichte der Karten',
+    'Vulkaninseln', 'die Wissenschaft des Schlafs', 'vergessene Erfindungen', 'der Ursprung der Sprache', 'Wüstenökosysteme',
+    'die Mathematik der Musik', 'die ältesten Bäume', 'wie Brücken funktionieren', 'die Geschichte der Schokolade',
+    'Wolkenformationen', 'die Psychologie der Neugier', 'Unterwasserarchäologie', 'die Evolution der Vögel',
+    'wie das Gedächtnis funktioniert', 'seltene Wetterereignisse'
+  ], [
+    'Astronomie', 'Medizin', 'Architektur', 'Landwirtschaft', 'Musik', 'Archäologie', 'Mathematik', 'Verkehr',
+    'Ingenieurwesen', 'Informatik', 'Bildung', 'Psychologie', 'Ökologie', 'Geologie', 'Ozeanografie', 'Fotografie',
+    'Film', 'Mythologie', 'Malerei', 'Bildhauerei', 'Mode', 'Ernährung', 'Finanzen', 'Handel', 'Demokratie',
+    'Recht', 'Sport', 'Spiele', 'Handwerk', 'Erfindungen', 'Materialien', 'Energie', 'Klima', 'Wetter', 'Evolution',
+    'Tiere', 'Pflanzen', 'Städte', 'Entdeckungen', 'Kommunikation'
+  ], [
+    'die Geschichte von {subject}', 'die Wissenschaft hinter {subject}', 'die Zukunft von {subject}', 'die Ursprünge von {subject}',
+    'die Psychologie von {subject}', 'die Technologie hinter {subject}', 'die kulturelle Bedeutung von {subject}',
+    'die Umweltauswirkungen von {subject}', 'wichtige Entdeckungen zu {subject}', 'wie {subject} den Alltag prägt'
   ])
 };
 
@@ -242,6 +291,29 @@ const curiosityPatternsByLanguage = {
     'แนวคิดสำคัญเกี่ยวกับ{topic}', 'คำถามที่พบบ่อยเกี่ยวกับ{topic}', 'ประโยชน์และความท้าทายของ{topic}', 'ผู้คนที่สร้างสรรค์{topic}',
     'คำอธิบายแบบภาพของ{topic}', 'อนาคตของ{topic}', '{topic}ส่งผลต่อชีวิตประจำวันอย่างไร', 'การค้นพบสำคัญเกี่ยวกับ{topic}',
     'เส้นเวลาของ{topic}', 'สิ่งที่เรายังไม่รู้เกี่ยวกับ{topic}'
+  ],
+  ko: [
+    '{topic}이란 무엇인가?', '{topic}은 어떻게 작동하는가?', '왜 {topic}이 중요한가?', '{topic} 입문', '{topic}의 역사',
+    '{topic}의 과학', '{topic}에 관한 놀라운 사실', '{topic}의 최신 연구', '{topic}의 특이한 사례', '{topic}는 어떻게 변해 왔는가?',
+    '{topic}의 핵심 개념', '{topic}에 관한 자주 묻는 질문', '{topic}의 장점과 과제', '{topic}를 만든 사람들',
+    '{topic}의 시각적 설명', '{topic}의 미래', '{topic}가 일상에 미치는 영향', '{topic}의 중요한 발견',
+    '{topic}의 연대표', '{topic}에 대해 아직 모르는 것'
+  ],
+  fr: [
+    "Qu'est-ce que {topic} ?", 'Comment fonctionne {topic} ?', 'Pourquoi {topic} est-il important ?', 'Guide de {topic} pour débutants',
+    "L'histoire de {topic}", 'La science de {topic}', 'Faits surprenants sur {topic}', 'Les dernières recherches sur {topic}',
+    'Les exemples les plus insolites de {topic}', "Comment {topic} a changé au fil du temps", 'Les idées clés de {topic}',
+    'Questions fréquentes sur {topic}', 'Les avantages et les défis de {topic}', 'Les personnes qui ont façonné {topic}',
+    'Une explication visuelle de {topic}', "L'avenir de {topic}", 'Comment {topic} influence la vie quotidienne',
+    'Les découvertes importantes sur {topic}', 'Une chronologie de {topic}', 'Ce que nous ignorons encore sur {topic}'
+  ],
+  de: [
+    'Was ist {topic}?', 'Wie funktioniert {topic}?', 'Warum ist {topic} wichtig?', 'Eine Einführung in {topic}', 'Die Geschichte von {topic}',
+    'Die Wissenschaft hinter {topic}', 'Überraschende Fakten über {topic}', 'Die neuesten Forschungen zu {topic}', 'Die ungewöhnlichsten Beispiele für {topic}',
+    'Wie sich {topic} im Laufe der Zeit verändert hat', 'Die wichtigsten Ideen hinter {topic}', 'Häufige Fragen zu {topic}',
+    'Die Vorteile und Herausforderungen von {topic}', 'Die Menschen, die {topic} geprägt haben', 'Eine visuelle Erklärung von {topic}',
+    'Die Zukunft von {topic}', 'Wie {topic} den Alltag beeinflusst', 'Wichtige Entdeckungen zu {topic}', 'Eine Zeitleiste von {topic}',
+    'Was wir über {topic} noch nicht wissen'
   ]
 };
 
