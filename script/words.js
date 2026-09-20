@@ -143,11 +143,21 @@ const allCuriosityTopics = [...curiosityTopics, ...expandedCuriosityTopics];
 
 const normalizePrompt = prompt => prompt.replace(/\s+/g, ' ').trim();
 
-const buildPrompts = (topics, patterns) => [...new Set(
+const fillTemplate = (template, values) => Object.entries(values).reduce(
+  (result, [key, value]) => result.replaceAll(`{${key}}`, value),
+  template
+);
+
+const buildPromptList = (topics, patterns) => [...new Set(
   topics.flatMap(topic => patterns.map(pattern =>
-    normalizePrompt(pattern.replace('{topic}', topic))
+    normalizePrompt(fillTemplate(pattern, { topic }))
   ))
-)].filter(prompt => prompt && !prompt.includes('{topic}') && !prompt.includes('{subject}'));
+)].filter(prompt => prompt && !prompt.includes('{'));
+
+const expandTopics = (topics, subjects, patterns) => [
+  ...topics,
+  ...subjects.flatMap(subject => patterns.map(pattern => fillTemplate(pattern, { subject })))
+];
 
 const localizedPromptPatterns = {
   ja: [
@@ -170,16 +180,11 @@ const localizedPromptPatterns = {
   ]
 };
 
-const curiousWords = buildPrompts(allCuriosityTopics, curiosityPatterns);
-
-const expandLocalizedTopics = (topics, subjects, angles) => [
-  ...topics,
-  ...subjects.flatMap(subject => angles.map(angle => angle.replace('{subject}', subject)))
-];
+const curiousWords = buildPromptList(allCuriosityTopics, curiosityPatterns);
 
 const curiosityTopicsByLanguage = {
   en: allCuriosityTopics,
-  ja: expandLocalizedTopics([
+  ja: expandTopics([
     'オーロラ', '古代の図書館', 'ミツバチの会話', '深海生物', '地図の歴史',
     '火山島', '睡眠の科学', '忘れられた発明', '言語の起源', '砂漠の生態系',
     '音楽の数学', '最も古い木', '橋の仕組み', 'チョコレートの歴史', '雲の形',
@@ -197,7 +202,7 @@ const curiosityTopicsByLanguage = {
     '{subject}の心理学', '{subject}を支える技術', '{subject}の文化的意味',
     '{subject}の環境への影響', '{subject}における重要な発見', '{subject}と日常生活'
   ]),
-  zh: expandLocalizedTopics([
+  zh: expandTopics([
     '极光', '古代图书馆', '蜜蜂如何交流', '深海生物', '地图的历史',
     '火山岛', '睡眠科学', '被遗忘的发明', '语言的起源', '沙漠生态系统',
     '音乐的数学', '最古老的树', '桥梁的工作原理', '巧克力的历史', '云的形态',
@@ -214,7 +219,7 @@ const curiosityTopicsByLanguage = {
     '{subject}的心理学', '{subject}背后的技术', '{subject}的文化意义',
     '{subject}对环境的影响', '{subject}领域的重要发现', '{subject}如何影响日常生活'
   ]),
-  th: expandLocalizedTopics([
+  th: expandTopics([
     'แสงเหนือ', 'ห้องสมุดโบราณ', 'การสื่อสารของผึ้ง', 'สิ่งมีชีวิตใต้ทะเลลึก', 'ประวัติศาสตร์ของแผนที่',
     'เกาะภูเขาไฟ', 'วิทยาศาสตร์ของการนอนหลับ', 'สิ่งประดิษฐ์ที่ถูกลืม', 'ต้นกำเนิดของภาษา', 'ระบบนิเวศทะเลทราย',
     'คณิตศาสตร์ของดนตรี', 'ต้นไม้ที่เก่าแก่ที่สุด', 'การทำงานของสะพาน', 'ประวัติศาสตร์ช็อกโกแลต', 'รูปทรงของเมฆ',
@@ -232,7 +237,7 @@ const curiosityTopicsByLanguage = {
     'จิตวิทยาของ{subject}', 'เทคโนโลยีเบื้องหลัง{subject}', 'ความหมายทางวัฒนธรรมของ{subject}',
     'ผลกระทบของ{subject}ต่อสิ่งแวดล้อม', 'การค้นพบที่สำคัญเกี่ยวกับ{subject}', '{subject}กับชีวิตประจำวัน'
   ]),
-  ko: expandLocalizedTopics([
+  ko: expandTopics([
     '오로라', '고대 도서관', '벌의 의사소통', '심해 생물', '지도의 역사', '화산섬',
     '수면의 과학', '잊힌 발명품', '언어의 기원', '사막 생태계', '음악의 수학',
     '가장 오래된 나무', '다리의 원리', '초콜릿의 역사', '구름의 형태', '호기심의 심리학',
@@ -247,7 +252,7 @@ const curiosityTopicsByLanguage = {
     '{subject}의 심리학', '{subject}를 뒷받침하는 기술', '{subject}의 문화적 의미',
     '{subject}가 환경에 미치는 영향', '{subject}의 중요한 발견', '{subject}와 일상생활'
   ]),
-  fr: expandLocalizedTopics([
+  fr: expandTopics([
     'les aurores boréales', 'les bibliothèques anciennes', 'la communication des abeilles', 'les créatures des grands fonds',
     "l'histoire des cartes", 'les îles volcaniques', 'la science du sommeil', 'les inventions oubliées',
     "l'origine du langage", 'les écosystèmes désertiques', 'les mathématiques de la musique', 'les arbres les plus anciens',
@@ -264,7 +269,7 @@ const curiosityTopicsByLanguage = {
     'la psychologie de {subject}', 'la technologie derrière {subject}', 'la signification culturelle de {subject}',
     "l'impact environnemental de {subject}", 'les découvertes importantes sur {subject}', 'comment {subject} façonne la vie quotidienne'
   ]),
-  de: expandLocalizedTopics([
+  de: expandTopics([
     'das Nordlicht', 'alte Bibliotheken', 'wie Bienen kommunizieren', 'Tiefseebewohner', 'die Geschichte der Karten',
     'Vulkaninseln', 'die Wissenschaft des Schlafs', 'vergessene Erfindungen', 'der Ursprung der Sprache', 'Wüstenökosysteme',
     'die Mathematik der Musik', 'die ältesten Bäume', 'wie Brücken funktionieren', 'die Geschichte der Schokolade',
@@ -340,7 +345,7 @@ const curiosityPatternsByLanguage = {
 const curiousWordsByLanguage = Object.fromEntries(
   Object.entries(curiosityTopicsByLanguage).map(([language, topics]) => [
     language,
-    buildPrompts(topics, localizedPromptPatterns[language] || curiosityPatterns)
+    buildPromptList(topics, localizedPromptPatterns[language] || curiosityPatterns)
   ])
 );
 
@@ -395,7 +400,7 @@ const createCuriosityPromptSource = (topics, patterns, contexts) => {
       const remainder = index % topicPatternCount;
       const patternIndex = Math.floor(remainder / topics.length);
       const topicIndex = remainder % topics.length;
-      const prompt = patterns[patternIndex].replace('{topic}', topics[topicIndex]);
+      const prompt = fillTemplate(patterns[patternIndex], { topic: topics[topicIndex] });
       return normalizePrompt(`${prompt} ${contexts[contextIndex]}`);
     },
     getRandom() {
