@@ -284,7 +284,13 @@ const curiosityTopicsByLanguage = {
 };
 
 const curiosityPatternsByLanguage = {
-  en: curiosityPatterns,
+  en: [
+    ...curiosityPatterns,
+    'What is {topic}?', 'How does {topic} work?', 'Why is {topic} important?', 'A beginner guide to {topic}',
+    'The history of {topic}', 'The science behind {topic}', 'Surprising facts about {topic}', 'Latest research on {topic}',
+    'Unusual examples of {topic}', 'How {topic} has changed over time', 'The key ideas behind {topic}', 'People who shaped {topic}',
+    'A visual explanation of {topic}'
+  ],
   ja: [
     '{topic}とは？', '{topic}はどのように機能する？', 'なぜ{topic}は興味深い？', '{topic}入門', '{topic}の歴史',
     '{topic}の科学', '{topic}の意外な事実', '{topic}の最新研究', '{topic}の珍しい例', '{topic}はどう変化してきた？',
@@ -337,6 +343,84 @@ const curiousWordsByLanguage = Object.fromEntries(
     buildPrompts(topics, localizedPromptPatterns[language] || curiosityPatterns)
   ])
 );
+
+const curiosityQueryContextsByLanguage = {
+  en: [
+    'for beginners', 'in everyday life', 'through history', 'from a scientific perspective', 'with real examples',
+    'in simple terms', 'around the world', 'and its cultural meaning', 'and its environmental impact',
+    'and the latest discoveries', 'compared with related ideas', 'and what may happen next'
+  ],
+  ja: [
+    '初心者向け', '日常生活との関係', '歴史的な背景', '科学的な視点', '実例を通して', '簡単な言葉で',
+    '世界各地の例', '文化的な意味', '環境への影響', '最新の発見', '関連するテーマとの比較', 'これからの展望'
+  ],
+  zh: [
+    '适合初学者', '与日常生活的关系', '历史背景', '科学视角', '通过真实案例', '用简单语言解释',
+    '世界各地的例子', '文化意义', '环境影响', '最新发现', '与相关主题比较', '未来展望'
+  ],
+  th: [
+    'สำหรับผู้เริ่มต้น', 'ในชีวิตประจำวัน', 'เบื้องหลังทางประวัติศาสตร์', 'ในมุมมองทางวิทยาศาสตร์', 'จากตัวอย่างจริง', 'อธิบายด้วยภาษาง่ายๆ',
+    'ตัวอย่างจากทั่วโลก', 'ความหมายทางวัฒนธรรม', 'ผลกระทบต่อสิ่งแวดล้อม', 'การค้นพบล่าสุด', 'เปรียบเทียบกับหัวข้อที่เกี่ยวข้อง', 'แนวโน้มในอนาคต'
+  ],
+  ko: [
+    '초보자를 위한 안내', '일상생활에서', '역사적 배경', '과학적 관점', '실제 사례와 함께', '쉬운 말로 설명',
+    '세계 각지의 사례', '문화적 의미', '환경에 미치는 영향', '최신 발견', '관련 주제와 비교', '앞으로의 전망'
+  ],
+  fr: [
+    'pour débutants', 'dans la vie quotidienne', 'dans son contexte historique', 'd un point de vue scientifique', 'avec des exemples concrets', 'en termes simples',
+    'dans le monde', 'et sa signification culturelle', 'et son impact environnemental', 'et les dernières découvertes', 'comparé aux sujets proches', 'et ses perspectives futures'
+  ],
+  de: [
+    'für Anfänger', 'im Alltag', 'vor dem historischen Hintergrund', 'aus wissenschaftlicher Sicht', 'mit echten Beispielen', 'einfach erklärt',
+    'aus aller Welt', 'und seine kulturelle Bedeutung', 'und seine Auswirkungen auf die Umwelt', 'und die neuesten Entdeckungen', 'im Vergleich zu verwandten Themen', 'und seine Zukunft'
+  ]
+};
+
+const createCuriosityPromptSource = (topics, patterns, contexts) => {
+  const contextCount = topics.length >= 500 ? 10 : contexts.length;
+  const length = 100000;
+  const combinations = topics.length * patterns.length * contextCount;
+
+  if (combinations < length) {
+    throw new Error(`Not enough curiosity prompt combinations: ${combinations}`);
+  }
+
+  return {
+    length,
+    get(index) {
+      if (!Number.isInteger(index) || index < 0 || index >= length) return undefined;
+
+      const topicPatternCount = topics.length * patterns.length;
+      const contextIndex = Math.floor(index / topicPatternCount);
+      const remainder = index % topicPatternCount;
+      const patternIndex = Math.floor(remainder / topics.length);
+      const topicIndex = remainder % topics.length;
+      const prompt = patterns[patternIndex].replace('{topic}', topics[topicIndex]);
+      return normalizePrompt(`${prompt} ${contexts[contextIndex]}`);
+    },
+    getRandom() {
+      return this.get(Math.floor(Math.random() * length));
+    }
+  };
+};
+
+const lazyCuriousWordsByLanguage = Object.fromEntries(
+  Object.entries(curiosityTopicsByLanguage).map(([language, topics]) => [
+    language,
+    createCuriosityPromptSource(
+      topics,
+      curiosityPatternsByLanguage[language] || curiosityPatterns,
+      curiosityQueryContextsByLanguage[language] || curiosityQueryContextsByLanguage.en
+    )
+  ])
+);
+
+Object.entries(lazyCuriousWordsByLanguage).forEach(([language, source]) => {
+  const samples = [source.get(0), source.get(1), source.get(source.length - 1)];
+  if (source.length !== 100000 || samples.some(prompt => !prompt || prompt.includes('{'))) {
+    throw new Error(`Invalid curiosity prompt source for ${language}`);
+  }
+});
 
 Object.entries(curiousWordsByLanguage).forEach(([language, prompts]) => {
   if (!prompts.length) console.warn(`No curiosity prompts available for ${language}`);

@@ -19,6 +19,7 @@ are loaded from `https://noesis.dodle.link/noe-ui/` at runtime.
 - Dark mode enabled by default
 - Light mode preference persisted in `localStorage`
 - Search suggestions and a "I'm Feeling Curious" shortcut with localized, deduplicated prompts
+- The curiosity shortcut provides 100,000 lazily generated prompts per supported language
 - Search results open in a new tab
 
 ## Run locally
