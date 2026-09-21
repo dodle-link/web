@@ -141,7 +141,7 @@ const expandedCuriosityTopics = additionalCuriositySubjects.flatMap(subject =>
 
 const allCuriosityTopics = [...curiosityTopics, ...expandedCuriosityTopics];
 
-const normalizePrompt = prompt => prompt.replace(/\s+/g, ' ').trim();
+const normalizePrompt = (prompt = '') => String(prompt).replace(/\s+/g, ' ').trim();
 
 const fillTemplate = (template, values) => Object.entries(values).reduce(
   (result, [key, value]) => result.replaceAll(`{${key}}`, value),
@@ -405,13 +405,16 @@ const createCuriosityPromptSource = (topics, patterns, contexts) => {
   };
 };
 
-// Build and self-validate both the localized prompt lists and lazy prompt sources in a single pass per language.
-const curiousWordsByLanguage = {};
-const lazyCuriousWordsByLanguage = {};
+const validatePromptSource = (language, source) => {
+  const samples = [source.get(0), source.get(1), source.get(source.length - 1)];
+  if (source.length !== PROMPT_SOURCE_LENGTH || samples.some(prompt => !prompt || prompt.includes('{'))) {
+    throw new Error(`Invalid curiosity prompt source for ${language}`);
+  }
+};
 
-for (const [language, topics] of Object.entries(curiosityTopicsByLanguage)) {
+const buildLanguagePromptCatalog = (language, topics) => {
   const prompts = buildPromptList(topics, localizedPromptPatterns[language] || curiosityPatterns);
-  curiousWordsByLanguage[language] = prompts;
+
   if (!prompts.length) console.warn(`No curiosity prompts available for ${language}`);
   if (prompts.some(prompt => prompt.includes('{'))) {
     console.warn(`Unresolved placeholder in curiosity prompts for ${language}`);
@@ -422,9 +425,16 @@ for (const [language, topics] of Object.entries(curiosityTopicsByLanguage)) {
     curiosityPatternsByLanguage[language] || curiosityPatterns,
     curiosityQueryContextsByLanguage[language] || curiosityQueryContextsByLanguage.en
   );
+
+  validatePromptSource(language, source);
+  return { prompts, source };
+};
+
+const curiousWordsByLanguage = {};
+const lazyCuriousWordsByLanguage = {};
+
+for (const [language, topics] of Object.entries(curiosityTopicsByLanguage)) {
+  const { prompts, source } = buildLanguagePromptCatalog(language, topics);
+  curiousWordsByLanguage[language] = prompts;
   lazyCuriousWordsByLanguage[language] = source;
-  const samples = [source.get(0), source.get(1), source.get(source.length - 1)];
-  if (source.length !== PROMPT_SOURCE_LENGTH || samples.some(prompt => !prompt || prompt.includes('{'))) {
-    throw new Error(`Invalid curiosity prompt source for ${language}`);
-  }
 }
