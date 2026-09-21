@@ -5,14 +5,8 @@ const fillTemplate = (template, values) => Object.entries(values).reduce(
   template
 );
 
-const buildExpandedSubjectTopics = (subjects, patterns) =>
-  subjects.flatMap(subject => patterns.map(pattern => fillTemplate(pattern, { subject })));
-
-const buildTopics = (baseTopics, subjects, subjectPatterns) => [
-  ...new Set([
-    ...baseTopics,
-    ...buildExpandedSubjectTopics(subjects, subjectPatterns)
-  ].map(normalizePrompt).filter(Boolean))
+const buildTopics = (baseTopics, subjects) => [
+  ...new Set([...baseTopics, ...subjects].map(normalizePrompt).filter(Boolean))
 ];
 
 const curiosityTopicsByLanguage = {
