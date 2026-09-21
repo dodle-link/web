@@ -1,95 +1,12 @@
-const normalizePrompt = (prompt = '') => String(prompt).replace(/\s+/g, ' ').trim();
-
-const buildTopics = baseTopics => [
-  ...new Set(baseTopics.map(normalizePrompt).filter(Boolean))
-];
-
-const curiosityTopicsByLanguage = {
-  en: buildTopics([
-    'astronomy', 'medicine', 'architecture', 'agriculture', 'music', 'language', 'mathematics', 'transportation',
-    'engineering', 'computing', 'education', 'psychology', 'ecology', 'geology', 'oceanography', 'photography',
-    'film', 'mythology', 'painting', 'sculpture', 'fashion', 'food', 'finance', 'trade', 'democracy', 'law',
-    'sports', 'games', 'crafts', 'inventions', 'materials', 'energy', 'climate', 'weather', 'evolution', 'animals',
-    'plants', 'cities', 'exploration', 'communication'
-  ], [
-    'the history of {subject}', 'the science of {subject}', 'the future of {subject}', 'the origins of {subject}',
-    'the psychology of {subject}', 'the technology behind {subject}', 'the cultural meaning of {subject}',
-    'the environmental impact of {subject}', 'the most important discoveries in {subject}', 'how {subject} shapes everyday life'
-  ]),
-  ja: buildTopics([
-    '天文学', '医学', '建築', '農業', '音楽', '考古学', '数学', '交通',
-    '工学', 'コンピューター', '教育', '心理学', '生態学', '地質学', '海洋学',
-    '写真', '映画', '神話', '絵画', '彫刻', 'ファッション', '食文化', '金融',
-    '貿易', '民主主義', '法律', 'スポーツ', 'ゲーム', '工芸', '発明', '素材',
-    'エネルギー', '気候', '天気', '進化', '動物', '植物', '都市', '探検',
-    'コミュニケーション', '農薬', 'ロボット', '宇宙開発', '海洋保全', '博物館',
-    '教育技術', '伝統文化', '未来社会'
-  ], [
-    '歴史と{subject}', '{subject}の科学', '{subject}の未来', '{subject}の起源',
-    '{subject}の心理学', '{subject}を支える技術', '{subject}の文化的意味',
-    '{subject}の環境への影響', '{subject}における重要な発見', '{subject}と日常生活'
-  ]),
-  zh: buildTopics([
-    '天文学', '医学', '建筑', '农业', '音乐', '考古学', '数学', '交通',
-    '工程', '计算机', '教育', '心理学', '生态学', '地质学', '海洋学',
-    '摄影', '电影', '神话', '绘画', '雕塑', '时尚', '饮食文化', '金融',
-    '贸易', '民主', '法律', '体育', '游戏', '手工艺', '发明', '材料',
-    '能源', '气候', '天气', '进化', '动物', '植物', '城市', '探索',
-    '通信', '机器人', '航天', '海洋保护', '博物馆', '教育科技', '传统文化', '社会学', '未来社会'
-  ], [
-    '{subject}的历史', '{subject}背后的科学', '{subject}的未来', '{subject}的起源',
-    '{subject}的心理学', '{subject}背后的技术', '{subject}的文化意义',
-    '{subject}对环境的影响', '{subject}领域的重要发现', '{subject}如何影响日常生活'
-  ]),
-  th: buildTopics([
-    'ดาราศาสตร์', 'การแพทย์', 'สถาปัตยกรรม', 'การเกษตร', 'ดนตรี', 'โบราณคดี', 'คณิตศาสตร์', 'การขนส่ง',
-    'วิศวกรรม', 'คอมพิวเตอร์', 'การศึกษา', 'จิตวิทยา', 'นิเวศวิทยา', 'ธรณีวิทยา', 'สมุทรศาสตร์',
-    'การถ่ายภาพ', 'ภาพยนตร์', 'ตำนาน', 'จิตรกรรม', 'ประติมากรรม', 'แฟชั่น', 'วัฒนธรรมอาหาร', 'การเงิน',
-    'การค้า', 'ประชาธิปไตย', 'กฎหมาย', 'กีฬา', 'เกม', 'งานฝีมือ', 'สิ่งประดิษฐ์', 'วัสดุ',
-    'พลังงาน', 'สภาพภูมิอากาศ', 'สภาพอากาศ', 'วิวัฒนาการ', 'สัตว์', 'พืช', 'เมือง', 'การสำรวจ',
-    'การสื่อสาร', 'หุ่นยนต์', 'การสำรวจอวกาศ', 'การอนุรักษ์ทะเล', 'พิพิธภัณฑ์', 'เทคโนโลยีการศึกษา',
-    'วัฒนธรรมดั้งเดิม', 'สังคมวิทยา', 'สังคมแห่งอนาคต'
-  ], [
-    'ประวัติของ{subject}', 'วิทยาศาสตร์ของ{subject}', 'อนาคตของ{subject}', 'ต้นกำเนิดของ{subject}',
-    'จิตวิทยาของ{subject}', 'เทคโนโลยีเบื้องหลัง{subject}', 'ความหมายทางวัฒนธรรมของ{subject}',
-    'ผลกระทบของ{subject}ต่อสิ่งแวดล้อม', 'การค้นพบที่สำคัญเกี่ยวกับ{subject}', '{subject}กับชีวิตประจำวัน'
-  ]),
-  ko: buildTopics([
-    '천문학', '의학', '건축', '농업', '음악', '고고학', '수학', '교통', '공학', '컴퓨터 과학',
-    '교육', '심리학', '생태학', '지질학', '해양학', '사진', '영화', '신화', '회화', '조각',
-    '패션', '음식 문화', '금융', '무역', '민주주의', '법률', '스포츠', '게임', '공예', '발명',
-    '소재', '에너지', '기후', '날씨', '진화', '동물', '식물', '도시', '탐험', '소통'
-  ], [
-    '{subject}의 역사', '{subject}의 과학', '{subject}의 미래', '{subject}의 기원',
-    '{subject}의 심리학', '{subject}를 뒷받침하는 기술', '{subject}의 문화적 의미',
-    '{subject}가 환경에 미치는 영향', '{subject}의 중요한 발견', '{subject}와 일상생활'
-  ]),
-  fr: buildTopics([
-    'astronomie', 'médecine', 'architecture', 'agriculture', 'musique', 'archéologie', 'mathématiques', 'transports',
-    'ingénierie', 'informatique', 'éducation', 'psychologie', 'écologie', 'géologie', 'océanographie', 'photographie',
-    'cinéma', 'mythologie', 'peinture', 'sculpture', 'mode', 'gastronomie', 'finance', 'commerce', 'démocratie',
-    'droit', 'sport', 'jeux', 'artisanat', 'inventions', 'matériaux', 'énergie', 'climat', 'météo', 'évolution',
-    'animaux', 'plantes', 'villes', 'exploration', 'communication'
-  ], [
-    "l'histoire de {subject}", 'la science de {subject}', "l'avenir de {subject}", "les origines de {subject}",
-    'la psychologie de {subject}', 'la technologie derrière {subject}', 'la signification culturelle de {subject}',
-    "l'impact environnemental de {subject}", 'les découvertes importantes sur {subject}', 'comment {subject} façonne la vie quotidienne'
-  ]),
-  de: buildTopics([
-    'Astronomie', 'Medizin', 'Architektur', 'Landwirtschaft', 'Musik', 'Archäologie', 'Mathematik', 'Verkehr',
-    'Ingenieurwesen', 'Informatik', 'Bildung', 'Psychologie', 'Ökologie', 'Geologie', 'Ozeanografie', 'Fotografie',
-    'Film', 'Mythologie', 'Malerei', 'Bildhauerei', 'Mode', 'Ernährung', 'Finanzen', 'Handel', 'Demokratie',
-    'Recht', 'Sport', 'Spiele', 'Handwerk', 'Erfindungen', 'Materialien', 'Energie', 'Klima', 'Wetter', 'Evolution',
-    'Tiere', 'Pflanzen', 'Städte', 'Entdeckungen', 'Kommunikation'
-  ], [
-    'die Geschichte von {subject}', 'die Wissenschaft hinter {subject}', 'die Zukunft von {subject}', 'die Ursprünge von {subject}',
-    'die Psychologie von {subject}', 'die Technologie hinter {subject}', 'die kulturelle Bedeutung von {subject}',
-    'die Umweltauswirkungen von {subject}', 'wichtige Entdeckungen zu {subject}', 'wie {subject} den Alltag prägt'
-  ])
-};
-
 const curiosityLanguageConfig = {
   en: {
+    topics: [
+      'Astronomy', 'Medicine', 'Architecture', 'Agriculture', 'Music', 'Archaeology', 'Mathematics', 'Transportation',
+      'Engineering', 'Computer Science', 'Education', 'Psychology', 'Ecology', 'Geology', 'Oceanography', 'Photography',
+      'Film', 'Mythology', 'Painting', 'Sculpture', 'Fashion', 'Nutrition', 'Finance', 'Trade', 'Democracy',
+      'Law', 'Sports', 'Games', 'Crafts', 'Inventions', 'Materials', 'Energy', 'Climate', 'Weather', 'Evolution',
+      'Animals', 'Plants', 'Cities', 'Discoveries', 'Communication'
+    ],
     patterns: [
       'What is {topic}?', 'How does {topic} work?', 'Why is {topic} important?', 'A beginner guide to {topic}',
       'The history of {topic}', 'The science behind {topic}', 'Surprising facts about {topic}', 'Latest research on {topic}',
@@ -103,6 +20,13 @@ const curiosityLanguageConfig = {
     ]
   },
   ja: {
+    topics: [
+      '天文学', '医学', '建築学', '農業', '音楽', '考古学', '数学', '交通',
+      '工学', 'コンピュータサイエンス', '教育', '心理学', '生態学', '地質学', '海洋学', '写真',
+      '映画', '神話', '絵画', '彫刻', 'ファッション', '栄養学', '金融', '貿易', '民主主義',
+      '法律', 'スポーツ', 'ゲーム', '工芸', '発明', '材料', 'エネルギー', '気候', '天気', '進化',
+      '動物', '植物', '都市', '発見', 'コミュニケーション'
+    ],
     patterns: [
       '{topic}とは？', '{topic}はどのように機能する？', 'なぜ{topic}は興味深い？', '{topic}入門', '{topic}の歴史',
       '{topic}の科学', '{topic}の意外な事実', '{topic}の最新研究', '{topic}の珍しい例', '{topic}はどう変化してきた？',
@@ -116,6 +40,13 @@ const curiosityLanguageConfig = {
     ]
   },
   zh: {
+    topics: [
+      '天文学', '医学', '建筑学', '农业', '音乐', '考古学', '数学', '交通',
+      '工程学', '计算机科学', '教育', '心理学', '生态学', '地质学', '海洋学', '摄影',
+      '电影', '神话', '绘画', '雕塑', '时尚', '营养学', '金融', '贸易', '民主',
+      '法律', '体育', '游戏', '工艺', '发明', '材料', '能源', '气候', '天气', '进化',
+      '动物', '植物', '城市', '发现', '交流'
+    ],
     patterns: [
       '什么是{topic}？', '{topic}是如何运作的？', '为什么{topic}很有趣？', '{topic}入门指南', '{topic}的历史',
       '{topic}背后的科学', '关于{topic}的惊人事实', '{topic}的最新研究', '{topic}最不寻常的例子', '{topic}如何随时间变化？',
@@ -129,6 +60,13 @@ const curiosityLanguageConfig = {
     ]
   },
   th: {
+    topics: [
+      'ดาราศาสตร์', 'การแพทย์', 'สถาปัตยกรรม', 'เกษตรกรรม', 'ดนตรี', 'โบราณคดี', 'คณิตศาสตร์', 'การขนส่ง',
+      'วิศวกรรม', 'วิทยาการคอมพิวเตอร์', 'การศึกษา', 'จิตวิทยา', 'นิเวศวิทยา', 'ธรณีวิทยา', 'วิทยาศาสตร์ทางทะเล', 'การถ่ายภาพ',
+      'ภาพยนตร์', 'ตำนาน', 'จิตรกรรม', 'ประติมากรรม', 'แฟชั่น', 'โภชนาการ', 'การเงิน', 'การค้า', 'ประชาธิปไตย',
+      'กฎหมาย', 'กีฬา', 'เกม', 'งานฝีมือ', 'การประดิษฐ์', 'วัสดุ', 'พลังงาน', 'สภาพภูมิอากาศ', 'สภาพอากาศ', 'วิวัฒนาการ',
+      'สัตว์', 'พืช', 'เมือง', 'การค้นพบ', 'การสื่อสาร'
+    ],
     patterns: [
       '{topic}คืออะไร', '{topic}ทำงานอย่างไร', 'ทำไม{topic}จึงน่าสนใจ', 'คู่มือเบื้องต้นเกี่ยวกับ{topic}', 'ประวัติของ{topic}',
       'วิทยาศาสตร์เบื้องหลัง{topic}', 'ข้อเท็จจริงที่น่าประหลาดใจเกี่ยวกับ{topic}', 'งานวิจัยล่าสุดเกี่ยวกับ{topic}', 'ตัวอย่างที่แปลกที่สุดของ{topic}', '{topic}เปลี่ยนแปลงไปตามกาลเวลาอย่างไร',
@@ -142,6 +80,13 @@ const curiosityLanguageConfig = {
     ]
   },
   ko: {
+    topics: [
+      '천문학', '의학', '건축학', '농업', '음악', '고고학', '수학', '교통',
+      '공학', '컴퓨터 과학', '교육', '심리학', '생태학', '지질학', '해양학', '사진',
+      '영화', '신화', '회화', '조각', '패션', '영양학', '금융', '무역', '민주주의',
+      '법', '스포츠', '게임', '공예', '발명', '재료', '에너지', '기후', '날씨', '진화',
+      '동물', '식물', '도시', '발견', '커뮤니케이션'
+    ],
     patterns: [
       '{topic}이란 무엇인가?', '{topic}은 어떻게 작동하는가?', '왜 {topic}이 중요한가?', '{topic} 입문', '{topic}의 역사',
       '{topic}의 과학', '{topic}에 관한 놀라운 사실', '{topic}의 최신 연구', '{topic}의 특이한 사례', '{topic}는 어떻게 변해 왔는가?',
@@ -155,6 +100,13 @@ const curiosityLanguageConfig = {
     ]
   },
   fr: {
+    topics: [
+      'Astronomie', 'Medizin', 'Architektur', 'Landwirtschaft', 'Musik', 'Archäologie', 'Mathematik', 'Transport',
+      'Ingenieurwesen', 'Informatik', 'Bildung', 'Psychologie', 'Ökologie', 'Geologie', 'Ozeanographie', 'Fotografie',
+      'Film', 'Mythologie', 'Malerei', 'Bildhauerei', 'Mode', 'Ernährung', 'Finanzen', 'Handel', 'Demokratie',
+      'Recht', 'Sport', 'Spiele', 'Handwerk', 'Erfindungen', 'Materialien', 'Energie', 'Klima', 'Wetter', 'Evolution',
+      'Tiere', 'Pflanzen', 'Städte', 'Entdeckungen', 'Kommunikation'
+    ],
     patterns: [
       "Qu'est-ce que {topic} ?", 'Comment fonctionne {topic} ?', 'Pourquoi {topic} est-il important ?', 'Guide de {topic} pour débutants',
       "L'histoire de {topic}", 'La science de {topic}', 'Faits surprenants sur {topic}', 'Les dernières recherches sur {topic}',
@@ -169,6 +121,13 @@ const curiosityLanguageConfig = {
     ]
   },
   de: {
+    topics: [
+      'Astronomie', 'Medizin', 'Architektur', 'Landwirtschaft', 'Musik', 'Archäologie', 'Mathematik', 'Transport',
+      'Ingenieurwesen', 'Informatik', 'Bildung', 'Psychologie', 'Ökologie', 'Geologie', 'Ozeanographie', 'Fotografie',
+      'Film', 'Mythologie', 'Malerei', 'Bildhauerei', 'Mode', 'Ernährung', 'Finanzen', 'Handel', 'Demokratie',
+      'Recht', 'Sport', 'Spiele', 'Handwerk', 'Erfindungen', 'Materialien', 'Energie', 'Klima', 'Wetter', 'Evolution',
+      'Tiere', 'Pflanzen', 'Städte', 'Entdeckungen', 'Kommunikation'
+    ],
     patterns: [
       'Was ist {topic}?', 'Wie funktioniert {topic}?', 'Warum ist {topic} wichtig?', 'Eine Einführung in {topic}', 'Die Geschichte von {topic}',
       'Die Wissenschaft hinter {topic}', 'Überraschende Fakten über {topic}', 'Die neuesten Forschungen zu {topic}', 'Die ungewöhnlichsten Beispiele für {topic}',
@@ -183,6 +142,8 @@ const curiosityLanguageConfig = {
     ]
   }
 };
+
+const normalizePrompt = (prompt = '') => String(prompt).replace(/\s+/g, ' ').trim();
 
 const fillTemplate = (template, values) => Object.entries(values).reduce(
   (result, [key, value]) => result.replaceAll(`{${key}}`, value),
@@ -231,9 +192,8 @@ const validatePromptSource = (language, source) => {
 
 window.lazyCuriousWordsByLanguage = {};
 
-for (const [language, topics] of Object.entries(curiosityTopicsByLanguage)) {
-  const config = curiosityLanguageConfig[language] || curiosityLanguageConfig.en;
-  const source = buildLanguagePromptSource(topics, config.patterns, config.contexts);
+for (const [language, config] of Object.entries(curiosityLanguageConfig)) {
+  const source = buildLanguagePromptSource(config.topics, config.patterns, config.contexts);
 
   validatePromptSource(language, source);
   window.lazyCuriousWordsByLanguage[language] = source;
