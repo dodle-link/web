@@ -21,7 +21,9 @@ const curiosityLanguageConfig = {
       'What is {topic}?', 'How does {topic} work?', 'Why is {topic} important?', 'A beginner guide to {topic}',
       'The history of {topic}', 'The science behind {topic}', 'Surprising facts about {topic}', 'Latest research on {topic}',
       'Unusual examples of {topic}', 'How {topic} has changed over time', 'The key ideas behind {topic}', 'People who shaped {topic}',
-      'A visual explanation of {topic}'
+      'A visual explanation of {topic}', 'Common myths about {topic}', 'How to get started with {topic}',
+      'The biggest challenges facing {topic}', 'How {topic} connects to other fields', 'A case study of {topic}',
+      'The tools and methods used in {topic}', 'What experts get wrong about {topic}'
     ],
     contexts: [
       'for beginners', 'in everyday life', 'through history', 'from a scientific perspective', 'with real examples',
@@ -52,7 +54,9 @@ const curiosityLanguageConfig = {
       '{topic}の科学', '{topic}の意外な事実', '{topic}の最新研究', '{topic}の珍しい例', '{topic}はどう変化してきた？',
       '{topic}の重要な考え方', '{topic}についてよくある質問', '{topic}の利点と課題', '{topic}を形作った人々',
       '{topic}を図解で説明', '{topic}の未来', '{topic}と日常生活', '{topic}に関する重要な発見',
-      '{topic}の年表', '{topic}についてまだ分かっていないこと'
+      '{topic}の年表', '{topic}についてまだ分かっていないこと', '{topic}にまつわるよくある誤解',
+      '{topic}を始める方法', '{topic}が抱える最大の課題', '{topic}と他の分野のつながり',
+      '{topic}の事例研究', '{topic}で使われる道具と方法', '{topic}の専門家が誤解していること'
     ],
     contexts: [
       '初心者向け', '日常生活との関係', '歴史的な背景', '科学的な視点', '実例を通して', '簡単な言葉で',
@@ -82,7 +86,9 @@ const curiosityLanguageConfig = {
       '{topic}背后的科学', '关于{topic}的惊人事实', '{topic}的最新研究', '{topic}最不寻常的例子', '{topic}如何随时间变化？',
       '{topic}背后的关键理念', '关于{topic}的常见问题', '{topic}的优点与挑战', '塑造{topic}的人们',
       '{topic}图解', '{topic}的未来', '{topic}如何影响日常生活', '关于{topic}的重要发现',
-      '{topic}发展时间线', '关于{topic}仍然未知的事情'
+      '{topic}发展时间线', '关于{topic}仍然未知的事情', '关于{topic}的常见误解', '如何开始了解{topic}',
+      '{topic}面临的最大挑战', '{topic}与其他领域的联系', '{topic}案例研究', '研究{topic}所用的工具和方法',
+      '专家对{topic}的误解'
     ],
     contexts: [
       '适合初学者', '与日常生活的关系', '历史背景', '科学视角', '通过真实案例', '用简单语言解释',
@@ -112,7 +118,9 @@ const curiosityLanguageConfig = {
       'วิทยาศาสตร์เบื้องหลัง{topic}', 'ข้อเท็จจริงที่น่าประหลาดใจเกี่ยวกับ{topic}', 'งานวิจัยล่าสุดเกี่ยวกับ{topic}', 'ตัวอย่างที่แปลกที่สุดของ{topic}', '{topic}เปลี่ยนแปลงไปตามกาลเวลาอย่างไร',
       'แนวคิดสำคัญเกี่ยวกับ{topic}', 'คำถามที่พบบ่อยเกี่ยวกับ{topic}', 'ประโยชน์และความท้าทายของ{topic}', 'ผู้คนที่สร้างสรรค์{topic}',
       'คำอธิบายแบบภาพของ{topic}', 'อนาคตของ{topic}', '{topic}ส่งผลต่อชีวิตประจำวันอย่างไร', 'การค้นพบสำคัญเกี่ยวกับ{topic}',
-      'เส้นเวลาของ{topic}', 'สิ่งที่เรายังไม่รู้เกี่ยวกับ{topic}'
+      'เส้นเวลาของ{topic}', 'สิ่งที่เรายังไม่รู้เกี่ยวกับ{topic}', 'ความเข้าใจผิดที่พบบ่อยเกี่ยวกับ{topic}',
+      'วิธีเริ่มต้นเรียนรู้เกี่ยวกับ{topic}', 'ความท้าทายที่ใหญ่ที่สุดของ{topic}', '{topic}เชื่อมโยงกับศาสตร์อื่นอย่างไร',
+      'กรณีศึกษาของ{topic}', 'เครื่องมือและวิธีการที่ใช้ใน{topic}', 'สิ่งที่ผู้เชี่ยวชาญเข้าใจผิดเกี่ยวกับ{topic}'
     ],
     contexts: [
       'สำหรับผู้เริ่มต้น', 'ในชีวิตประจำวัน', 'เบื้องหลังทางประวัติศาสตร์', 'ในมุมมองทางวิทยาศาสตร์', 'จากตัวอย่างจริง', 'อธิบายด้วยภาษาง่ายๆ',
@@ -142,7 +150,9 @@ const curiosityLanguageConfig = {
       '{topic}의 과학', '{topic}에 관한 놀라운 사실', '{topic}의 최신 연구', '{topic}의 특이한 사례', '{topic}는 어떻게 변해 왔는가?',
       '{topic}의 핵심 개념', '{topic}에 관한 자주 묻는 질문', '{topic}의 장점과 과제', '{topic}를 만든 사람들',
       '{topic}의 시각적 설명', '{topic}의 미래', '{topic}가 일상에 미치는 영향', '{topic}의 중요한 발견',
-      '{topic}의 연대표', '{topic}에 대해 아직 모르는 것'
+      '{topic}의 연대표', '{topic}에 대해 아직 모르는 것', '{topic}에 대한 흔한 오해', '{topic}을 시작하는 방법',
+      '{topic}이 직면한 가장 큰 과제', '{topic}과 다른 분야의 연결', '{topic}의 사례 연구',
+      '{topic}에서 사용하는 도구와 방법', '{topic}에 대해 전문가들이 잘못 알고 있는 것'
     ],
     contexts: [
       '초보자를 위한 안내', '일상생활에서', '역사적 배경', '과학적 관점', '실제 사례와 함께', '쉬운 말로 설명',
@@ -173,7 +183,10 @@ const curiosityLanguageConfig = {
       'Les exemples les plus insolites de {topic}', "Comment {topic} a changé au fil du temps", 'Les idées clés de {topic}',
       'Questions fréquentes sur {topic}', 'Les avantages et les défis de {topic}', 'Les personnes qui ont façonné {topic}',
       'Une explication visuelle de {topic}', "L'avenir de {topic}", 'Comment {topic} influence la vie quotidienne',
-      'Les découvertes importantes sur {topic}', 'Une chronologie de {topic}', 'Ce que nous ignorons encore sur {topic}'
+      'Les découvertes importantes sur {topic}', 'Une chronologie de {topic}', 'Ce que nous ignorons encore sur {topic}',
+      'Les idées reçues sur {topic}', 'Comment débuter avec {topic}', 'Les principaux défis de {topic}',
+      'Les liens entre {topic} et d’autres domaines', 'Une étude de cas sur {topic}', 'Les outils et méthodes de {topic}',
+      'Ce que les experts se trompent sur {topic}'
     ],
     contexts: [
       'pour débutants', 'dans la vie quotidienne', 'dans son contexte historique', 'd un point de vue scientifique', 'avec des exemples concrets', 'en termes simples',
@@ -204,7 +217,9 @@ const curiosityLanguageConfig = {
       'Wie sich {topic} im Laufe der Zeit verändert hat', 'Die wichtigsten Ideen hinter {topic}', 'Häufige Fragen zu {topic}',
       'Die Vorteile und Herausforderungen von {topic}', 'Die Menschen, die {topic} geprägt haben', 'Eine visuelle Erklärung von {topic}',
       'Die Zukunft von {topic}', 'Wie {topic} den Alltag beeinflusst', 'Wichtige Entdeckungen zu {topic}', 'Eine Zeitleiste von {topic}',
-      'Was wir über {topic} noch nicht wissen'
+      'Was wir über {topic} noch nicht wissen', 'Häufige Irrtümer über {topic}', 'Wie man mit {topic} anfängt',
+      'Die größten Herausforderungen von {topic}', 'Wie {topic} mit anderen Bereichen verbunden ist', 'Eine Fallstudie zu {topic}',
+      'Werkzeuge und Methoden in {topic}', 'Was Experten über {topic} falsch verstehen'
     ],
     contexts: [
       'für Anfänger', 'im Alltag', 'vor dem historischen Hintergrund', 'aus wissenschaftlicher Sicht', 'mit echten Beispielen', 'einfach erklärt',
