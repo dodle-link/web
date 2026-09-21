@@ -6,11 +6,6 @@ const buildTopics = (baseTopics, subjects) => [
 
 const curiosityTopicsByLanguage = {
   en: buildTopics([
-    'Northern Lights', 'Ancient libraries', 'Bee communication', 'Deep-sea creatures', 'History of maps',
-    'Volcanic islands', 'Science of sleep', 'Forgotten inventions', 'Origins of language', 'Desert ecosystems',
-    'Mathematics of music', 'Oldest trees', 'How bridges work', 'History of chocolate', 'Cloud shapes',
-    'Psychology of curiosity', 'Underwater archaeology', 'Evolution of birds', 'How memory works', 'Rare weather phenomena'
-  ], [
     'astronomy', 'medicine', 'architecture', 'agriculture', 'music', 'language', 'mathematics', 'transportation',
     'engineering', 'computing', 'education', 'psychology', 'ecology', 'geology', 'oceanography', 'photography',
     'film', 'mythology', 'painting', 'sculpture', 'fashion', 'food', 'finance', 'trade', 'democracy', 'law',
@@ -22,11 +17,6 @@ const curiosityTopicsByLanguage = {
     'the environmental impact of {subject}', 'the most important discoveries in {subject}', 'how {subject} shapes everyday life'
   ]),
   ja: buildTopics([
-    'オーロラ', '古代の図書館', 'ミツバチの会話', '深海生物', '地図の歴史',
-    '火山島', '睡眠の科学', '忘れられた発明', '言語の起源', '砂漠の生態系',
-    '音楽の数学', '最も古い木', '橋の仕組み', 'チョコレートの歴史', '雲の形',
-    '好奇心の心理学', '水中考古学', '鳥の進化', '記憶の仕組み', '珍しい気象現象'
-  ], [
     '天文学', '医学', '建築', '農業', '音楽', '考古学', '数学', '交通',
     '工学', 'コンピューター', '教育', '心理学', '生態学', '地質学', '海洋学',
     '写真', '映画', '神話', '絵画', '彫刻', 'ファッション', '食文化', '金融',
@@ -40,11 +30,6 @@ const curiosityTopicsByLanguage = {
     '{subject}の環境への影響', '{subject}における重要な発見', '{subject}と日常生活'
   ]),
   zh: buildTopics([
-    '极光', '古代图书馆', '蜜蜂如何交流', '深海生物', '地图的历史',
-    '火山岛', '睡眠科学', '被遗忘的发明', '语言的起源', '沙漠生态系统',
-    '音乐的数学', '最古老的树', '桥梁的工作原理', '巧克力的历史', '云的形态',
-    '好奇心心理学', '水下考古', '鸟类的进化', '记忆的工作原理', '罕见天气现象'
-  ], [
     '天文学', '医学', '建筑', '农业', '音乐', '考古学', '数学', '交通',
     '工程', '计算机', '教育', '心理学', '生态学', '地质学', '海洋学',
     '摄影', '电影', '神话', '绘画', '雕塑', '时尚', '饮食文化', '金融',
@@ -57,11 +42,6 @@ const curiosityTopicsByLanguage = {
     '{subject}对环境的影响', '{subject}领域的重要发现', '{subject}如何影响日常生活'
   ]),
   th: buildTopics([
-    'แสงเหนือ', 'ห้องสมุดโบราณ', 'การสื่อสารของผึ้ง', 'สิ่งมีชีวิตใต้ทะเลลึก', 'ประวัติศาสตร์ของแผนที่',
-    'เกาะภูเขาไฟ', 'วิทยาศาสตร์ของการนอนหลับ', 'สิ่งประดิษฐ์ที่ถูกลืม', 'ต้นกำเนิดของภาษา', 'ระบบนิเวศทะเลทราย',
-    'คณิตศาสตร์ของดนตรี', 'ต้นไม้ที่เก่าแก่ที่สุด', 'การทำงานของสะพาน', 'ประวัติศาสตร์ช็อกโกแลต', 'รูปทรงของเมฆ',
-    'จิตวิทยาของความอยากรู้อยากเห็น', 'โบราณคดีใต้น้ำ', 'วิวัฒนาการของนก', 'การทำงานของความทรงจำ', 'ปรากฏการณ์อากาศที่หายาก'
-  ], [
     'ดาราศาสตร์', 'การแพทย์', 'สถาปัตยกรรม', 'การเกษตร', 'ดนตรี', 'โบราณคดี', 'คณิตศาสตร์', 'การขนส่ง',
     'วิศวกรรม', 'คอมพิวเตอร์', 'การศึกษา', 'จิตวิทยา', 'นิเวศวิทยา', 'ธรณีวิทยา', 'สมุทรศาสตร์',
     'การถ่ายภาพ', 'ภาพยนตร์', 'ตำนาน', 'จิตรกรรม', 'ประติมากรรม', 'แฟชั่น', 'วัฒนธรรมอาหาร', 'การเงิน',
@@ -75,11 +55,6 @@ const curiosityTopicsByLanguage = {
     'ผลกระทบของ{subject}ต่อสิ่งแวดล้อม', 'การค้นพบที่สำคัญเกี่ยวกับ{subject}', '{subject}กับชีวิตประจำวัน'
   ]),
   ko: buildTopics([
-    '오로라', '고대 도서관', '벌의 의사소통', '심해 생물', '지도의 역사', '화산섬',
-    '수면의 과학', '잊힌 발명품', '언어의 기원', '사막 생태계', '음악의 수학',
-    '가장 오래된 나무', '다리의 원리', '초콜릿의 역사', '구름의 형태', '호기심의 심리학',
-    '수중 고고학', '새의 진화', '기억의 작동 원리', '희귀한 기상 현상'
-  ], [
     '천문학', '의학', '건축', '농업', '음악', '고고학', '수학', '교통', '공학', '컴퓨터 과학',
     '교육', '심리학', '생태학', '지질학', '해양학', '사진', '영화', '신화', '회화', '조각',
     '패션', '음식 문화', '금융', '무역', '민주주의', '법률', '스포츠', '게임', '공예', '발명',
@@ -90,12 +65,6 @@ const curiosityTopicsByLanguage = {
     '{subject}가 환경에 미치는 영향', '{subject}의 중요한 발견', '{subject}와 일상생활'
   ]),
   fr: buildTopics([
-    'les aurores boréales', 'les bibliothèques anciennes', 'la communication des abeilles', 'les créatures des grands fonds',
-    "l'histoire des cartes", 'les îles volcaniques', 'la science du sommeil', 'les inventions oubliées',
-    "l'origine du langage", 'les écosystèmes désertiques', 'les mathématiques de la musique', 'les arbres les plus anciens',
-    'le fonctionnement des ponts', "l'histoire du chocolat", 'les formations nuageuses', 'la psychologie de la curiosité',
-    "l'archéologie sous-marine", "l'évolution des oiseaux", 'le fonctionnement de la mémoire', 'les phénomènes météorologiques rares'
-  ], [
     'astronomie', 'médecine', 'architecture', 'agriculture', 'musique', 'archéologie', 'mathématiques', 'transports',
     'ingénierie', 'informatique', 'éducation', 'psychologie', 'écologie', 'géologie', 'océanographie', 'photographie',
     'cinéma', 'mythologie', 'peinture', 'sculpture', 'mode', 'gastronomie', 'finance', 'commerce', 'démocratie',
@@ -107,12 +76,6 @@ const curiosityTopicsByLanguage = {
     "l'impact environnemental de {subject}", 'les découvertes importantes sur {subject}', 'comment {subject} façonne la vie quotidienne'
   ]),
   de: buildTopics([
-    'das Nordlicht', 'alte Bibliotheken', 'wie Bienen kommunizieren', 'Tiefseebewohner', 'die Geschichte der Karten',
-    'Vulkaninseln', 'die Wissenschaft des Schlafs', 'vergessene Erfindungen', 'der Ursprung der Sprache', 'Wüstenökosysteme',
-    'die Mathematik der Musik', 'die ältesten Bäume', 'wie Brücken funktionieren', 'die Geschichte der Schokolade',
-    'Wolkenformationen', 'die Psychologie der Neugier', 'Unterwasserarchäologie', 'die Evolution der Vögel',
-    'wie das Gedächtnis funktioniert', 'seltene Wetterereignisse'
-  ], [
     'Astronomie', 'Medizin', 'Architektur', 'Landwirtschaft', 'Musik', 'Archäologie', 'Mathematik', 'Verkehr',
     'Ingenieurwesen', 'Informatik', 'Bildung', 'Psychologie', 'Ökologie', 'Geologie', 'Ozeanografie', 'Fotografie',
     'Film', 'Mythologie', 'Malerei', 'Bildhauerei', 'Mode', 'Ernährung', 'Finanzen', 'Handel', 'Demokratie',
