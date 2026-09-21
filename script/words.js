@@ -353,24 +353,19 @@ const curiosityQueryContextsByLanguage = {
   ]
 };
 
-const PROMPT_SOURCE_LENGTH = 100000;
-const LARGE_TOPIC_SET_THRESHOLD = 500;
-const LARGE_TOPIC_SET_CONTEXT_COUNT = 10;
-
 const createCuriosityPromptSource = (topics, patterns, contexts) => {
-  const contextCount = topics.length >= LARGE_TOPIC_SET_THRESHOLD ? LARGE_TOPIC_SET_CONTEXT_COUNT : contexts.length;
-  const combinations = topics.length * patterns.length * contextCount;
+  const topicPatternCount = topics.length * patterns.length;
+  const combinations = topicPatternCount * contexts.length;
 
-  if (combinations < PROMPT_SOURCE_LENGTH) {
-    throw new Error(`Not enough curiosity prompt combinations: ${combinations}`);
+  if (!Number.isSafeInteger(combinations) || combinations < 1) {
+    throw new Error('Invalid curiosity prompt source dimensions');
   }
 
   return {
-    length: PROMPT_SOURCE_LENGTH,
+    length: combinations,
     get(index) {
       if (!Number.isInteger(index) || index < 0 || index >= this.length) return undefined;
 
-      const topicPatternCount = topics.length * patterns.length;
       const contextIndex = Math.floor(index / topicPatternCount);
       const remainder = index % topicPatternCount;
       const patternIndex = Math.floor(remainder / topics.length);
@@ -386,7 +381,7 @@ const createCuriosityPromptSource = (topics, patterns, contexts) => {
 
 const validatePromptSource = (language, source) => {
   const samples = [source.get(0), source.get(1), source.get(source.length - 1)];
-  if (source.length !== PROMPT_SOURCE_LENGTH || samples.some(prompt => !prompt || prompt.includes('{'))) {
+  if (!Number.isSafeInteger(source.length) || source.length < 1 || samples.some(prompt => !prompt || prompt.includes('{'))) {
     throw new Error(`Invalid curiosity prompt source for ${language}`);
   }
 };
