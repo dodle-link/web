@@ -93,10 +93,8 @@ function init() {
   });
 
   luckyButton.addEventListener('click', () => {
-    const languageWords = lazyCuriousWordsByLanguage[currentLanguage];
-    input.value = languageWords
-      ? languageWords.getRandom()
-      : curiousWords[Math.floor(Math.random() * curiousWords.length)];
+    const languageWords = window.lazyCuriousWordsByLanguage[currentLanguage];
+    input.value = (languageWords || window.lazyCuriousWordsByLanguage.en).getRandom();
     form.requestSubmit();
   });
 

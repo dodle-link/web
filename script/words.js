@@ -1,7 +1,7 @@
 const normalizePrompt = (prompt = '') => String(prompt).replace(/\s+/g, ' ').trim();
 
-const buildTopics = (baseTopics, subjects) => [
-  ...new Set([...baseTopics, ...subjects].map(normalizePrompt).filter(Boolean))
+const buildTopics = baseTopics => [
+  ...new Set(baseTopics.map(normalizePrompt).filter(Boolean))
 ];
 
 const curiosityTopicsByLanguage = {
@@ -229,12 +229,12 @@ const validatePromptSource = (language, source) => {
   }
 };
 
-const lazyCuriousWordsByLanguage = {};
+window.lazyCuriousWordsByLanguage = {};
 
 for (const [language, topics] of Object.entries(curiosityTopicsByLanguage)) {
   const config = curiosityLanguageConfig[language] || curiosityLanguageConfig.en;
   const source = buildLanguagePromptSource(topics, config.patterns, config.contexts);
 
   validatePromptSource(language, source);
-  lazyCuriousWordsByLanguage[language] = source;
+  window.lazyCuriousWordsByLanguage[language] = source;
 }
