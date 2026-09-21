@@ -8,54 +8,10 @@ const fillTemplate = (template, values) => Object.entries(values).reduce(
 const buildExpandedSubjectTopics = (subjects, patterns) =>
   subjects.flatMap(subject => patterns.map(pattern => fillTemplate(pattern, { subject })));
 
-const buildPromptList = (topics, patterns) => [...new Set(
-  topics.flatMap(topic => patterns.map(pattern =>
-    normalizePrompt(fillTemplate(pattern, { topic }))
-  ))
-)].filter(prompt => prompt && !prompt.includes('{'));
-
 const buildTopics = (baseTopics, subjects, subjectPatterns) => [
   ...baseTopics,
   ...buildExpandedSubjectTopics(subjects, subjectPatterns)
 ];
-
-const buildLanguagePromptSource = (topics, patterns, contexts) => {
-  const topicPatternCount = topics.length * patterns.length;
-  const combinations = topicPatternCount * contexts.length;
-
-  if (!Number.isSafeInteger(combinations) || combinations < 1) {
-    throw new Error('Invalid curiosity prompt source dimensions');
-  }
-
-  return {
-    length: combinations,
-    get(index) {
-      if (!Number.isInteger(index) || index < 0 || index >= this.length) return undefined;
-
-      const contextIndex = Math.floor(index / topicPatternCount);
-      const remainder = index % topicPatternCount;
-      const patternIndex = Math.floor(remainder / topics.length);
-      const topicIndex = remainder % topics.length;
-      const prompt = fillTemplate(patterns[patternIndex], { topic: topics[topicIndex] });
-      return normalizePrompt(`${prompt} ${contexts[contextIndex]}`);
-    },
-    getRandom() {
-      return this.get(Math.floor(Math.random() * this.length));
-    }
-  };
-};
-
-const validatePromptSource = (language, source) => {
-  const samples = [source.get(0), source.get(1), source.get(source.length - 1)];
-
-  if (
-    !Number.isSafeInteger(source.length)
-    || source.length < 1
-    || samples.some(prompt => !prompt || prompt.includes('{'))
-  ) {
-    throw new Error(`Invalid curiosity prompt source for ${language}`);
-  }
-};
 
 const curiosityTopicsByLanguage = {
   en: buildTopics([
@@ -271,6 +227,44 @@ const curiosityLanguageConfig = {
       'für Anfänger', 'im Alltag', 'vor dem historischen Hintergrund', 'aus wissenschaftlicher Sicht', 'mit echten Beispielen', 'einfach erklärt',
       'aus aller Welt', 'und seine kulturelle Bedeutung', 'und seine Auswirkungen auf die Umwelt', 'und die neuesten Entdeckungen', 'im Vergleich zu verwandten Themen', 'und seine Zukunft'
     ]
+  }
+};
+
+const buildLanguagePromptSource = (topics, patterns, contexts) => {
+  const topicPatternCount = topics.length * patterns.length;
+  const combinations = topicPatternCount * contexts.length;
+
+  if (!Number.isSafeInteger(combinations) || combinations < 1) {
+    throw new Error('Invalid curiosity prompt source dimensions');
+  }
+
+  return {
+    length: combinations,
+    get(index) {
+      if (!Number.isInteger(index) || index < 0 || index >= this.length) return undefined;
+
+      const contextIndex = Math.floor(index / topicPatternCount);
+      const remainder = index % topicPatternCount;
+      const patternIndex = Math.floor(remainder / topics.length);
+      const topicIndex = remainder % topics.length;
+      const prompt = fillTemplate(patterns[patternIndex], { topic: topics[topicIndex] });
+      return normalizePrompt(`${prompt} ${contexts[contextIndex]}`);
+    },
+    getRandom() {
+      return this.get(Math.floor(Math.random() * this.length));
+    }
+  };
+};
+
+const validatePromptSource = (language, source) => {
+  const samples = [source.get(0), source.get(1), source.get(source.length - 1)];
+
+  if (
+    !Number.isSafeInteger(source.length)
+    || source.length < 1
+    || samples.some(prompt => !prompt || prompt.includes('{'))
+  ) {
+    throw new Error(`Invalid curiosity prompt source for ${language}`);
   }
 };
 
