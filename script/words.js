@@ -9,8 +9,10 @@ const buildExpandedSubjectTopics = (subjects, patterns) =>
   subjects.flatMap(subject => patterns.map(pattern => fillTemplate(pattern, { subject })));
 
 const buildTopics = (baseTopics, subjects, subjectPatterns) => [
-  ...baseTopics,
-  ...buildExpandedSubjectTopics(subjects, subjectPatterns)
+  ...new Set([
+    ...baseTopics,
+    ...buildExpandedSubjectTopics(subjects, subjectPatterns)
+  ].map(normalizePrompt).filter(Boolean))
 ];
 
 const curiosityTopicsByLanguage = {
@@ -251,7 +253,9 @@ const buildLanguagePromptSource = (topics, patterns, contexts) => {
       return normalizePrompt(`${prompt} ${contexts[contextIndex]}`);
     },
     getRandom() {
-      return this.get(Math.floor(Math.random() * this.length));
+      if (this.length < 1) return undefined;
+      const randomIndex = Math.min(this.length - 1, Math.floor(Math.random() * this.length));
+      return this.get(randomIndex);
     }
   };
 };
