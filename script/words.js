@@ -1,10 +1,5 @@
 const normalizePrompt = (prompt = '') => String(prompt).replace(/\s+/g, ' ').trim();
 
-const fillTemplate = (template, values) => Object.entries(values).reduce(
-  (result, [key, value]) => result.replaceAll(`{${key}}`, value),
-  template
-);
-
 const buildTopics = (baseTopics, subjects) => [
   ...new Set([...baseTopics, ...subjects].map(normalizePrompt).filter(Boolean))
 ];
@@ -225,6 +220,11 @@ const curiosityLanguageConfig = {
     ]
   }
 };
+
+const fillTemplate = (template, values) => Object.entries(values).reduce(
+  (result, [key, value]) => result.replaceAll(`{${key}}`, value),
+  template
+);
 
 const buildLanguagePromptSource = (topics, patterns, contexts) => {
   const topicPatternCount = topics.length * patterns.length;
