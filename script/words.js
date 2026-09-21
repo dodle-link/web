@@ -5,7 +5,17 @@ const curiosityLanguageConfig = {
       'Engineering', 'Computer Science', 'Education', 'Psychology', 'Ecology', 'Geology', 'Oceanography', 'Photography',
       'Film', 'Mythology', 'Painting', 'Sculpture', 'Fashion', 'Nutrition', 'Finance', 'Trade', 'Democracy',
       'Law', 'Sports', 'Games', 'Crafts', 'Inventions', 'Materials', 'Energy', 'Climate', 'Weather', 'Evolution',
-      'Animals', 'Plants', 'Cities', 'Discoveries', 'Communication'
+      'Animals', 'Plants', 'Cities', 'Discoveries', 'Communication',
+      'Botany', 'Zoology', 'Genetics', 'Microbiology', 'Biochemistry', 'Physics', 'Chemistry', 'Statistics', 'Logic', 'Linguistics',
+      'Sociology', 'Anthropology', 'Economics', 'Politics', 'History', 'Geography', 'Philosophy', 'Ethics', 'Literature', 'Poetry',
+      'Theater', 'Dance', 'Design', 'Graphic Design', 'Typography', 'Ceramics', 'Jewelry', 'Textiles', 'Cooking', 'Baking',
+      'Gardening', 'Forestry', 'Fisheries', 'Veterinary Science', 'Public Health', 'Biotechnology', 'Pharmacology', 'Neuroscience', 'Astronautics', 'Robotics',
+      'Artificial Intelligence', 'Data Science', 'Cybersecurity', 'Software', 'Internet', 'Telecommunications', 'Semiconductors', 'Nanotechnology', 'Renewable Energy', 'Nuclear Energy',
+      'Hydrology', 'Meteorology', 'Volcanology', 'Seismology', 'Paleontology', 'Environmental Science', 'Conservation', 'Sustainability', 'Urban Planning', 'Civil Engineering',
+      'Mechanical Engineering', 'Electrical Engineering', 'Chemical Engineering', 'Aerospace Engineering', 'Biomedical Engineering', 'Manufacturing', 'Construction', 'Architecture History', 'Archaeological Methods', 'Museums',
+      'Libraries', 'Journalism', 'Publishing', 'Advertising', 'Marketing', 'Entrepreneurship', 'Accounting', 'Banking', 'Investing', 'Insurance',
+      'Public Policy', 'International Relations', 'Human Rights', 'Criminology', 'Forensics', 'Emergency Services', 'Military History', 'Languages', 'Translation', 'Writing',
+      'Reading', 'Education Technology', 'Child Development', 'Mental Health', 'Exercise Science', 'Nutrition Science', 'Medicine History', 'Alternative Medicine', 'First Aid', 'Aging'
     ],
     patterns: [
       'What is {topic}?', 'How does {topic} work?', 'Why is {topic} important?', 'A beginner guide to {topic}',
@@ -25,7 +35,17 @@ const curiosityLanguageConfig = {
       '工学', 'コンピュータサイエンス', '教育', '心理学', '生態学', '地質学', '海洋学', '写真',
       '映画', '神話', '絵画', '彫刻', 'ファッション', '栄養学', '金融', '貿易', '民主主義',
       '法律', 'スポーツ', 'ゲーム', '工芸', '発明', '材料', 'エネルギー', '気候', '天気', '進化',
-      '動物', '植物', '都市', '発見', 'コミュニケーション'
+      '動物', '植物', '都市', '発見', 'コミュニケーション',
+      '植物学', '動物学', '遺伝学', '微生物学', '生化学', '物理学', '化学', '統計学', '論理学', '言語学',
+      '社会学', '人類学', '経済学', '政治学', '歴史学', '地理学', '哲学', '倫理学', '文学', '詩',
+      '演劇', '舞踊', 'デザイン', 'グラフィックデザイン', 'タイポグラフィ', '陶芸', '宝飾', '織物', '料理', '製菓',
+      '園芸', '林学', '水産学', '獣医学', '公衆衛生', 'バイオテクノロジー', '薬理学', '神経科学', '宇宙工学', 'ロボット工学',
+      '人工知能', 'データサイエンス', 'サイバーセキュリティ', 'ソフトウェア', 'インターネット', '電気通信', '半導体', 'ナノテクノロジー', '再生可能エネルギー', '原子力エネルギー',
+      '水文学', '気象学', '火山学', '地震学', '古生物学', '環境科学', '自然保護', '持続可能性', '都市計画', '土木工学',
+      '機械工学', '電気工学', '化学工学', '航空宇宙工学', '生体医工学', '製造業', '建設', '建築史', '考古学的手法', '博物館',
+      '図書館', 'ジャーナリズム', '出版', '広告', 'マーケティング', '起業', '会計学', '銀行業', '投資', '保険',
+      '公共政策', '国際関係', '人権', '犯罪学', '法科学', '救急サービス', '軍事史', '言語', '翻訳', '文章作法',
+      '読書', '教育工学', '子どもの発達', 'メンタルヘルス', '運動科学', '栄養科学', '医学史', '代替医療', '応急手当', '高齢化'
     ],
     patterns: [
       '{topic}とは？', '{topic}はどのように機能する？', 'なぜ{topic}は興味深い？', '{topic}入門', '{topic}の歴史',
@@ -45,7 +65,17 @@ const curiosityLanguageConfig = {
       '工程学', '计算机科学', '教育', '心理学', '生态学', '地质学', '海洋学', '摄影',
       '电影', '神话', '绘画', '雕塑', '时尚', '营养学', '金融', '贸易', '民主',
       '法律', '体育', '游戏', '工艺', '发明', '材料', '能源', '气候', '天气', '进化',
-      '动物', '植物', '城市', '发现', '交流'
+      '动物', '植物', '城市', '发现', '交流',
+      '植物学', '动物学', '遗传学', '微生物学', '生物化学', '物理学', '化学', '统计学', '逻辑学', '语言学',
+      '社会学', '人类学', '经济学', '政治学', '历史学', '地理学', '哲学', '伦理学', '文学', '诗歌',
+      '戏剧', '舞蹈', '设计', '平面设计', '字体设计', '陶艺', '珠宝', '纺织品', '烹饪', '烘焙',
+      '园艺', '林业', '渔业', '兽医学', '公共卫生', '生物技术', '药理学', '神经科学', '航天工程', '机器人学',
+      '人工智能', '数据科学', '网络安全', '软件', '互联网', '电信', '半导体', '纳米技术', '可再生能源', '核能',
+      '水文学', '气象学', '火山学', '地震学', '古生物学', '环境科学', '自然保护', '可持续发展', '城市规划', '土木工程',
+      '机械工程', '电气工程', '化学工程', '航空航天工程', '生物医学工程', '制造业', '建筑施工', '建筑史', '考古方法', '博物馆',
+      '图书馆', '新闻学', '出版', '广告', '市场营销', '创业', '会计学', '银行业', '投资', '保险',
+      '公共政策', '国际关系', '人权', '犯罪学', '法医学', '应急服务', '军事史', '语言', '翻译', '写作',
+      '阅读', '教育技术', '儿童发展', '心理健康', '运动科学', '营养科学', '医学史', '替代医学', '急救', '老龄化'
     ],
     patterns: [
       '什么是{topic}？', '{topic}是如何运作的？', '为什么{topic}很有趣？', '{topic}入门指南', '{topic}的历史',
@@ -65,7 +95,17 @@ const curiosityLanguageConfig = {
       'วิศวกรรม', 'วิทยาการคอมพิวเตอร์', 'การศึกษา', 'จิตวิทยา', 'นิเวศวิทยา', 'ธรณีวิทยา', 'วิทยาศาสตร์ทางทะเล', 'การถ่ายภาพ',
       'ภาพยนตร์', 'ตำนาน', 'จิตรกรรม', 'ประติมากรรม', 'แฟชั่น', 'โภชนาการ', 'การเงิน', 'การค้า', 'ประชาธิปไตย',
       'กฎหมาย', 'กีฬา', 'เกม', 'งานฝีมือ', 'การประดิษฐ์', 'วัสดุ', 'พลังงาน', 'สภาพภูมิอากาศ', 'สภาพอากาศ', 'วิวัฒนาการ',
-      'สัตว์', 'พืช', 'เมือง', 'การค้นพบ', 'การสื่อสาร'
+      'สัตว์', 'พืช', 'เมือง', 'การค้นพบ', 'การสื่อสาร',
+      'พฤกษศาสตร์', 'สัตววิทยา', 'พันธุศาสตร์', 'จุลชีววิทยา', 'ชีวเคมี', 'ฟิสิกส์', 'เคมี', 'สถิติ', 'ตรรกศาสตร์', 'ภาษาศาสตร์',
+      'สังคมวิทยา', 'มานุษยวิทยา', 'เศรษฐศาสตร์', 'รัฐศาสตร์', 'ประวัติศาสตร์', 'ภูมิศาสตร์', 'ปรัชญา', 'จริยศาสตร์', 'วรรณกรรม', 'บทกวี',
+      'ละครเวที', 'นาฏศิลป์', 'การออกแบบ', 'การออกแบบกราฟิก', 'การจัดตัวอักษร', 'เครื่องปั้นดินเผา', 'เครื่องประดับ', 'สิ่งทอ', 'การทำอาหาร', 'การอบขนม',
+      'พืชสวน', 'วนศาสตร์', 'ประมง', 'สัตวแพทยศาสตร์', 'สาธารณสุข', 'เทคโนโลยีชีวภาพ', 'เภสัชวิทยา', 'ประสาทวิทยา', 'วิศวกรรมอวกาศ', 'วิทยาการหุ่นยนต์',
+      'ปัญญาประดิษฐ์', 'วิทยาศาสตร์ข้อมูล', 'ความปลอดภัยไซเบอร์', 'ซอฟต์แวร์', 'อินเทอร์เน็ต', 'โทรคมนาคม', 'เซมิคอนดักเตอร์', 'นาโนเทคโนโลยี', 'พลังงานหมุนเวียน', 'พลังงานนิวเคลียร์',
+      'อุทกวิทยา', 'อุตุนิยมวิทยา', 'ภูเขาไฟวิทยา', 'แผ่นดินไหววิทยา', 'บรรพชีวินวิทยา', 'วิทยาศาสตร์สิ่งแวดล้อม', 'การอนุรักษ์', 'ความยั่งยืน', 'การวางผังเมือง', 'วิศวกรรมโยธา',
+      'วิศวกรรมเครื่องกล', 'วิศวกรรมไฟฟ้า', 'วิศวกรรมเคมี', 'วิศวกรรมการบินและอวกาศ', 'วิศวกรรมชีวการแพทย์', 'การผลิต', 'การก่อสร้าง', 'ประวัติศาสตร์สถาปัตยกรรม', 'วิธีการทางโบราณคดี', 'พิพิธภัณฑ์',
+      'ห้องสมุด', 'วารสารศาสตร์', 'การพิมพ์', 'โฆษณา', 'การตลาด', 'การประกอบการ', 'การบัญชี', 'การธนาคาร', 'การลงทุน', 'การประกันภัย',
+      'นโยบายสาธารณะ', 'ความสัมพันธ์ระหว่างประเทศ', 'สิทธิมนุษยชน', 'อาชญาวิทยา', 'นิติวิทยาศาสตร์', 'บริการฉุกเฉิน', 'ประวัติศาสตร์การทหาร', 'ภาษา', 'การแปล', 'การเขียน',
+      'การอ่าน', 'เทคโนโลยีการศึกษา', 'พัฒนาการเด็ก', 'สุขภาพจิต', 'วิทยาศาสตร์การออกกำลังกาย', 'วิทยาศาสตร์โภชนาการ', 'ประวัติศาสตร์การแพทย์', 'การแพทย์ทางเลือก', 'การปฐมพยาบาล', 'สังคมสูงวัย'
     ],
     patterns: [
       '{topic}คืออะไร', '{topic}ทำงานอย่างไร', 'ทำไม{topic}จึงน่าสนใจ', 'คู่มือเบื้องต้นเกี่ยวกับ{topic}', 'ประวัติของ{topic}',
@@ -85,7 +125,17 @@ const curiosityLanguageConfig = {
       '공학', '컴퓨터 과학', '교육', '심리학', '생태학', '지질학', '해양학', '사진',
       '영화', '신화', '회화', '조각', '패션', '영양학', '금융', '무역', '민주주의',
       '법', '스포츠', '게임', '공예', '발명', '재료', '에너지', '기후', '날씨', '진화',
-      '동물', '식물', '도시', '발견', '커뮤니케이션'
+      '동물', '식물', '도시', '발견', '커뮤니케이션',
+      '식물학', '동물학', '유전학', '미생물학', '생화학', '물리학', '화학', '통계학', '논리학', '언어학',
+      '사회학', '인류학', '경제학', '정치학', '역사학', '지리학', '철학', '윤리학', '문학', '시',
+      '연극', '무용', '디자인', '그래픽 디자인', '타이포그래피', '도예', '보석', '섬유', '요리', '제빵',
+      '원예', '임학', '수산학', '수의학', '공중보건', '생명공학', '약리학', '신경과학', '우주공학', '로봇공학',
+      '인공지능', '데이터 과학', '사이버 보안', '소프트웨어', '인터넷', '통신', '반도체', '나노기술', '재생 에너지', '원자력 에너지',
+      '수문학', '기상학', '화산학', '지진학', '고생물학', '환경과학', '보전', '지속 가능성', '도시 계획', '토목공학',
+      '기계공학', '전기공학', '화학공학', '항공우주공학', '의생명공학', '제조업', '건설', '건축사', '고고학적 방법', '박물관',
+      '도서관', '저널리즘', '출판', '광고', '마케팅', '기업가정신', '회계학', '은행업', '투자', '보험',
+      '공공 정책', '국제 관계', '인권', '범죄학', '법과학', '응급 서비스', '군사 역사', '언어', '번역', '글쓰기',
+      '독서', '교육 기술', '아동 발달', '정신 건강', '운동 과학', '영양 과학', '의학사', '대체 의학', '응급 처치', '고령화'
     ],
     patterns: [
       '{topic}이란 무엇인가?', '{topic}은 어떻게 작동하는가?', '왜 {topic}이 중요한가?', '{topic} 입문', '{topic}의 역사',
@@ -105,7 +155,17 @@ const curiosityLanguageConfig = {
       'Ingenieurwesen', 'Informatik', 'Bildung', 'Psychologie', 'Ökologie', 'Geologie', 'Ozeanographie', 'Fotografie',
       'Film', 'Mythologie', 'Malerei', 'Bildhauerei', 'Mode', 'Ernährung', 'Finanzen', 'Handel', 'Demokratie',
       'Recht', 'Sport', 'Spiele', 'Handwerk', 'Erfindungen', 'Materialien', 'Energie', 'Klima', 'Wetter', 'Evolution',
-      'Tiere', 'Pflanzen', 'Städte', 'Entdeckungen', 'Kommunikation'
+      'Tiere', 'Pflanzen', 'Städte', 'Entdeckungen', 'Kommunikation',
+      'Botanique', 'Zoologie', 'Génétique', 'Microbiologie', 'Biochimie', 'Physique', 'Chimie', 'Statistiques', 'Logique', 'Linguistique',
+      'Sociologie', 'Anthropologie', 'Économie', 'Sciences politiques', 'Histoire', 'Géographie', 'Philosophie', 'Éthique', 'Littérature', 'Poésie',
+      'Théâtre', 'Danse', 'Design', 'Design graphique', 'Typographie', 'Céramique', 'Bijouterie', 'Textiles', 'Cuisine', 'Pâtisserie',
+      'Horticulture', 'Foresterie', 'Pêche', 'Médecine vétérinaire', 'Santé publique', 'Biotechnologie', 'Pharmacologie', 'Neurosciences', 'Astronautique', 'Robotique',
+      'Intelligence artificielle', 'Science des données', 'Cybersécurité', 'Logiciels', 'Internet', 'Télécommunications', 'Semi-conducteurs', 'Nanotechnologie', 'Énergies renouvelables', 'Énergie nucléaire',
+      'Hydrologie', 'Météorologie', 'Volcanologie', 'Sismologie', 'Paléontologie', 'Sciences de l’environnement', 'Conservation', 'Durabilité', 'Urbanisme', 'Génie civil',
+      'Génie mécanique', 'Génie électrique', 'Génie chimique', 'Génie aérospatial', 'Génie biomédical', 'Fabrication', 'Construction', 'Histoire de l’architecture', 'Méthodes archéologiques', 'Musées',
+      'Bibliothèques', 'Journalisme', 'Édition', 'Publicité', 'Marketing', 'Entrepreneuriat', 'Comptabilité', 'Banque', 'Investissement', 'Assurance',
+      'Politiques publiques', 'Relations internationales', 'Droits humains', 'Criminologie', 'Médecine légale', 'Services d’urgence', 'Histoire militaire', 'Langues', 'Traduction', 'Écriture',
+      'Lecture', 'Technologies éducatives', 'Développement de l’enfant', 'Santé mentale', 'Sciences de l’exercice', 'Science de la nutrition', 'Histoire de la médecine', 'Médecine douce', 'Premiers secours', 'Vieillissement'
     ],
     patterns: [
       "Qu'est-ce que {topic} ?", 'Comment fonctionne {topic} ?', 'Pourquoi {topic} est-il important ?', 'Guide de {topic} pour débutants',
@@ -126,7 +186,17 @@ const curiosityLanguageConfig = {
       'Ingenieurwesen', 'Informatik', 'Bildung', 'Psychologie', 'Ökologie', 'Geologie', 'Ozeanographie', 'Fotografie',
       'Film', 'Mythologie', 'Malerei', 'Bildhauerei', 'Mode', 'Ernährung', 'Finanzen', 'Handel', 'Demokratie',
       'Recht', 'Sport', 'Spiele', 'Handwerk', 'Erfindungen', 'Materialien', 'Energie', 'Klima', 'Wetter', 'Evolution',
-      'Tiere', 'Pflanzen', 'Städte', 'Entdeckungen', 'Kommunikation'
+      'Tiere', 'Pflanzen', 'Städte', 'Entdeckungen', 'Kommunikation',
+      'Botanik', 'Zoologie', 'Genetik', 'Mikrobiologie', 'Biochemie', 'Physik', 'Chemie', 'Statistik', 'Logik', 'Linguistik',
+      'Soziologie', 'Anthropologie', 'Volkswirtschaft', 'Politikwissenschaft', 'Geschichte', 'Geografie', 'Philosophie', 'Ethik', 'Literatur', 'Lyrik',
+      'Theater', 'Tanz', 'Design', 'Grafikdesign', 'Typografie', 'Keramik', 'Schmuck', 'Textilien', 'Kochen', 'Backen',
+      'Gartenbau', 'Forstwirtschaft', 'Fischerei', 'Tiermedizin', 'Gesundheitswesen', 'Biotechnologie', 'Pharmakologie', 'Neurowissenschaften', 'Raumfahrttechnik', 'Robotik',
+      'Künstliche Intelligenz', 'Datenwissenschaft', 'Cybersicherheit', 'Software', 'Internet', 'Telekommunikation', 'Halbleiter', 'Nanotechnologie', 'Erneuerbare Energien', 'Kernenergie',
+      'Hydrologie', 'Meteorologie', 'Vulkanologie', 'Seismologie', 'Paläontologie', 'Umweltwissenschaft', 'Naturschutz', 'Nachhaltigkeit', 'Stadtplanung', 'Bauingenieurwesen',
+      'Maschinenbau', 'Elektrotechnik', 'Chemieingenieurwesen', 'Luft- und Raumfahrttechnik', 'Biomedizinische Technik', 'Produktion', 'Bauwesen', 'Architekturgeschichte', 'Archäologische Methoden', 'Museen',
+      'Bibliotheken', 'Journalismus', 'Verlagswesen', 'Werbung', 'Marketing', 'Unternehmertum', 'Buchhaltung', 'Bankwesen', 'Investitionen', 'Versicherungen',
+      'Öffentliche Politik', 'Internationale Beziehungen', 'Menschenrechte', 'Kriminologie', 'Forensik', 'Rettungsdienste', 'Militärgeschichte', 'Sprachen', 'Übersetzung', 'Schreiben',
+      'Lesen', 'Bildungstechnologie', 'Kinderentwicklung', 'Psychische Gesundheit', 'Sportwissenschaft', 'Ernährungswissenschaft', 'Medizingeschichte', 'Alternativmedizin', 'Erste Hilfe', 'Alterung'
     ],
     patterns: [
       'Was ist {topic}?', 'Wie funktioniert {topic}?', 'Warum ist {topic} wichtig?', 'Eine Einführung in {topic}', 'Die Geschichte von {topic}',
