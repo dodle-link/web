@@ -159,27 +159,6 @@ const expandTopics = (topics, subjects, patterns) => [
   ...subjects.flatMap(subject => patterns.map(pattern => fillTemplate(pattern, { subject })))
 ];
 
-const localizedPromptPatterns = {
-  ja: [
-    '{topic}', '{topic}の意外な事実', '{topic}と日常生活', '{topic}の未来', '{topic}について知っておきたいこと'
-  ],
-  zh: [
-    '{topic}', '关于{topic}的有趣事实', '{topic}如何影响日常生活', '{topic}的未来', '关于{topic}的常见问题'
-  ],
-  th: [
-    '{topic}', 'ข้อเท็จจริงที่น่าสนใจเกี่ยวกับ{topic}', '{topic}กับชีวิตประจำวัน', 'อนาคตของ{topic}', 'คำถามที่พบบ่อยเกี่ยวกับ{topic}'
-  ],
-  ko: [
-    '{topic}', '{topic}에 관한 흥미로운 사실', '{topic}가 일상에 미치는 영향', '{topic}의 미래', '{topic}에 관한 자주 묻는 질문'
-  ],
-  fr: [
-    '{topic}', 'Faits intéressants sur {topic}', 'Comment {topic} influence la vie quotidienne', "L'avenir de {topic}", 'Questions fréquentes sur {topic}'
-  ],
-  de: [
-    '{topic}', 'Interessante Fakten über {topic}', 'Wie {topic} den Alltag beeinflusst', 'Die Zukunft von {topic}', 'Häufige Fragen zu {topic}'
-  ]
-};
-
 const curiousWords = buildPromptList(allCuriosityTopics, curiosityPatterns);
 
 const curiosityTopicsByLanguage = {
@@ -412,14 +391,7 @@ const validatePromptSource = (language, source) => {
   }
 };
 
-const buildLanguagePromptCatalog = (language, topics) => {
-  const prompts = buildPromptList(topics, localizedPromptPatterns[language] || curiosityPatterns);
-
-  if (!prompts.length) console.warn(`No curiosity prompts available for ${language}`);
-  if (prompts.some(prompt => prompt.includes('{'))) {
-    console.warn(`Unresolved placeholder in curiosity prompts for ${language}`);
-  }
-
+const buildLanguagePromptSource = (language, topics) => {
   const source = createCuriosityPromptSource(
     topics,
     curiosityPatternsByLanguage[language] || curiosityPatterns,
@@ -427,14 +399,11 @@ const buildLanguagePromptCatalog = (language, topics) => {
   );
 
   validatePromptSource(language, source);
-  return { prompts, source };
+  return source;
 };
 
-const curiousWordsByLanguage = {};
 const lazyCuriousWordsByLanguage = {};
 
 for (const [language, topics] of Object.entries(curiosityTopicsByLanguage)) {
-  const { prompts, source } = buildLanguagePromptCatalog(language, topics);
-  curiousWordsByLanguage[language] = prompts;
-  lazyCuriousWordsByLanguage[language] = source;
+  lazyCuriousWordsByLanguage[language] = buildLanguagePromptSource(language, topics);
 }
