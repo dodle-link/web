@@ -28,7 +28,10 @@ const curiosityLanguageConfig = {
     contexts: [
       'for beginners', 'in everyday life', 'through history', 'from a scientific perspective', 'with real examples',
       'in simple terms', 'around the world', 'and its cultural meaning', 'and its environmental impact',
-      'and the latest discoveries', 'compared with related ideas', 'and what may happen next'
+      'and the latest discoveries', 'compared with related ideas', 'and what may happen next',
+      'with practical applications', 'from an expert perspective', 'with common misconceptions explained',
+      'in a historical context', 'with a focus on real-world challenges', 'and its role in the future',
+      'with a step-by-step overview', 'across different cultures'
     ]
   },
   ja: {
@@ -61,6 +64,8 @@ const curiosityLanguageConfig = {
     contexts: [
       '初心者向け', '日常生活との関係', '歴史的な背景', '科学的な視点', '実例を通して', '簡単な言葉で',
       '世界各地の例', '文化的な意味', '環境への影響', '最新の発見', '関連するテーマとの比較', 'これからの展望'
+      , '実際の応用例とともに', '専門家の視点から', 'よくある誤解を解きながら', '歴史的な背景を踏まえて',
+      '現実の課題に焦点を当てて', '未来における役割', '順を追って解説', '異なる文化を通して'
     ]
   },
   zh: {
@@ -93,6 +98,8 @@ const curiosityLanguageConfig = {
     contexts: [
       '适合初学者', '与日常生活的关系', '历史背景', '科学视角', '通过真实案例', '用简单语言解释',
       '世界各地的例子', '文化意义', '环境影响', '最新发现', '与相关主题比较', '未来展望'
+      , '实际应用', '从专家角度出发', '解释常见误解', '结合历史背景', '关注现实世界的挑战',
+      '对未来的作用', '分步骤介绍', '不同文化中的表现'
     ]
   },
   th: {
@@ -125,6 +132,8 @@ const curiosityLanguageConfig = {
     contexts: [
       'สำหรับผู้เริ่มต้น', 'ในชีวิตประจำวัน', 'เบื้องหลังทางประวัติศาสตร์', 'ในมุมมองทางวิทยาศาสตร์', 'จากตัวอย่างจริง', 'อธิบายด้วยภาษาง่ายๆ',
       'ตัวอย่างจากทั่วโลก', 'ความหมายทางวัฒนธรรม', 'ผลกระทบต่อสิ่งแวดล้อม', 'การค้นพบล่าสุด', 'เปรียบเทียบกับหัวข้อที่เกี่ยวข้อง', 'แนวโน้มในอนาคต'
+      , 'พร้อมตัวอย่างการประยุกต์ใช้จริง', 'จากมุมมองของผู้เชี่ยวชาญ', 'พร้อมอธิบายความเข้าใจผิดที่พบบ่อย',
+      'ในบริบททางประวัติศาสตร์', 'โดยเน้นความท้าทายในโลกจริง', 'บทบาทในอนาคต', 'อธิบายทีละขั้นตอน', 'ผ่านวัฒนธรรมที่หลากหลาย'
     ]
   },
   ko: {
@@ -157,6 +166,8 @@ const curiosityLanguageConfig = {
     contexts: [
       '초보자를 위한 안내', '일상생활에서', '역사적 배경', '과학적 관점', '실제 사례와 함께', '쉬운 말로 설명',
       '세계 각지의 사례', '문화적 의미', '환경에 미치는 영향', '최신 발견', '관련 주제와 비교', '앞으로의 전망'
+      , '실제 응용 사례와 함께', '전문가의 관점에서', '흔한 오해를 설명하며', '역사적 맥락에서',
+      '현실의 과제에 초점을 맞춰', '미래에서의 역할', '단계별로 살펴보기', '다양한 문화 속에서'
     ]
   },
   fr: {
@@ -191,6 +202,8 @@ const curiosityLanguageConfig = {
     contexts: [
       'pour débutants', 'dans la vie quotidienne', 'dans son contexte historique', 'd un point de vue scientifique', 'avec des exemples concrets', 'en termes simples',
       'dans le monde', 'et sa signification culturelle', 'et son impact environnemental', 'et les dernières découvertes', 'comparé aux sujets proches', 'et ses perspectives futures'
+      , 'avec des applications concrètes', 'du point de vue des experts', 'en expliquant les idées reçues',
+      'dans son contexte historique', 'face aux défis du monde réel', 'et son rôle à l’avenir', 'étape par étape', 'à travers différentes cultures'
     ]
   },
   de: {
@@ -224,6 +237,8 @@ const curiosityLanguageConfig = {
     contexts: [
       'für Anfänger', 'im Alltag', 'vor dem historischen Hintergrund', 'aus wissenschaftlicher Sicht', 'mit echten Beispielen', 'einfach erklärt',
       'aus aller Welt', 'und seine kulturelle Bedeutung', 'und seine Auswirkungen auf die Umwelt', 'und die neuesten Entdeckungen', 'im Vergleich zu verwandten Themen', 'und seine Zukunft'
+      , 'mit praktischen Anwendungen', 'aus Sicht von Fachleuten', 'mit einer Erklärung häufiger Irrtümer',
+      'im historischen Kontext', 'mit Blick auf reale Herausforderungen', 'und seine Rolle in der Zukunft', 'Schritt für Schritt', 'in verschiedenen Kulturen'
     ]
   }
 };
