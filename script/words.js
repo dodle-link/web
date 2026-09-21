@@ -1,140 +1,3 @@
-const baseCuriosityTopics = [
-  'the northern lights',
-  'ancient libraries',
-  'how bees communicate',
-  'deep sea creatures',
-  'the history of maps',
-  'volcanic islands',
-  'the science of sleep',
-  'forgotten inventions',
-  'the origin of language',
-  'desert ecosystems',
-  'the mathematics of music',
-  'the oldest trees',
-  'how bridges work',
-  'the history of chocolate',
-  'cloud formations',
-  'the psychology of curiosity',
-  'underwater archaeology',
-  'the evolution of birds',
-  'how memory works',
-  'rare weather events',
-  'the history of bicycles',
-  'coral reef ecosystems',
-  'the science of bread',
-  'ancient navigation',
-  'how earthquakes happen',
-  'the lives of octopuses',
-  'the history of clocks',
-  'why leaves change color',
-  'the art of origami',
-  'the invention of photography',
-  'how ants build colonies',
-  'the history of tea',
-  'the physics of rainbows',
-  'forgotten cities',
-  'the science of fermentation',
-  'how birds migrate',
-  'the history of punctuation',
-  'the architecture of caves',
-  'how magnets work',
-  'the origins of board games',
-  'the science of fingerprints',
-  'the history of umbrellas',
-  'how glaciers move',
-  'the language of dolphins',
-  'the history of printing',
-  'why cats purr',
-  'the science of camouflage',
-  'ancient cooking methods',
-  'how rivers form',
-  'the history of calendars',
-  'the biology of mushrooms',
-  'how elevators work',
-  'the story of paper',
-  'the science of laughter',
-  'lost works of art',
-  'how seeds travel',
-  'the history of keys',
-  'the physics of sound',
-  'the lives of urban foxes',
-  'how satellites stay in orbit',
-  'the history of mirrors',
-  'the science of taste',
-  'ancient medical practices',
-  'how spiders make webs',
-  'the history of lighthouses',
-  'the chemistry of color',
-  'why birds sing',
-  'the origins of surnames',
-  'how wind turbines work',
-  'the science of pollen',
-  'the lives of desert animals',
-  'how compasses work',
-  'the history of theater',
-  'the physics of bubbles',
-  'ancient trade routes',
-  'how trees communicate',
-  'the history of buttons',
-  'the science of balance',
-  'why oceans have tides',
-  'the origins of written numbers',
-  'how solar panels work',
-  'the history of playgrounds',
-  'the biology of butterflies',
-  'how sound travels',
-  'the history of recipes',
-  'the science of honey',
-  'forgotten languages',
-  'how tunnels are built',
-  'the history of postcards',
-  'the physics of flight',
-  'why whales sing',
-  'the origins of musical instruments',
-  'how weather forecasts work',
-  'the science of soil',
-  'ancient building techniques',
-  'how fireflies glow',
-  'the history of nicknames',
-  'the biology of forests',
-  'how cameras focus',
-  'the history of public parks'
-];
-
-const curiosityPatterns = [
-  '{topic}',
-  'Interesting facts about {topic}',
-  'How {topic} affects everyday life',
-  'The future of {topic}',
-  'What can we learn from {topic}?',
-  'Key ideas behind {topic}',
-  'Common questions about {topic}'
-];
-
-const additionalCuriositySubjects = [
-  'astronomy', 'medicine', 'architecture', 'agriculture', 'music',
-  'language', 'mathematics', 'transportation', 'engineering', 'computing',
-  'education', 'psychology', 'ecology', 'geology', 'oceanography',
-  'photography', 'film', 'mythology', 'painting', 'sculpture',
-  'fashion', 'food', 'finance', 'trade', 'democracy',
-  'law', 'sports', 'games', 'crafts', 'inventions',
-  'materials', 'energy', 'climate', 'weather', 'evolution',
-  'animals', 'plants', 'cities', 'exploration', 'communication'
-];
-
-const additionalCuriosityAngles = [
-  'the history of {subject}',
-  'the science of {subject}',
-  'the future of {subject}',
-  'the origins of {subject}',
-  'the psychology of {subject}',
-  'the technology behind {subject}',
-  'the cultural meaning of {subject}',
-  'the environmental impact of {subject}',
-  'the most important discoveries in {subject}',
-  'how {subject} shapes everyday life'
-];
-
 const normalizePrompt = (prompt = '') => String(prompt).replace(/\s+/g, ' ').trim();
 
 const fillTemplate = (template, values) => Object.entries(values).reduce(
@@ -195,7 +58,38 @@ const validatePromptSource = (language, source) => {
 };
 
 const curiosityTopicsByLanguage = {
-  en: buildTopics(baseCuriosityTopics, additionalCuriositySubjects, additionalCuriosityAngles),
+  en: buildTopics([
+    'the northern lights', 'ancient libraries', 'how bees communicate', 'deep sea creatures', 'the history of maps',
+    'volcanic islands', 'the science of sleep', 'forgotten inventions', 'the origin of language', 'desert ecosystems',
+    'the mathematics of music', 'the oldest trees', 'how bridges work', 'the history of chocolate', 'cloud formations',
+    'the psychology of curiosity', 'underwater archaeology', 'the evolution of birds', 'how memory works', 'rare weather events',
+    'the history of bicycles', 'coral reef ecosystems', 'the science of bread', 'ancient navigation', 'how earthquakes happen',
+    'the lives of octopuses', 'the history of clocks', 'why leaves change color', 'the art of origami', 'the invention of photography',
+    'how ants build colonies', 'the history of tea', 'the physics of rainbows', 'forgotten cities', 'the science of fermentation',
+    'how birds migrate', 'the history of punctuation', 'the architecture of caves', 'how magnets work', 'the origins of board games',
+    'the science of fingerprints', 'the history of umbrellas', 'how glaciers move', 'the language of dolphins', 'the history of printing',
+    'why cats purr', 'the science of camouflage', 'ancient cooking methods', 'how rivers form', 'the history of calendars',
+    'the biology of mushrooms', 'how elevators work', 'the story of paper', 'the science of laughter', 'lost works of art',
+    'how seeds travel', 'the history of keys', 'the physics of sound', 'the lives of urban foxes', 'how satellites stay in orbit',
+    'the history of mirrors', 'the science of taste', 'ancient medical practices', 'how spiders make webs', 'the history of lighthouses',
+    'the chemistry of color', 'why birds sing', 'the origins of surnames', 'how wind turbines work', 'the science of pollen',
+    'the lives of desert animals', 'how compasses work', 'the history of theater', 'the physics of bubbles', 'ancient trade routes',
+    'how trees communicate', 'the history of buttons', 'the science of balance', 'why oceans have tides', 'the origins of written numbers',
+    'how solar panels work', 'the history of playgrounds', 'the biology of butterflies', 'how sound travels', 'the history of recipes',
+    'the science of honey', 'forgotten languages', 'how tunnels are built', 'the history of postcards', 'the physics of flight',
+    'why whales sing', 'the origins of musical instruments', 'how weather forecasts work', 'the science of soil', 'ancient building techniques',
+    'how fireflies glow', 'the history of nicknames', 'the biology of forests', 'how cameras focus', 'the history of public parks'
+  ], [
+    'astronomy', 'medicine', 'architecture', 'agriculture', 'music', 'language', 'mathematics', 'transportation',
+    'engineering', 'computing', 'education', 'psychology', 'ecology', 'geology', 'oceanography', 'photography',
+    'film', 'mythology', 'painting', 'sculpture', 'fashion', 'food', 'finance', 'trade', 'democracy', 'law',
+    'sports', 'games', 'crafts', 'inventions', 'materials', 'energy', 'climate', 'weather', 'evolution', 'animals',
+    'plants', 'cities', 'exploration', 'communication'
+  ], [
+    'the history of {subject}', 'the science of {subject}', 'the future of {subject}', 'the origins of {subject}',
+    'the psychology of {subject}', 'the technology behind {subject}', 'the cultural meaning of {subject}',
+    'the environmental impact of {subject}', 'the most important discoveries in {subject}', 'how {subject} shapes everyday life'
+  ]),
   ja: buildTopics([
     'オーロラ', '古代の図書館', 'ミツバチの会話', '深海生物', '地図の歴史',
     '火山島', '睡眠の科学', '忘れられた発明', '言語の起源', '砂漠の生態系',
@@ -303,7 +197,6 @@ const curiosityTopicsByLanguage = {
 const curiosityLanguageConfig = {
   en: {
     patterns: [
-      ...curiosityPatterns,
       'What is {topic}?', 'How does {topic} work?', 'Why is {topic} important?', 'A beginner guide to {topic}',
       'The history of {topic}', 'The science behind {topic}', 'Surprising facts about {topic}', 'Latest research on {topic}',
       'Unusual examples of {topic}', 'How {topic} has changed over time', 'The key ideas behind {topic}', 'People who shaped {topic}',
@@ -396,8 +289,6 @@ const curiosityLanguageConfig = {
     ]
   }
 };
-
-const curiousWords = buildPromptList(curiosityTopicsByLanguage.en, curiosityPatterns);
 
 const lazyCuriousWordsByLanguage = {};
 
