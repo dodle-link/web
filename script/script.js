@@ -18,7 +18,7 @@ function init() {
   let currentLanguage = 'en';
 
   const translations = {
-    en: { pageTitle: 'dodle - Search', navLabel: 'Primary navigation', themeDark: 'Switch to dark mode', themeLight: 'Switch to light mode', searchLabel: 'Search the web', searchPlaceholder: 'Search the web', searchButton: 'Search', curiousButton: "I'm Feeling Curious", clear: 'Clear search', cooldown: 'Please wait before searching again.', description: 'A simple search for a less distracted web.', privacy: 'Privacy', about: 'About' },
+    en: { pageTitle: 'dodle - Search', navLabel: 'Primary navigation', themeDark: 'Switch to dark mode', themeLight: 'Switch to light mode', searchLabel: 'Search the web', searchPlaceholder: 'Search the web', searchButton: 'Search', curiousButton: "I'm Feeling Curious", clear: 'Clear search', cooldown: 'Please wait before searching again.', privacy: 'Privacy', about: 'About' },
     ja: { pageTitle: 'dodle - 検索', navLabel: 'メインナビゲーション', themeDark: 'ダークモードに切り替え', themeLight: 'ライトモードに切り替え', searchLabel: 'ウェブを検索', searchPlaceholder: 'ウェブを検索', searchButton: '検索', curiousButton: '気になる検索', clear: '検索をクリア', cooldown: '次の検索までお待ちください。', description: '気を散らさずに検索できるシンプルな検索ページです。', privacy: 'プライバシー', about: '概要' },
     zh: { pageTitle: 'dodle - 搜索', navLabel: '主导航', themeDark: '切换到深色模式', themeLight: '切换到浅色模式', searchLabel: '搜索网页', searchPlaceholder: '搜索网页', searchButton: '搜索', curiousButton: '我很好奇', clear: '清除搜索', cooldown: '请稍候再搜索。', description: '简单搜索，远离纷扰的网络。', privacy: '隐私', about: '关于' },
     th: { pageTitle: 'dodle - ค้นหา', navLabel: 'การนำทางหลัก', themeDark: 'เปลี่ยนเป็นโหมดมืด', themeLight: 'เปลี่ยนเป็นโหมดสว่าง', searchLabel: 'ค้นหาเว็บ', searchPlaceholder: 'ค้นหาเว็บ', searchButton: 'ค้นหา', curiousButton: 'ฉันอยากรู้', clear: 'ล้างการค้นหา', cooldown: 'โปรดรอสักครู่ก่อนค้นหาอีกครั้ง', description: 'การค้นหาที่เรียบง่ายสำหรับเว็บที่วุ่นวายน้อยลง', privacy: 'ความเป็นส่วนตัว', about: 'เกี่ยวกับ' },
@@ -45,7 +45,6 @@ function init() {
     currentLanguage = selectedLanguage;
     document.documentElement.lang = selectedLanguage;
     document.title = translation.pageTitle;
-    document.querySelector('meta[name="description"]').content = translation.description;
     document.querySelectorAll('[data-i18n]').forEach(element => {
       const key = element.dataset.i18n;
       if (translation[key]) element.textContent = translation[key];
