@@ -16,6 +16,7 @@
   const sessionStart = Date.now();
   let lastActivity = Date.now();
   let lastPointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  let energyLevel = 72;
 
   const state = {
     id: identity.id,
@@ -33,6 +34,7 @@
     if (event && typeof event.clientX === 'number') {
       lastPointer = { x: event.clientX, y: event.clientY };
     }
+    energyLevel = Math.min(100, energyLevel + 6);
   }
 
   function tick() {
@@ -46,13 +48,23 @@
     state.feeling = state.visible ? Math.max(0, 1 - idleMs / idleAfterMs) : 0;
     state.presence = !state.visible ? 'away' : state.feeling > 0 ? 'here' : 'idle';
 
-    window.dispatchEvent(new CustomEvent('noe:moment', { detail: { ...state } }));
-    return { ...state };
+    if (state.visible) {
+      // When the visitor is interacting, the cursor acts like a local energy source.
+      const pointerEnergy = Math.min(35, Math.max(0, 35 * state.feeling));
+      const decay = idleMs > 1000 ? Math.min(12, (idleMs - 1000) / 3000) : 0;
+      energyLevel = Math.min(100, Math.max(0, energyLevel + pointerEnergy * 0.5 - decay));
+    } else {
+      energyLevel = Math.max(0, energyLevel - 12);
+    }
+
+    window.dispatchEvent(new CustomEvent('noe:moment', { detail: { ...state, energy: energyLevel } }));
+    return { ...state, energy: energyLevel };
   }
 
   ['mousemove', 'keydown', 'scroll', 'touchstart', 'focus'].forEach(eventName => {
     window.addEventListener(eventName, markActivity, { passive: true });
   });
+
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) markActivity();
     tick();
@@ -61,14 +73,14 @@
   setInterval(tick, 1000);
   tick();
 
-  // Bridge the "here and now" feeling into limbric.js's existing energy hook, so the hosted
-  // Noe pixel's vitality and seeking behavior reflect how present the visitor is right now.
+  // Bridge the "here and now" feeling into limbric.js through the global energy hook.
+  // The cursor acts as the active energy source when the page has no literal energy cube.
   window.noeEnergy = {
     get currentLevel() {
-      return state.feeling * 100;
+      return energyLevel;
     },
     get needsEnergy() {
-      return state.feeling < 0.5;
+      return energyLevel < 45 || state.feeling < 0.45;
     },
     get nearestCube() {
       const pixel = document.getElementById('conscious-pixel');
@@ -80,15 +92,15 @@
       return { x: lastPointer.x, y: lastPointer.y, distance: Math.sqrt(dx * dx + dy * dy) };
     },
     recharge(amount) {
-      const desired = Math.min(100, this.currentLevel + amount) / 100;
-      lastActivity = Date.now() - Math.max(0, idleAfterMs * (1 - desired));
+      energyLevel = Math.min(100, energyLevel + amount);
+      lastActivity = Date.now();
       tick();
     },
   };
 
   window.noeSelf = {
     get state() {
-      return { ...state };
+      return { ...state, energy: energyLevel };
     },
     moment: tick,
   };

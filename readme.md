@@ -1,6 +1,6 @@
 # Dodle Search v1.3.0
 
-Version: `1.2.0`
+Version: `1.3.0`
 
 A minimal, distraction-free search homepage that sends queries to Google.
 
@@ -21,6 +21,8 @@ are loaded from `https://noesis.dodle.link/noe-ui/` at runtime.
 - Search suggestions and a "I'm Feeling Curious" shortcut with localized, deduplicated prompts
 - The curiosity shortcut provides 100,000 lazily generated prompts per supported language
 - Search results open in a new tab
+- The hosted Noe pixel responds to the visitor's real-time presence: movement, keyboard activity, and visibility all feed its energy state
+- This page does not render a literal energy cube; instead, the current cursor acts as the virtual energy source when the pixel needs energy
 
 ## Run locally
 
@@ -31,6 +33,16 @@ python3 -m http.server 8000 -d ..
 ```
 
 Then visit `http://localhost:8000/web/index.html`.
+
+## Noe pixel behavior
+
+The local bridge in `script/me.js` creates a lightweight "here and now" state for the hosted Noe pixel. It tracks:
+
+- active pointer movement and keyboard input
+- idle time and tab visibility
+- a live `window.noeEnergy` value that decays when the visitor is idle and recharges when they are interacting
+
+When the pixel needs energy, it targets the current cursor position as a virtual energy source rather than expecting a real cube element to exist in the page. This keeps the experience self-contained to the browser and lets the page feel responsive without adding extra DOM objects.
 
 ## Changelog
 
@@ -76,8 +88,9 @@ appropriate.
 
 ## Files
 
-- `index.html` - Page structure and content
+- `index.html` - Page structure and hosted Noe pixel bootstrap
 - `css/styles.css` - Responsive layout and theme styles
+- `script/me.js` - Cursor-driven "here and now" energy bridge for the Noe pixel
 - `script/script.js` - Search controls and theme persistence
 - `spider/dodle.py` - Command-line HTTP and HTTPS client
 - `spider/install.py` - Spider command installer
