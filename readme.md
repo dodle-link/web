@@ -11,7 +11,7 @@ This directory is maintained as a separate Git repository:
 `git@github.com:dodle-link/web.git`
 
 It is independent from the sibling `noesis` repository. Noesis browser assets
-are loaded from `https://noesis.dodle.link/noe-ui/` at runtime.
+are loaded from `https://noesis.dodle.link/` at runtime.
 
 ## Features
 
