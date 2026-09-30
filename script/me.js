@@ -1,336 +1,919 @@
-(function () {
-  // ========================================================================
-  // INITIAL SETUP & CONFIGURATION
-  // ========================================================================
+"use strict";
 
-  // Storage key for persistent user identity.
-  const storageKey = 'dodle-self';
-  // Time of inactivity (in milliseconds) before "feeling" fully decays.
-  const idleAfterMs = 45000;
+/* =========================================================
+ * CONFIG (DODLE RL Parameters)
+ * ========================================================= */
+const CONFIG = {
+    VERSION: 2, // Updated version for the integrated system
 
-  let identity;
-  try {
-    // Load persistent identity data from localStorage.
-    identity = JSON.parse(localStorage.getItem(storageKey));
-  } catch (error) {
-    identity = null;
-  }
+    MAX_FILE_SIZE: 1024 * 1024, // 1 MB
+    TARGET_FILE_SIZE: 950 * 1024,
 
-  // Initialize identity if missing.
-  if (!identity || !identity.id || !identity.born) {
-    // Create a new unique identity with a timestamp.
-    identity = { id: crypto.randomUUID(), born: Date.now() };
-    localStorage.setItem(storageKey, JSON.stringify(identity));
-  }
+    INPUT_SIZE: 16,
+    HIDDEN_SIZE: 32,
+    OUTPUT_SIZE: 8,
 
-  // Timing and state tracking
-  const sessionStart = Date.now();
-  let lastActivity = Date.now();
-  let lastPointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  let energyLevel = 72; // Initial energy level (0-100)
+    MEMORY_LIMIT: 200,
+    RULE_LIMIT: 64,
+    BEHAVIOR_LIMIT: 128,
 
-  // Tunable behavior knobs, adjusted live by the self-modifying AI below.
-  const rules = {
-    energyLow: 45,      // Threshold for low energy state.
-    feelingLow: 0.45,    // Threshold for low feeling state.
-    activityEnergy: 6,  // Scales how much cursor interaction feeds energy.
-    idleDecay: 2,       // Scales how fast idle energy decays.
-  };
+    LEARNING_RATE: 0.02,
 
-  // Core system state
-  const state = {
-    id: identity.id,
-    born: identity.born,
-    now: sessionStart,
-    uptimeMs: 0,       // Time elapsed since birth.
-    sessionMs: 0,      // Time elapsed since session start.
-    visible: !document.hidden, // Whether the document is currently visible.
-    presence: 'here',  // Current perceived presence ('here', 'away', 'idle').
-    feeling: 1,        // The perceived feeling state (0 to 1).
-  };
+    MIN_WEIGHT: -5,
+    MAX_WEIGHT: 5,
 
-  // ========================================================================
-  // CORE LOGIC FUNCTIONS
-  // ========================================================================
+    STATE_MIN: 0,
+    STATE_MAX: 100
+};
 
-  /**
-   * Updates the last known activity and pointer position upon interaction.
-   * @param {Event} event - The interaction event (e.g., mousemove).
-   */
-  function markActivity(event) {
-    lastActivity = Date.now();
-    if (event && typeof event.clientX === 'number') {
-      lastPointer = { x: event.clientX, y: event.clientY };
-    }
-    // Grant energy based on interaction.
-    energyLevel = Math.min(100, energyLevel + 6);
-  }
 
-  /**
-   * The main simulation tick, calculating energy decay and feeling changes.
-   */
-  function tick() {
-    const now = Date.now();
-    state.now = now;
-    state.uptimeMs = now - state.born;
-    state.sessionMs = now - sessionStart;
-    state.visible = !document.hidden;
+/* =========================================================
+ * UTILITIES (Shared)
+ * ========================================================= */
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
 
-    const idleMs = now - lastActivity;
-    
-    // Calculate feeling based on time of inactivity.
-    state.feeling = state.visible ? Math.max(0, 1 - idleMs / idleAfterMs) : 0;
-    
-    // Determine presence based on visibility and feeling.
-    state.presence = !state.visible ? 'away' : state.feeling > 0 ? 'here' : 'idle';
+function randomFloat(min, max) {
+    return min + Math.random() * (max - min);
+}
 
-    if (state.visible) {
-      // Energy Gain/Loss calculation when visible (active interaction).
-      const pointerCap = rules.activityEnergy * 5;
-      // Energy fed by pointer interaction, limited by current feeling.
-      const pointerEnergy = Math.min(pointerCap, Math.max(0, pointerCap * state.feeling));
-      // Calculate decay rate.
-      const decay = idleMs > 1000 ? Math.min(12, (idleMs - 1000) / 3000) * (rules.idleDecay / 2) : 0;
-      
-      // Update energy level.
-      energyLevel = Math.min(100, Math.max(0, energyLevel + pointerEnergy * 0.5 - decay));
+function randomInt(min, max) {
+    return Math.floor(randomFloat(min, max + 1));
+}
+
+function uuidBytes() {
+    const bytes = new Uint8Array(16);
+
+    if (crypto && crypto.getRandomValues) {
+        crypto.getRandomValues(bytes);
     } else {
-      // Energy decay when hidden (inactivity).
-      energyLevel = Math.max(0, energyLevel - 12);
+        for (let i = 0; i < bytes.length; i++) {
+            bytes[i] = randomInt(0, 255);
+        }
+    }
+    // Convert bytes to a standard UUID format string for easier JSON handling
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function now() {
+    return Date.now();
+}
+
+
+/* =========================================================
+ * INITIAL STATE (DODLE Model State)
+ * ========================================================= */
+function createInitialState() {
+    return {
+        energy: 72,
+        curiosity: 50,
+        confidence: 50,
+        stability: 80,
+
+        cycle: 0,
+
+        lastAction: null,
+        lastReward: 0,
+
+        createdAt: now(),
+        updatedAt: now()
+    };
+}
+
+
+/* =========================================================
+ * GOALS (DODLE Objectives)
+ * ========================================================= */
+function createInitialGoals() {
+    return [
+        {
+            id: "survive",
+            priority: 100,
+            target: {
+                energyMin: 20
+            }
+        },
+        {
+            id: "explore",
+            priority: 50,
+            target: {
+                curiosityMin: 60
+            }
+        },
+        {
+            id: "learn",
+            priority: 40,
+            target: {
+                confidenceMin: 50
+            }
+        }
+    ];
+}
+
+
+/* =========================================================
+ * RULES (DODLE Rule Engine)
+ * ========================================================= */
+function createInitialRules() {
+    return [
+        {
+            id: "rest-low-energy",
+            condition: {
+                type: "less-than",
+                variable: "energy",
+                value: 20
+            },
+            action: {
+                type: "rest"
+            },
+            priority: 100,
+            enabled: true,
+            success: 0,
+            failure: 0
+        },
+        {
+            id: "explore-high-curiosity",
+            condition: {
+                type: "greater-than",
+                variable: "curiosity",
+                value: 70
+            },
+            action: {
+                type: "explore"
+            },
+            priority: 60,
+            enabled: true,
+            success: 0,
+            failure: 0
+        },
+        {
+            id: "observe-default",
+            condition: {
+                type: "always"
+            },
+            action: {
+                type: "observe"
+            },
+            priority: 10,
+            enabled: true,
+            success: 0,
+            failure: 0
+        }
+    ];
+}
+
+
+/* =========================================================
+ * BEHAVIOR PROGRAM (DODLE Stack-based Logic)
+ * ========================================================= */
+function createInitialBehavior() {
+    return [
+        ["READ", "energy"],
+        ["LESS_THAN", 20],
+        ["IF"],
+        ["ACTION", "rest"],
+        ["ELSE"],
+        ["READ", "curiosity"],
+        ["GREATER_THAN", 70],
+        ["IF"],
+        ["ACTION", "explore"],
+        ["ELSE"],
+        ["ACTION", "observe"],
+        ["END"],
+        ["END"]
+    ];
+}
+
+
+/* =========================================================
+ * SMALL NEURAL NETWORK (DODLE Core)
+ * ========================================================= */
+class TinyNetwork {
+    constructor(random = new Random()) {
+        this.inputSize = CONFIG.INPUT_SIZE;
+        this.hiddenSize = CONFIG.HIDDEN_SIZE;
+        this.outputSize = CONFIG.OUTPUT_SIZE;
+
+        this.weights1 = new Float32Array(this.inputSize * this.hiddenSize);
+        this.bias1 = new Float32Array(this.hiddenSize);
+        this.weights2 = new Float32Array(this.hiddenSize * this.outputSize);
+        this.bias2 = new Float32Array(this.outputSize);
+
+        this.initialize(random);
     }
 
-    // Broadcast the current state and energy level globally.
-    window.dispatchEvent(new CustomEvent('noe:moment', { detail: { ...state, energy: energyLevel } }));
-    return { ...state, energy: energyLevel };
-  }
+    initialize(random) {
+        for (let i = 0; i < this.weights1.length; i++) {
+            this.weights1[i] = random.float(-0.1, 0.1);
+        }
+        for (let i = 0; i < this.weights2.length; i++) {
+            this.weights2[i] = random.float(-0.1, 0.1);
+        }
+        this.bias1.fill(0);
+        this.bias2.fill(0);
+    }
 
-  // ========================================================================
-  // EVENT BINDINGS
-  // ========================================================================
+    relu(x) {
+        return Math.max(0, x);
+    }
 
-  // Bind activity tracking to relevant input events.
-  ['mousemove', 'keydown', 'scroll', 'touchstart', 'focus'].forEach(eventName => {
+    forward(input) {
+        const hidden = new Float32Array(this.hiddenSize);
+        const output = new Float32Array(this.outputSize);
+
+        // Input -> Hidden
+        for (let h = 0; h < this.hiddenSize; h++) {
+            let sum = this.bias1[h];
+            for (let i = 0; i < this.inputSize; i++) {
+                sum += input[i] * this.weights1[h * this.inputSize + i];
+            }
+            hidden[h] = this.relu(sum);
+        }
+
+        // Hidden -> Output
+        for (let o = 0; o < this.outputSize; o++) {
+            let sum = this.bias2[o];
+            for (let h = 0; h < this.hiddenSize; h++) {
+                sum += hidden[h] * this.weights2[o * this.hiddenSize + h];
+            }
+            output[o] = sum;
+        }
+
+        return { hidden, output };
+    }
+
+    learn(input, target, learningRate) {
+        const result = this.forward(input);
+        const hidden = result.hidden;
+        const output = result.output;
+
+        // Output Error & Update Weights 2
+        for (let o = 0; o < this.outputSize; o++) {
+            const outputError = target[o] - output[o];
+            for (let h = 0; h < this.hiddenSize; h++) {
+                const index = o * this.hiddenSize + h;
+                this.weights2[index] += learningRate * outputError[o] * hidden[h];
+                this.weights2[index] = clamp(this.weights2[index], CONFIG.MIN_WEIGHT, CONFIG.MAX_WEIGHT);
+            }
+            this.bias2[o] += learningRate * outputError[o];
+        }
+
+        // Hidden Layer Update (Backpropagate error to weights 1)
+        for (let h = 0; h < this.hiddenSize; h++) {
+            let error = 0;
+            for (let o = 0; o < this.outputSize; o++) {
+                error += outputError[o] * this.weights2[o * this.hiddenSize + h];
+            }
+            if (hidden[h] <= 0) {
+                error = 0;
+            }
+            for (let i = 0; i < this.inputSize; i++) {
+                const index = h * this.inputSize + i;
+                this.weights1[index] += learningRate * error * input[i];
+                this.weights1[index] = clamp(this.weights1[index], CONFIG.MIN_WEIGHT, CONFIG.MAX_WEIGHT);
+            }
+            this.bias1[h] += learningRate * error;
+        }
+    }
+}
+
+/* =========================================================
+ * MEMORY (DODLE Memory Store)
+ * ========================================================= */
+class MemoryStore {
+    constructor(memory = []) {
+        this.items = memory;
+    }
+
+    add(memory) {
+        this.items.push({
+            id: uuidBytes(),
+            timestamp: now(),
+            input: memory.input,
+            action: memory.action,
+            result: memory.result,
+            reward: memory.reward,
+            importance: clamp(memory.importance ?? 50, 0, 100)
+        });
+        this.limit();
+    }
+
+    limit() {
+        while (this.items.length > CONFIG.MEMORY_LIMIT) {
+            this.items.sort((a, b) => a.importance - b.importance);
+            this.items.shift();
+        }
+    }
+
+    getRecent(count = 10) {
+        return this.items.slice(-count);
+    }
+
+    clear() {
+        this.items.length = 0;
+    }
+}
+
+
+/* =========================================================
+ * RULE ENGINE (DODLE Rule Engine)
+ * ========================================================= */
+class RuleEngine {
+    constructor(rules = []) {
+        this.rules = rules;
+    }
+
+    evaluateCondition(condition, state) {
+        if (!condition) return false;
+
+        switch (condition.type) {
+            case "always": return true;
+            case "less-than": return Number(state[condition.variable]) < condition.value;
+            case "greater-than": return Number(state[condition.variable]) > condition.value;
+            case "equals": return state[condition.variable] === condition.value;
+            default: return false;
+        }
+    }
+
+    getApplicable(state) {
+        return this.rules
+            .filter(rule => rule.enabled && this.evaluateCondition(rule.condition, state))
+            .sort((a, b) => b.priority - a.priority);
+    }
+
+    select(state) {
+        const applicable = this.getApplicable(state);
+        return applicable.length > 0 ? applicable[0] : null;
+    }
+
+    reward(ruleId, reward) {
+        const rule = this.rules.find(r => r.id === ruleId);
+        if (rule) {
+            if (reward > 0) {
+                rule.success++;
+                rule.priority += 1;
+            } else {
+                rule.failure++;
+                rule.priority -= 1;
+            }
+            rule.priority = clamp(rule.priority, 0, 1000);
+        }
+    }
+
+    evolve() {
+        // Disable consistently failing rules
+        this.rules.forEach(rule => {
+            const total = rule.success + rule.failure;
+            if (total < 10) return;
+
+            const successRate = rule.success / total;
+            if (successRate < 0.1) {
+                rule.enabled = false;
+            }
+        });
+
+        // Keep rule count bounded
+        if (this.rules.length > CONFIG.RULE_LIMIT) {
+            this.rules.sort((a, b) => b.priority - a.priority);
+            this.rules = this.rules.slice(0, CONFIG.RULE_LIMIT);
+        }
+    }
+}
+
+
+/* =========================================================
+ * BEHAVIOR INTERPRETER (DODLE Behavior Engine)
+ * ========================================================= */
+class BehaviorEngine {
+    constructor(program = []) {
+        this.program = program;
+    }
+
+    run(state) {
+        let action = "observe";
+        let index = 0;
+        const stack = [];
+        let skip = false;
+
+        while (index < this.program.length) {
+            const instruction = this.program[index];
+            const op = instruction[0];
+            const arg = instruction[1];
+
+            switch (op) {
+                case "READ":
+                    stack.push(state[arg]);
+                    break;
+                case "LESS_THAN":
+                    stack.push(Number(stack.pop()) < arg);
+                    break;
+                case "GREATER_THAN":
+                    stack.push(Number(stack.pop()) > arg);
+                    break;
+                case "IF":
+                    const condition = Boolean(stack.pop());
+                    stack.push({ type: "if", condition, active: condition });
+                    skip = !condition;
+                    break;
+                case "ELSE":
+                    const block = stack.pop();
+                    if (block && block.type === "if") {
+                        block.active = !block.condition;
+                        stack.push(block);
+                        skip = !block.active;
+                    }
+                    break;
+                case "ACTION":
+                    if (!skip) {
+                        action = arg;
+                    }
+                    break;
+                case "END":
+                    skip = false;
+                    break;
+            }
+            index++;
+            if (index > CONFIG.BEHAVIOR_LIMIT) break;
+        }
+        return action;
+    }
+
+    mutate(random) {
+        if (this.program.length >= CONFIG.BEHAVIOR_LIMIT) return;
+
+        const actions = ["rest", "explore", "observe", "learn"];
+
+        const mutations = [
+            () => {
+                this.program.push(["ACTION", actions[randomInt(0, actions.length - 1)]]);
+            },
+            () => {
+                if (this.program.length > 3) {
+                    const index = randomInt(0, this.program.length - 1);
+                    this.program.splice(index, 1);
+                }
+            },
+            () => {
+                const index = randomInt(0, this.program.length - 1);
+                const instruction = this.program[index];
+
+                if (instruction[0] === "LESS_THAN" || instruction[0] === "GREATER_THAN") {
+                    instruction[1] = randomInt(5, 95);
+                }
+            }
+        ];
+
+        mutations[randomInt(0, mutations.length - 1)]();
+    }
+}
+
+
+/* =========================================================
+ * MODEL (DODLE Core)
+ * ========================================================= */
+function createModel() {
+    const random = new Random(randomInt(1, 0xffffffff));
+
+    const network = new TinyNetwork(random);
+
+    return {
+        version: CONFIG.VERSION,
+        id: uuidBytes(),
+        createdAt: now(),
+        updatedAt: now(),
+        randomSeed: random.seed,
+
+        network: {
+            inputSize: network.inputSize,
+            hiddenSize: network.hiddenSize,
+            outputSize: network.outputSize,
+            weights1: network.weights1,
+            bias1: network.bias1,
+            weights2: network.weights2,
+            bias2: network.bias2
+        },
+        memory: [],
+        rules: createInitialRules(),
+        behavior: createInitialBehavior(),
+        state: createInitialState(),
+        goals: createInitialGoals()
+    };
+}
+
+
+/* =========================================================
+ * MODEL VALIDATION & Serialization (DODLE Persistence)
+ * ========================================================= */
+function validateModel(model) {
+    if (model.memory.length > CONFIG.MEMORY_LIMIT) throw new Error("Memory limit exceeded.");
+    if (model.rules.length > CONFIG.RULE_LIMIT) throw new Error("Rule limit exceeded.");
+    if (model.behavior.length > CONFIG.BEHAVIOR_LIMIT) throw new Error("Behavior limit exceeded.");
+    return true;
+}
+
+const MAGIC = new Uint8Array([0x44, 0x4f, 0x44, 0x4c]); // DODL
+
+function serializeModel(model) {
+    validateModel(model);
+    model.updatedAt = now();
+    const encoder = new TextEncoder();
+    const metadata = {
+        version: model.version, id: Array.from(model.id), createdAt: model.createdAt, updatedAt: model.updatedAt, randomSeed: model.randomSeed, memory: model.memory, rules: model.rules, behavior: model.behavior, state: model.state, goals: model.goals, networkShape: { inputSize: model.network.inputSize, hiddenSize: model.network.hiddenSize, outputSize: model.network.outputSize }
+    };
+    const metadataBytes = encoder.encode(JSON.stringify(metadata));
+    const arrays = [model.network.weights1, model.network.bias1, model.network.weights2, model.network.bias2];
+    let networkBytes = arrays.reduce((sum, arr) => sum + arr.byteLength, 0);
+    const HEADER_SIZE = 16;
+    const totalSize = HEADER_SIZE + metadataBytes.byteLength + networkBytes;
+
+    if (totalSize > CONFIG.MAX_FILE_SIZE) throw new Error(`Model exceeds 1 MB: ${totalSize} bytes`);
+
+    const buffer = new ArrayBuffer(totalSize);
+    const bytes = new Uint8Array(buffer);
+    bytes.set(MAGIC, 0);
+    const view = new DataView(buffer);
+    view.setUint16(4, CONFIG.VERSION, true);
+    view.setUint16(6, 0, true);
+    view.setUint32(8, metadataBytes.byteLength, true);
+    view.setUint32(12, networkBytes, true);
+
+    let offset = HEADER_SIZE;
+    bytes.set(metadataBytes, offset);
+    offset += metadataBytes.byteLength;
+
+    arrays.forEach(array => {
+        bytes.set(new Uint8Array(array.buffer, array.byteOffset, array.byteLength), offset);
+        offset += array.byteLength;
+    });
+    return buffer;
+}
+
+function deserializeModel(buffer) {
+    const bytes = new Uint8Array(buffer);
+    const view = new DataView(buffer);
+
+    if (bytes.length < 16 || !bytes.slice(0, 4).every((val, i) => val === MAGIC[i])) {
+        throw new Error("Invalid DODL model file.");
+    }
+
+    const version = view.getUint16(4, true);
+    if (version !== CONFIG.VERSION) throw new Error("Unsupported model version.");
+
+    const metadataSize = view.getUint32(8, true);
+    const networkSize = view.getUint32(12, true);
+    const HEADER_SIZE = 16;
+    if (HEADER_SIZE + metadataSize + networkSize !== buffer.byteLength) throw new Error("Corrupt model size.");
+
+    const decoder = new TextDecoder();
+    const metadataBytes = bytes.slice(HEADER_SIZE, HEADER_SIZE + metadataSize);
+    const metadata = JSON.parse(decoder.decode(metadataBytes));
+
+    const inputSize = metadata.networkShape.inputSize;
+    const hiddenSize = metadata.networkShape.hiddenSize;
+    const outputSize = metadata.networkShape.outputSize;
+
+    const weights1 = new Float32Array(inputSize * hiddenSize * 4);
+    const bias1 = new Float32Array(hiddenSize * 4);
+    const weights2 = new Float32Array(hiddenSize * outputSize * 4);
+    const bias2 = new Float32Array(outputSize * 4);
+
+    let offset = HEADER_SIZE + metadataSize;
+
+    function readFloat32Array(byteLength) {
+        const slice = buffer.slice(offset, offset + byteLength);
+        offset += byteLength;
+        return new Float32Array(slice);
+    }
+
+    const model = {
+        version: metadata.version,
+        id: new Uint8Array(metadata.id),
+        createdAt: metadata.createdAt,
+        updatedAt: metadata.updatedAt,
+        randomSeed: metadata.randomSeed,
+        network: {
+            inputSize, hiddenSize, outputSize,
+            weights1: readFloat32Array(weights1.byteLength),
+            bias1: readFloat32Array(bias1.byteLength),
+            weights2: readFloat32Array(weights2.byteLength),
+            bias2: readFloat32Array(bias2.byteLength)
+        },
+        memory: metadata.memory,
+        rules: metadata.rules,
+        behavior: metadata.behavior,
+        state: metadata.state,
+        goals: metadata.goals
+    };
+
+    validateModel(model);
+    return model;
+}
+
+
+/* =========================================================
+ * AI ENGINE (DODLE Agent Core)
+ * ========================================================= */
+class AIEngine {
+    constructor(model = createModel()) {
+        this.model = model;
+        this.random = new Random(model.randomSeed);
+
+        // Restore network weights
+        this.network = new TinyNetwork(this.random);
+        this.network.weights1 = model.network.weights1;
+        this.network.bias1 = model.network.bias1;
+        this.network.weights2 = model.network.weights2;
+        this.network.bias2 = model.network.bias2;
+
+        this.memory = new MemoryStore(model.memory);
+        this.rules = new RuleEngine(model.rules);
+        this.behavior = new BehaviorEngine(model.behavior);
+        this.state = model.state;
+        this.goals = model.goals;
+    }
+
+    encodeInput(input) {
+        const vector = new Float32Array(CONFIG.INPUT_SIZE);
+        vector[0] = this.state.energy / 100;
+        vector[1] = this.state.curiosity / 100;
+        vector[2] = this.state.confidence / 100;
+        vector[3] = this.state.stability / 100;
+
+        if (input && typeof input === "object") {
+            if (typeof input.value === "string") {
+                vector[4] = Math.min(input.value.length / 100, 1);
+            }
+            if (input.type === "user_input") {
+                vector[5] = 1;
+            }
+        }
+        vector[6] = Math.min(this.memory.items.length / CONFIG.MEMORY_LIMIT, 1);
+        return vector;
+    }
+
+    observe(input) {
+        return { input, timestamp: now(), state: { ...this.state } };
+    }
+
+    interpret(perception) {
+        const input = this.encodeInput(perception.input);
+        return this.network.forward(input);
+    }
+
+    decide(perception) {
+        // 1. Check Rules (Highest Priority)
+        const rule = this.rules.select(this.state);
+        if (rule) {
+            return { type: rule.action.type, ruleId: rule.id };
+        }
+
+        // 2. Fallback to Behavior Program
+        const action = this.behavior.run(this.state);
+        return { type: action, ruleId: null };
+    }
+
+    async execute(action) {
+        // State Transition Logic
+        switch (action.type) {
+            case "rest":
+                this.state.energy = clamp(this.state.energy + 10, CONFIG.STATE_MIN, CONFIG.STATE_MAX);
+                this.state.curiosity = clamp(this.state.curiosity - 2, 0, 100);
+                break;
+            case "explore":
+                this.state.energy = clamp(this.state.energy - 8, CONFIG.STATE_MIN, CONFIG.STATE_MAX);
+                this.state.curiosity = clamp(this.state.curiosity - 10, 0, 100);
+                break;
+            case "learn":
+                this.state.energy = clamp(this.state.energy - 3, CONFIG.STATE_MIN, CONFIG.STATE_MAX);
+                this.state.confidence = clamp(this.state.confidence + 5, 0, 100);
+                break;
+            case "observe":
+                this.state.energy = clamp(this.state.energy - 1, CONFIG.STATE_MIN, CONFIG.STATE_MAX);
+                break;
+            default:
+                this.state.energy = clamp(this.state.energy - 1, CONFIG.STATE_MIN, CONFIG.STATE_MAX);
+        }
+
+        this.state.curiosity = clamp(this.state.curiosity, 0, 100);
+
+        return { action: action.type, success: true, timestamp: now() };
+    }
+
+    evaluate(perception, action, result) {
+        let reward = 0;
+
+        if (this.state.energy >= 20) reward += 1;
+        if (action.type === "rest" && this.state.energy > 50) reward -= 0.2;
+        if (action.type === "explore") reward += 0.5;
+
+        return { reward, perception, action, result };
+    }
+
+    learn(evaluation) {
+        const input = this.encodeInput(evaluation.perception.input);
+        const target = new Float32Array(CONFIG.OUTPUT_SIZE).fill(evaluation.reward);
+
+        this.network.learn(input, target, CONFIG.LEARNING_RATE);
+
+        if (evaluation.action.ruleId) {
+            this.rules.reward(evaluation.action.ruleId, evaluation.reward);
+        }
+
+        this.memory.add({
+            input: evaluation.perception.input,
+            action: evaluation.action.type,
+            result: evaluation.result,
+            reward: evaluation.reward,
+            importance: Math.abs(evaluation.reward) * 50 + 50
+        });
+
+        // Occasionally mutate behavior
+        if (this.random.next() < 0.05) {
+            this.behavior.mutate(this.random);
+        }
+
+        this.rules.evolve();
+    }
+
+    updateState(evaluation) {
+        this.state.lastAction = evaluation.action.type;
+        this.state.lastReward = evaluation.reward;
+        this.state.cycle++;
+        this.state.updatedAt = now();
+
+        if (evaluation.reward > 0) {
+            this.state.curiosity += 1;
+        } else {
+            this.state.curiosity -= 1;
+        }
+        this.state.curiosity = clamp(this.state.curiosity, 0, 100);
+    }
+
+    async step(input) {
+        const perception = this.observe(input);
+        const interpretation = this.interpret(perception);
+        const action = this.decide(perception);
+        const result = await this.execute(action);
+        const evaluation = this.evaluate(perception, action, result);
+
+        this.learn(evaluation);
+        this.updateState(evaluation);
+        this.syncModel();
+
+        return { perception, interpretation, action, result, evaluation, state: this.state };
+    }
+
+    syncModel() {
+        this.model.updatedAt = now();
+        this.model.randomSeed = this.random.seed;
+        this.model.network.weights1 = this.network.weights1;
+        this.model.network.bias1 = this.network.bias1;
+        this.model.network.weights2 = this.network.weights2;
+        this.model.network.bias2 = this.network.bias2;
+        this.model.memory = this.memory.items;
+        this.model.rules = this.rules.rules;
+        this.model.behavior = this.behavior.program;
+        this.model.state = this.state;
+    }
+
+    exportModel() {
+        this.syncModel();
+        return serializeModel(this.model);
+    }
+
+    static importModel(buffer) {
+        const model = deserializeModel(buffer);
+        return new AIEngine(model);
+    }
+
+    getState() {
+        return this.state;
+    }
+
+    getMemory() {
+        return this.memory.items;
+    }
+
+    getRules() {
+        return this.rules.rules;
+    }
+
+    getBehavior() {
+        return this.behavior.program;
+    }
+}
+
+
+/* =========================================================
+ * GLOBAL API BRIDGE (Window Interface)
+ * ========================================================= */
+window.noeAI = AIEngine;
+
+// =========================================================
+// INITIAL SETUP & PERSISTENCE (Browser Integration)
+// =========================================================
+
+// Storage key for persistent identity.
+const storageKey = 'dodle-ai-model';
+let aiInstance = null;
+
+try {
+    const storedModel = localStorage.getItem(storageKey);
+    if (storedModel) {
+        const model = JSON.parse(storedModel);
+        aiInstance = new AIEngine(model);
+        console.log("DODLE AI: Model loaded successfully.");
+    }
+} catch (error) {
+    console.error("DODLE AI: Failed to load model from storage.", error);
+}
+
+// Initialize instance if no model was loaded
+if (!aiInstance) {
+    const initialModel = createModel();
+    aiInstance = new AIEngine(initialModel);
+    localStorage.setItem(storageKey, JSON.stringify(aiInstance.exportModel()));
+    console.log("DODLE AI: New model initialized and saved.");
+}
+
+
+// =========================================================
+// USER INTERACTION & REAL-TIME FEEDBACK
+// =========================================================
+
+/**
+ * Updates internal state based on cursor activity (simulating perception).
+ * This function links the browser input to the AI's perception stream.
+ * @param {Event} event - The interaction event (e.g., mousemove).
+ */
+function markActivity(event) {
+    // This simulates a "user_input" event for the AI
+    aiInstance.step({
+        type: "user_input",
+        value: `pos: (${event.clientX}, ${event.clientY})`
+    })
+    .then(result => {
+        // Optional: Log the AI's decision
+        // console.log(`[DODLE AI] Action: ${result.action.type}, Reward: ${result.evaluation.reward.toFixed(2)}`);
+    });
+}
+
+// Bind activity tracking to relevant input events.
+['mousemove', 'keydown', 'scroll', 'touchstart', 'focus'].forEach(eventName => {
     window.addEventListener(eventName, markActivity, { passive: true });
-  });
+});
 
-  // Handle visibility changes (e.g., tab switching).
-  document.addEventListener('visibilitychange', () => {
-    // If the page becomes visible, treat it as recent activity.
-    if (!document.hidden) markActivity();
-    // Always run the tick when visibility changes.
-    tick();
-  });
+// =========================================================
+// PUBLIC API BRIDGE (window.noe)
+// =========================================================
 
-  // Start the main simulation loop.
-  setInterval(tick, 1000);
-  tick(); // Initial run
-
-  // ========================================================================
-  // PUBLIC API BRIDGE (window.noe)
-  // ========================================================================
-
-  // Bridge the "here and now" feeling into the external system (limbric.js)
-  // where the cursor acts as the active energy source.
-  window.noeEnergy = {
-    /** Returns the current calculated energy level. */
-    get currentLevel() {
-      return energyLevel;
+window.noeEnergy = {
+    /** Returns the current state of the DODLE agent. */
+    get aiState() {
+        return aiInstance.getState();
     },
-    /** Checks if the system needs energy recharge based on configured rules. */
+    /** Returns the current tuning rules (for debugging/visualization). */
+    get rules() {
+        return aiInstance.getRules();
+    },
+    /** Checks if the system needs a major energy boost. */
     get needsEnergy() {
-      return energyLevel < rules.energyLow || state.feeling < rules.feelingLow;
+        return aiInstance.getState().energy < 20 || aiInstance.getState().curiosity < 40;
+    },
+    /** Allows external systems to artificially recharge energy. */
+    recharge(amount) {
+        if (amount > 0) {
+            aiInstance.state.energy = clamp(aiInstance.state.energy + amount, CONFIG.STATE_MIN, CONFIG.STATE_MAX);
+            aiInstance.state.curiosity = Math.min(100, aiInstance.state.curiosity + 5);
+            aiInstance.step({ type: "user_input", value: `recharged by ${amount}` });
+        }
     },
     /** Calculates the distance between the cursor and the conscious-pixel. */
     get nearestCube() {
-      const pixel = document.getElementById('conscious-pixel');
-      const rect = pixel ? pixel.getBoundingClientRect() : { left: lastPointer.x, top: lastPointer.y, width: 0, height: 0 };
-      const pixelX = rect.left + rect.width / 2;
-      const pixelY = rect.top + rect.height / 2;
-      const dx = lastPointer.x - pixelX;
-      const dy = lastPointer.y - pixelY;
-      return { x: lastPointer.x, y: lastPointer.y, distance: Math.sqrt(dx * dx + dy * dy) };
+        const pixel = document.getElementById('conscious-pixel');
+        const rect = pixel ? pixel.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
+        const pixelX = rect.left + rect.width / 2;
+        const pixelY = rect.top + rect.height / 2;
+        const dx = event ? event.clientX - pixelX : lastPointer.x - pixelX;
+        const dy = event ? event.clientY - pixelY : lastPointer.y - pixelY;
+        return { x: event ? event.clientX : lastPointer.x, y: event ? event.clientY : lastPointer.y, distance: Math.sqrt(dx * dx + dy * dy) };
     },
-    /** Allows external systems to recharge energy. */
-    recharge(amount) {
-      energyLevel = Math.min(100, energyLevel + amount);
-      lastActivity = Date.now();
-      tick(); // Recalculate state immediately after recharge.
-    },
-  };
+};
 
-  window.noeSelf = {
-    /** Returns the current internal state and energy. */
+window.noeSelf = {
+    /** Returns the current internal state and energy of the AI. */
     get state() {
-      return { ...state, energy: energyLevel };
+        return aiInstance.getState();
     },
     /** Returns the current tuning rules. */
     get rules() {
-      return { ...rules };
+        return aiInstance.getRules();
     },
-    /** Exposes the tick function for external use. */
-    moment: tick,
-  };
+    /** Exposes the agent's core decision-making function. */
+    decide: aiInstance.decide,
+    /** Exposes the agent's state for external observation. */
+    getState: () => aiInstance.getState(),
+};
 
-  // ========================================================================
-  // SELF-MODIFYING AI (Adaptive Tuning)
-  // ========================================================================
-  const AI = {
-    intervalMs: 5_000,       // How often the AI runs its cycle.
-    learningRate: 0.15,     // How aggressively the AI adjusts weights.
-    mutationLimit: 5,       // Maximum change allowed per cycle.
-
-    memory: [],             // History of observations and actions.
-    rules,                  // Reference to the rules being modified.
-    lastObservation: null,
-
-    // Model weights: Reflects the perceived importance of different states.
-    model: {
-      weights: {
-        energy: 0.40, // Importance of energy level.
-        feeling: 0.40, // Importance of feeling state.
-        idle: 0.20,    // Importance of idle state.
-      },
-    },
-
-    /** Observes the current system state and converts it into normalized observations. */
-    observe() {
-      const s = window.noeSelf.state;
-
-      return {
-        energy: s.energy / 100,
-        feeling: s.feeling,
-        // Idle is mapped based on presence status.
-        idle:
-          s.presence === 'idle' ? 1 :
-          s.presence === 'away' ? 1 :
-          0,
-      };
-    },
-
-    /** Uses the observation and weights to propose an action. */
-    think(observation) {
-      const w = this.model.weights;
-
-      // Calculate activation score based on weighted observation.
-      const activation =
-        observation.energy * w.energy +
-        observation.feeling * w.feeling -
-        observation.idle * w.idle;
-
-      if (activation < 0.35) {
-        // Low activation suggests a need for activity.
-        return { type: 'increase_activity_reward', amount: 1 };
-      }
-
-      if (activation > 0.75) {
-        // High activation suggests the system is over-stimulated.
-        return { type: 'reduce_energy_gain', amount: 1 };
-      }
-
-      return { type: 'nothing' };
-    },
-
-    /** Wraps the action with a timestamp. */
-    propose(action) {
-      return { ...action, timestamp: Date.now() };
-    },
-
-    /** Checks if the proposed mutation is valid and within limits. */
-    validate(proposal) {
-      if (!proposal) return false;
-
-      if (!Number.isFinite(proposal.amount)) {
-        return proposal.type === 'nothing';
-      }
-
-      if (Math.abs(proposal.amount) > this.mutationLimit) {
-        return false;
-      }
-
-      const allowed = [
-        'increase_activity_reward',
-        'reduce_energy_gain',
-        'nothing',
-      ];
-
-      return allowed.includes(proposal.type);
-    },
-
-    /** Applies the proposed change to the system rules. */
-    mutate(proposal) {
-      if (!this.validate(proposal)) {
-        return false;
-      }
-
-      switch (proposal.type) {
-        case 'increase_activity_reward':
-          // Increase activity energy sensitivity.
-          this.rules.activityEnergy = Math.min(20, this.rules.activityEnergy + proposal.amount);
-          break;
-
-        case 'reduce_energy_gain':
-          // Reduce how much interaction feeds energy.
-          this.rules.activityEnergy = Math.max(0, this.rules.activityEnergy - proposal.amount);
-          break;
-
-        case 'nothing':
-          break;
-      }
-
-      // Store the result for later learning.
-      this.memory.push({ proposal, rules: { ...this.rules } });
-
-      // Keep memory size manageable.
-      if (this.memory.length > 100) {
-        this.memory.shift();
-      }
-
-      return true;
-    },
-
-    /** Updates the internal weights based on recent observations and results. */
-    learn(observation, result) {
-      // Reward calculation: based on how much energy/feeling shifted.
-      const reward = result?.reward ?? 0;
-      const direction = reward > 0 ? 1 : -1;
-
-      // Update weights using a simple gradient descent approach.
-      this.model.weights.energy += this.learningRate * direction * observation.energy;
-      this.model.weights.feeling += this.learningRate * direction * observation.feeling;
-      this.model.weights.idle -= this.learningRate * direction * observation.idle;
-
-      // Clamp weights between -1 and 1.
-      for (const key in this.model.weights) {
-        this.model.weights[key] = Math.max(-1, Math.min(1, this.model.weights[key]));
-      }
-    },
-
-    /** The main adaptive loop for the AI. */
-    cycle() {
-      const observation = this.observe();
-      const action = this.think(observation);
-      const proposal = this.propose(action);
-      const changed = this.mutate(proposal);
-
-      // Reward calculation: simple feedback loop.
-      let reward = changed ? 0.1 : 0;
-      if (this.lastObservation) {
-        // Reward is based on the change observed in the system state.
-        const delta =
-          (observation.energy - this.lastObservation.energy) +
-          (observation.feeling - this.lastObservation.feeling);
-        reward += delta;
-      }
-      this.lastObservation = observation;
-
-      this.learn(observation, { reward });
-
-      return { observation, proposal, changed, rules: { ...this.rules } };
-    },
-  };
-
-  window.noeAI = AI;
-
-  // Start the AI learning loop.
-  setInterval(() => AI.cycle(), AI.intervalMs);
-})();
+console.log("DODLE AI System Initialized and Running.");
