@@ -1,6 +1,6 @@
-# Dodle Search v1.3.0
+# Dodle Search v1.4.0
 
-Version: `1.3.0`
+Version: `1.4.0`
 
 A minimal, distraction-free search homepage that sends queries to Google.
 
@@ -46,7 +46,7 @@ When the pixel needs energy, it targets the current cursor position as a virtual
 
 ## Changelog
 
-See [CHANGELOG_v1.3.0.md](doc/CHANGELOG_v1.3.0.md) for the latest release
+See [CHANGELOG_v1.4.0.md](doc/CHANGELOG_v1.4.0.md) for the latest release
 history. The [v1.0.0 changelog](doc/CHANGELOG_v1.0.0.md) covers the initial
 release.
 
