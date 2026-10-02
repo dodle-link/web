@@ -15,7 +15,13 @@ const curiosityLanguageConfig = {
       'Mechanical Engineering', 'Electrical Engineering', 'Chemical Engineering', 'Aerospace Engineering', 'Biomedical Engineering', 'Manufacturing', 'Construction', 'Architecture History', 'Archaeological Methods', 'Museums',
       'Libraries', 'Journalism', 'Publishing', 'Advertising', 'Marketing', 'Entrepreneurship', 'Accounting', 'Banking', 'Investing', 'Insurance',
       'Public Policy', 'International Relations', 'Human Rights', 'Criminology', 'Forensics', 'Emergency Services', 'Military History', 'Languages', 'Translation', 'Writing',
-      'Reading', 'Education Technology', 'Child Development', 'Mental Health', 'Exercise Science', 'Nutrition Science', 'Medicine History', 'Alternative Medicine', 'First Aid', 'Aging'
+      'Reading', 'Education Technology', 'Child Development', 'Mental Health', 'Exercise Science', 'Nutrition Science', 'Medicine History', 'Alternative Medicine', 'First Aid', 'Aging',
+      'World Cuisines', 'Street Food', 'Food Science', 'Fermentation', 'Spices', 'Tea Culture', 'Coffee Culture', 'Cheese Making',
+      'Animation', 'Television', 'Comedy', 'Podcasts', 'Live Music', 'Board Games', 'Circus Arts', 'Theme Parks',
+      'Illustration', 'Printmaking', 'Art History', 'Street Art', 'Digital Art', 'Costume Design', 'Mosaics', 'Public Art',
+      'Regional Cuisines', 'Italian Cuisine', 'Japanese Cuisine', 'Mexican Cuisine', 'Indian Cuisine', 'Mediterranean Cuisine', 'Seafood', 'Plant-Based Cooking', 'Chocolate', 'Pasta', 'Rice Dishes', 'Soups and Stews', 'Pickling', 'Food Markets', 'Culinary Traditions', 'Food Pairing', 'Restaurant Culture',
+      'Radio', 'Streaming Media', 'Reality Television', 'Documentary Filmmaking', 'Musical Theater', 'Stand-Up Comedy', 'Video Game Design', 'Esports', 'Role-Playing Games', 'Live-Action Role-Playing', 'Dance Music', 'Music Festivals', 'Film Festivals', 'Puppetry', 'Magic Shows', 'Influencer Culture',
+      'Watercolor Painting', 'Oil Painting', 'Contemporary Art', 'Performance Art', 'Installation Art', 'Art Conservation', 'Sculpture Techniques', 'Calligraphy', 'Book Illustration', 'Comic Art', 'Graphic Novels', 'Photography Exhibitions', 'Landscape Painting', 'Portraiture', 'Textile Art', 'Glass Art', 'Art Therapy'
     ],
     patterns: [
       'What is {topic}?', 'How does {topic} work?', 'Why is {topic} important?', 'A beginner guide to {topic}',
@@ -50,7 +56,13 @@ const curiosityLanguageConfig = {
       '機械工学', '電気工学', '化学工学', '航空宇宙工学', '生体医工学', '製造業', '建設', '建築史', '考古学的手法', '博物館',
       '図書館', 'ジャーナリズム', '出版', '広告', 'マーケティング', '起業', '会計学', '銀行業', '投資', '保険',
       '公共政策', '国際関係', '人権', '犯罪学', '法科学', '救急サービス', '軍事史', '言語', '翻訳', '文章作法',
-      '読書', '教育工学', '子どもの発達', 'メンタルヘルス', '運動科学', '栄養科学', '医学史', '代替医療', '応急手当', '高齢化'
+      '読書', '教育工学', '子どもの発達', 'メンタルヘルス', '運動科学', '栄養科学', '医学史', '代替医療', '応急手当', '高齢化',
+      '世界の料理', 'ストリートフード', '食品科学', '発酵', '香辛料', 'お茶の文化', 'コーヒー文化', 'チーズ作り',
+      'アニメーション', 'テレビ', 'コメディ', 'ポッドキャスト', 'ライブ音楽', 'ボードゲーム', 'サーカス芸術', 'テーマパーク',
+      'イラストレーション', '版画', '美術史', 'ストリートアート', 'デジタルアート', '衣装デザイン', 'モザイク', 'パブリックアート',
+      '地域の料理文化', 'イタリア料理', '日本料理', 'メキシコ料理', 'インド料理', '地中海料理', '魚介料理', '植物性料理', 'チョコレート', 'パスタ', '米料理', 'スープと煮込み料理', '漬物', '食品市場', '食文化の伝統', '料理のペアリング', 'レストラン文化',
+      'ラジオ', 'ストリーミングメディア', 'リアリティ番組', 'ドキュメンタリー制作', 'ミュージカル', 'スタンドアップコメディ', 'ゲームデザイン', 'eスポーツ', 'ロールプレイングゲーム', 'ライブアクションRPG', 'ダンスミュージック', '音楽フェスティバル', '映画祭', '人形劇', 'マジックショー', 'インフルエンサー文化',
+      '水彩画', '油絵', '現代美術', 'パフォーマンスアート', 'インスタレーションアート', '美術品の保存修復', '彫刻技法', '書道', '書籍の挿絵', '漫画芸術', 'グラフィックノベル', '写真展', '風景画', '肖像画', 'テキスタイルアート', 'ガラス芸術', 'アートセラピー'
     ],
     patterns: [
       '{topic}とは？', '{topic}はどのように機能する？', 'なぜ{topic}は興味深い？', '{topic}入門', '{topic}の歴史',
@@ -84,7 +96,13 @@ const curiosityLanguageConfig = {
       '机械工程', '电气工程', '化学工程', '航空航天工程', '生物医学工程', '制造业', '建筑施工', '建筑史', '考古方法', '博物馆',
       '图书馆', '新闻学', '出版', '广告', '市场营销', '创业', '会计学', '银行业', '投资', '保险',
       '公共政策', '国际关系', '人权', '犯罪学', '法医学', '应急服务', '军事史', '语言', '翻译', '写作',
-      '阅读', '教育技术', '儿童发展', '心理健康', '运动科学', '营养科学', '医学史', '替代医学', '急救', '老龄化'
+      '阅读', '教育技术', '儿童发展', '心理健康', '运动科学', '营养科学', '医学史', '替代医学', '急救', '老龄化',
+      '世界美食', '街头美食', '食品科学', '发酵', '香料', '茶文化', '咖啡文化', '奶酪制作',
+      '动画', '电视', '喜剧', '播客', '现场音乐', '桌游', '马戏艺术', '主题公园',
+      '插画', '版画', '艺术史', '街头艺术', '数字艺术', '服装设计', '马赛克', '公共艺术',
+      '地方美食', '意大利料理', '日本料理', '墨西哥料理', '印度料理', '地中海料理', '海鲜', '植物性烹饪', '巧克力', '意大利面', '米饭料理', '汤与炖菜', '腌制食品', '食品市场', '饮食传统', '食物搭配', '餐饮文化',
+      '广播', '流媒体', '真人秀', '纪录片制作', '音乐剧', '单口喜剧', '电子游戏设计', '电子竞技', '角色扮演游戏', '真人角色扮演', '舞曲', '音乐节', '电影节', '木偶戏', '魔术表演', '网红文化',
+      '水彩画', '油画', '当代艺术', '行为艺术', '装置艺术', '艺术品保护与修复', '雕塑技法', '书法', '书籍插画', '漫画艺术', '图像小说', '摄影展览', '风景画', '肖像画', '纺织艺术', '玻璃艺术', '艺术疗愈'
     ],
     patterns: [
       '什么是{topic}？', '{topic}是如何运作的？', '为什么{topic}很有趣？', '{topic}入门指南', '{topic}的历史',
@@ -118,7 +136,13 @@ const curiosityLanguageConfig = {
       'วิศวกรรมเครื่องกล', 'วิศวกรรมไฟฟ้า', 'วิศวกรรมเคมี', 'วิศวกรรมการบินและอวกาศ', 'วิศวกรรมชีวการแพทย์', 'การผลิต', 'การก่อสร้าง', 'ประวัติศาสตร์สถาปัตยกรรม', 'วิธีการทางโบราณคดี', 'พิพิธภัณฑ์',
       'ห้องสมุด', 'วารสารศาสตร์', 'การพิมพ์', 'โฆษณา', 'การตลาด', 'การประกอบการ', 'การบัญชี', 'การธนาคาร', 'การลงทุน', 'การประกันภัย',
       'นโยบายสาธารณะ', 'ความสัมพันธ์ระหว่างประเทศ', 'สิทธิมนุษยชน', 'อาชญาวิทยา', 'นิติวิทยาศาสตร์', 'บริการฉุกเฉิน', 'ประวัติศาสตร์การทหาร', 'ภาษา', 'การแปล', 'การเขียน',
-      'การอ่าน', 'เทคโนโลยีการศึกษา', 'พัฒนาการเด็ก', 'สุขภาพจิต', 'วิทยาศาสตร์การออกกำลังกาย', 'วิทยาศาสตร์โภชนาการ', 'ประวัติศาสตร์การแพทย์', 'การแพทย์ทางเลือก', 'การปฐมพยาบาล', 'สังคมสูงวัย'
+      'การอ่าน', 'เทคโนโลยีการศึกษา', 'พัฒนาการเด็ก', 'สุขภาพจิต', 'วิทยาศาสตร์การออกกำลังกาย', 'วิทยาศาสตร์โภชนาการ', 'ประวัติศาสตร์การแพทย์', 'การแพทย์ทางเลือก', 'การปฐมพยาบาล', 'สังคมสูงวัย',
+      'อาหารจากทั่วโลก', 'อาหารริมทาง', 'วิทยาศาสตร์การอาหาร', 'การหมักอาหาร', 'เครื่องเทศ', 'วัฒนธรรมชา', 'วัฒนธรรมกาแฟ', 'การทำชีส',
+      'แอนิเมชัน', 'โทรทัศน์', 'ตลก', 'พอดแคสต์', 'ดนตรีสด', 'เกมกระดาน', 'ศิลปะละครสัตว์', 'สวนสนุก',
+      'ภาพประกอบ', 'ภาพพิมพ์', 'ประวัติศาสตร์ศิลปะ', 'สตรีตอาร์ต', 'ศิลปะดิจิทัล', 'การออกแบบเครื่องแต่งกาย', 'ศิลปะโมเสก', 'ศิลปะสาธารณะ',
+      'อาหารประจำภูมิภาค', 'อาหารอิตาเลียน', 'อาหารญี่ปุ่น', 'อาหารเม็กซิกัน', 'อาหารอินเดีย', 'อาหารเมดิเตอร์เรเนียน', 'อาหารทะเล', 'การทำอาหารจากพืช', 'ช็อกโกแลต', 'พาสต้า', 'เมนูข้าว', 'ซุปและสตูว์', 'การดองอาหาร', 'ตลาดอาหาร', 'ธรรมเนียมอาหาร', 'การจับคู่รสชาติ', 'วัฒนธรรมร้านอาหาร',
+      'วิทยุ', 'สื่อสตรีมมิง', 'รายการเรียลลิตี', 'การสร้างภาพยนตร์สารคดี', 'ละครเพลง', 'สแตนด์อัปคอมเมดี้', 'การออกแบบวิดีโอเกม', 'อีสปอร์ต', 'เกมสวมบทบาท', 'การสวมบทบาทแบบแสดงสด', 'ดนตรีแดนซ์', 'เทศกาลดนตรี', 'เทศกาลภาพยนตร์', 'หุ่นกระบอก', 'การแสดงมายากล', 'วัฒนธรรมอินฟลูเอนเซอร์',
+      'ภาพสีน้ำ', 'ภาพสีน้ำมัน', 'ศิลปะร่วมสมัย', 'ศิลปะการแสดง', 'ศิลปะจัดวาง', 'การอนุรักษ์และซ่อมแซมงานศิลปะ', 'เทคนิคการแกะสลัก', 'การเขียนอักษรวิจิตร', 'ภาพประกอบหนังสือ', 'ศิลปะการ์ตูน', 'นิยายภาพ', 'นิทรรศการภาพถ่าย', 'ภาพวาดทิวทัศน์', 'ภาพเหมือน', 'ศิลปะสิ่งทอ', 'ศิลปะแก้ว', 'ศิลปะบำบัด'
     ],
     patterns: [
       '{topic}คืออะไร', '{topic}ทำงานอย่างไร', 'ทำไม{topic}จึงน่าสนใจ', 'คู่มือเบื้องต้นเกี่ยวกับ{topic}', 'ประวัติของ{topic}',
@@ -152,7 +176,13 @@ const curiosityLanguageConfig = {
       '기계공학', '전기공학', '화학공학', '항공우주공학', '의생명공학', '제조업', '건설', '건축사', '고고학적 방법', '박물관',
       '도서관', '저널리즘', '출판', '광고', '마케팅', '기업가정신', '회계학', '은행업', '투자', '보험',
       '공공 정책', '국제 관계', '인권', '범죄학', '법과학', '응급 서비스', '군사 역사', '언어', '번역', '글쓰기',
-      '독서', '교육 기술', '아동 발달', '정신 건강', '운동 과학', '영양 과학', '의학사', '대체 의학', '응급 처치', '고령화'
+      '독서', '교육 기술', '아동 발달', '정신 건강', '운동 과학', '영양 과학', '의학사', '대체 의학', '응급 처치', '고령화',
+      '세계 음식 문화', '길거리 음식', '식품 과학', '발효', '향신료', '차 문화', '커피 문화', '치즈 제조',
+      '애니메이션', '텔레비전', '코미디', '팟캐스트', '라이브 음악', '보드게임', '서커스 예술', '테마파크',
+      '일러스트레이션', '판화', '미술사', '스트리트 아트', '디지털 아트', '의상 디자인', '모자이크', '공공 미술',
+      '지역별 요리', '이탈리아 요리', '일본 요리', '멕시코 요리', '인도 요리', '지중해 요리', '해산물 요리', '식물성 요리', '초콜릿', '파스타', '쌀 요리', '수프와 스튜', '절임 음식', '식품 시장', '음식 전통', '음식 페어링', '레스토랑 문화',
+      '라디오', '스트리밍 미디어', '리얼리티 텔레비전', '다큐멘터리 제작', '뮤지컬', '스탠드업 코미디', '비디오 게임 디자인', 'e스포츠', '롤플레잉 게임', '실사 롤플레잉', '댄스 음악', '음악 축제', '영화제', '인형극', '마술 공연', '인플루언서 문화',
+      '수채화', '유화', '현대 미술', '행위 예술', '설치 미술', '미술품 보존과 복원', '조각 기법', '서예', '책 삽화', '만화 예술', '그래픽 노블', '사진 전시', '풍경화', '초상화', '섬유 예술', '유리 예술', '미술 치료'
     ],
     patterns: [
       '{topic}이란 무엇인가?', '{topic}은 어떻게 작동하는가?', '왜 {topic}이 중요한가?', '{topic} 입문', '{topic}의 역사',
@@ -186,7 +216,13 @@ const curiosityLanguageConfig = {
       'Génie mécanique', 'Génie électrique', 'Génie chimique', 'Génie aérospatial', 'Génie biomédical', 'Fabrication', 'Construction', 'Histoire de l’architecture', 'Méthodes archéologiques', 'Musées',
       'Bibliothèques', 'Journalisme', 'Édition', 'Publicité', 'Marketing', 'Entrepreneuriat', 'Comptabilité', 'Banque', 'Investissement', 'Assurance',
       'Politiques publiques', 'Relations internationales', 'Droits humains', 'Criminologie', 'Médecine légale', 'Services d’urgence', 'Histoire militaire', 'Langues', 'Traduction', 'Écriture',
-      'Lecture', 'Technologies éducatives', 'Développement de l’enfant', 'Santé mentale', 'Sciences de l’exercice', 'Science de la nutrition', 'Histoire de la médecine', 'Médecine douce', 'Premiers secours', 'Vieillissement'
+      'Lecture', 'Technologies éducatives', 'Développement de l’enfant', 'Santé mentale', 'Sciences de l’exercice', 'Science de la nutrition', 'Histoire de la médecine', 'Médecine douce', 'Premiers secours', 'Vieillissement',
+      'Cuisines du monde', 'Cuisine de rue', 'Science des aliments', 'Fermentation', 'Épices', 'Culture du thé', 'Culture du café', 'Fabrication du fromage',
+      'Animation', 'Télévision', 'Comédie', 'Podcasts', 'Musique en direct', 'Jeux de société', 'Arts du cirque', 'Parcs à thème',
+      'Illustration', 'Gravure', 'Histoire de l’art', 'Art urbain', 'Art numérique', 'Création de costumes', 'Mosaïques', 'Art public',
+      'Cuisines régionales', 'Cuisine italienne', 'Cuisine japonaise', 'Cuisine mexicaine', 'Cuisine indienne', 'Cuisine méditerranéenne', 'Fruits de mer', 'Cuisine végétale', 'Chocolat', 'Pâtes', 'Plats à base de riz', 'Soupes et ragoûts', 'Conservation des aliments', 'Marchés alimentaires', 'Traditions culinaires', 'Accords mets et boissons', 'Culture des restaurants',
+      'Radio', 'Médias en streaming', 'Télé-réalité', 'Réalisation de documentaires', 'Comédie musicale', 'Humour stand-up', 'Conception de jeux vidéo', 'Sports électroniques', 'Jeux de rôle', 'Jeu de rôle grandeur nature', 'Musique dance', 'Festivals de musique', 'Festivals de cinéma', 'Marionnettes', 'Spectacles de magie', 'Culture des influenceurs',
+      'Aquarelle', 'Peinture à l’huile', 'Art contemporain', 'Art performance', 'Art d’installation', 'Conservation et restauration des œuvres d’art', 'Techniques de sculpture', 'Calligraphie', 'Illustration de livres', 'Art de la bande dessinée', 'Romans graphiques', 'Expositions de photographie', 'Peinture de paysage', 'Portrait', 'Art textile', 'Art du verre', 'Art-thérapie'
     ],
     patterns: [
       "Qu'est-ce que {topic} ?", 'Comment fonctionne {topic} ?', 'Pourquoi {topic} est-il important ?', 'Guide de {topic} pour débutants',
@@ -222,7 +258,13 @@ const curiosityLanguageConfig = {
       'Maschinenbau', 'Elektrotechnik', 'Chemieingenieurwesen', 'Luft- und Raumfahrttechnik', 'Biomedizinische Technik', 'Produktion', 'Bauwesen', 'Architekturgeschichte', 'Archäologische Methoden', 'Museen',
       'Bibliotheken', 'Journalismus', 'Verlagswesen', 'Werbung', 'Marketing', 'Unternehmertum', 'Buchhaltung', 'Bankwesen', 'Investitionen', 'Versicherungen',
       'Öffentliche Politik', 'Internationale Beziehungen', 'Menschenrechte', 'Kriminologie', 'Forensik', 'Rettungsdienste', 'Militärgeschichte', 'Sprachen', 'Übersetzung', 'Schreiben',
-      'Lesen', 'Bildungstechnologie', 'Kinderentwicklung', 'Psychische Gesundheit', 'Sportwissenschaft', 'Ernährungswissenschaft', 'Medizingeschichte', 'Alternativmedizin', 'Erste Hilfe', 'Alterung'
+      'Lesen', 'Bildungstechnologie', 'Kinderentwicklung', 'Psychische Gesundheit', 'Sportwissenschaft', 'Ernährungswissenschaft', 'Medizingeschichte', 'Alternativmedizin', 'Erste Hilfe', 'Alterung',
+      'Weltküchen', 'Streetfood', 'Lebensmittelwissenschaft', 'Fermentation', 'Gewürze', 'Teekultur', 'Kaffeekultur', 'Käseherstellung',
+      'Animation', 'Fernsehen', 'Comedy', 'Podcasts', 'Live-Musik', 'Brettspiele', 'Zirkuskunst', 'Themenparks',
+      'Illustration', 'Druckgrafik', 'Kunstgeschichte', 'Street Art', 'Digitale Kunst', 'Kostümdesign', 'Mosaikkunst', 'Kunst im öffentlichen Raum',
+      'Regionale Küchen', 'Italienische Küche', 'Japanische Küche', 'Mexikanische Küche', 'Indische Küche', 'Mediterrane Küche', 'Meeresfrüchte', 'Pflanzenbasierte Küche', 'Schokolade', 'Pasta', 'Reisgerichte', 'Suppen und Eintöpfe', 'Einlegen und Fermentieren', 'Lebensmittelmärkte', 'Kulinarische Traditionen', 'Food-Pairing', 'Restaurantkultur',
+      'Radio', 'Streaming-Medien', 'Reality-TV', 'Dokumentarfilm', 'Musicaltheater', 'Stand-up-Comedy', 'Videospielentwicklung', 'E-Sport', 'Rollenspiele', 'Live-Rollenspiel', 'Tanzmusik', 'Musikfestivals', 'Filmfestivals', 'Puppenspiel', 'Zaubershows', 'Influencer-Kultur',
+      'Aquarellmalerei', 'Ölmalerei', 'Zeitgenössische Kunst', 'Performancekunst', 'Installationskunst', 'Konservierung und Restaurierung von Kunst', 'Bildhauertechniken', 'Kalligrafie', 'Buchillustration', 'Comic-Kunst', 'Graphic Novels', 'Fotoausstellungen', 'Landschaftsmalerei', 'Porträtkunst', 'Textilkunst', 'Glaskunst', 'Kunsttherapie'
     ],
     patterns: [
       'Was ist {topic}?', 'Wie funktioniert {topic}?', 'Warum ist {topic} wichtig?', 'Eine Einführung in {topic}', 'Die Geschichte von {topic}',
