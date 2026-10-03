@@ -899,18 +899,13 @@ if (!aiInstance) {
  * This function links the browser input to the AI's perception stream.
  * @param {Event} event - The interaction event (e.g., mousemove).
  */
-let lastPointer = null;
-
 function markActivity(event) {
     const pointer = event.touches?.[0] || event;
-    if (Number.isFinite(pointer.clientX) && Number.isFinite(pointer.clientY)) {
-        lastPointer = { x: pointer.clientX, y: pointer.clientY };
-    }
 
     // This simulates a "user_input" event for the AI
     aiInstance.step({
         type: "user_input",
-        value: `pos: (${event.clientX}, ${event.clientY})`
+        value: `pos: (${pointer.clientX}, ${pointer.clientY})`
     })
     .then(result => {
         // Optional: Log the AI's decision
@@ -932,6 +927,12 @@ window.noeEnergy = {
     get aiState() {
         return aiInstance.getState();
     },
+    get currentLevel() {
+        const energy = Number(aiInstance.getState().energy);
+        return Number.isFinite(energy)
+            ? clamp(energy, CONFIG.STATE_MIN, CONFIG.STATE_MAX)
+            : 0;
+    },
     /** Returns the current tuning rules (for debugging/visualization). */
     get rules() {
         return aiInstance.getRules();
@@ -948,16 +949,8 @@ window.noeEnergy = {
             aiInstance.step({ type: "user_input", value: `recharged by ${amount}` });
         }
     },
-    /** Calculates the distance between the cursor and the conscious-pixel. */
     get nearestCube() {
-        const pixel = document.getElementById('conscious-pixel');
-        const rect = pixel ? pixel.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
-        const pixelX = rect.left + rect.width / 2;
-        const pixelY = rect.top + rect.height / 2;
-        const pointer = lastPointer || { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-        const dx = pointer.x - pixelX;
-        const dy = pointer.y - pixelY;
-        return { x: pointer.x, y: pointer.y, distance: Math.sqrt(dx * dx + dy * dy) };
+        return null;
     },
 };
 
