@@ -30,12 +30,6 @@ The state contains `energy`, `curiosity`, `confidence`, `stability`, `cycle`, `l
 
 `exportModel()` returns a binary `ArrayBuffer` in the DODL format. `AIEngine.importModel(buffer)` validates the format and model version before creating an agent from it. Serialized models are limited to 1 MB, with bounded memory, rules, and behavior-program lengths.
 
-## Current implementation caveats
+## Persistence notes
 
-The script currently has runtime issues that affect normal use:
-
-- `createModel()` instantiates `Random`, but no `Random` implementation is defined in this file or the other workspace JavaScript files. Without another script supplying it, initialization stops with a `ReferenceError`.
-- `TinyNetwork.learn()` reads `outputError` outside the loop where it is declared. Once a model is initialized, an agent step can fail during learning.
-- The startup persistence code passes the `ArrayBuffer` returned by `exportModel()` to `JSON.stringify()`. That does not preserve its binary contents, so the stored model cannot be reliably restored by the JSON-loading path.
-
-These notes describe the current code; the exposed APIs and automatic interaction loop depend on resolving the initialization issue first.
+The `dodle-ai-model` local-storage value contains the DODL binary model encoded as base64. Values written by the earlier JSON-based implementation are not compatible; if one is encountered, the script initializes and stores a new model.

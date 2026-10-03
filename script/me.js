@@ -60,6 +60,43 @@ function now() {
     return Date.now();
 }
 
+class Random {
+    constructor(seed = now()) {
+        this.seed = Number(seed) >>> 0 || 1;
+    }
+
+    next() {
+        let value = this.seed;
+        value ^= value << 13;
+        value ^= value >>> 17;
+        value ^= value << 5;
+        this.seed = value >>> 0;
+        return this.seed / 0x100000000;
+    }
+
+    float(min, max) {
+        return min + this.next() * (max - min);
+    }
+}
+
+function encodeModelForStorage(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset++) {
+        binary += String.fromCharCode(bytes[offset]);
+    }
+    return btoa(binary);
+}
+
+function decodeModelFromStorage(encoded) {
+    const binary = atob(encoded);
+    const bytes = new Uint8Array(binary.length);
+    for (let offset = 0; offset < binary.length; offset++) {
+        bytes[offset] = binary.charCodeAt(offset);
+    }
+    return bytes.buffer;
+}
+
 
 /* =========================================================
  * INITIAL STATE (DODLE Model State)
@@ -247,13 +284,15 @@ class TinyNetwork {
         const result = this.forward(input);
         const hidden = result.hidden;
         const output = result.output;
+        const outputErrors = new Float32Array(this.outputSize);
 
-        // Output Error & Update Weights 2
+        // Update the output layer and retain its errors for backpropagation.
         for (let o = 0; o < this.outputSize; o++) {
             const outputError = target[o] - output[o];
+            outputErrors[o] = outputError;
             for (let h = 0; h < this.hiddenSize; h++) {
                 const index = o * this.hiddenSize + h;
-                this.weights2[index] += learningRate * outputError[o] * hidden[h];
+                this.weights2[index] += learningRate * outputError * hidden[h];
                 this.weights2[index] = clamp(this.weights2[index], CONFIG.MIN_WEIGHT, CONFIG.MAX_WEIGHT);
             }
             this.bias2[o] += learningRate * outputError[o];
@@ -263,7 +302,7 @@ class TinyNetwork {
         for (let h = 0; h < this.hiddenSize; h++) {
             let error = 0;
             for (let o = 0; o < this.outputSize; o++) {
-                error += outputError[o] * this.weights2[o * this.hiddenSize + h];
+                error += outputErrors[o] * this.weights2[o * this.hiddenSize + h];
             }
             if (hidden[h] <= 0) {
                 error = 0;
@@ -573,10 +612,10 @@ function deserializeModel(buffer) {
     const hiddenSize = metadata.networkShape.hiddenSize;
     const outputSize = metadata.networkShape.outputSize;
 
-    const weights1 = new Float32Array(inputSize * hiddenSize * 4);
-    const bias1 = new Float32Array(hiddenSize * 4);
-    const weights2 = new Float32Array(hiddenSize * outputSize * 4);
-    const bias2 = new Float32Array(outputSize * 4);
+    const weights1 = new Float32Array(inputSize * hiddenSize);
+    const bias1 = new Float32Array(hiddenSize);
+    const weights2 = new Float32Array(hiddenSize * outputSize);
+    const bias2 = new Float32Array(outputSize);
 
     let offset = HEADER_SIZE + metadataSize;
 
@@ -608,6 +647,16 @@ function deserializeModel(buffer) {
 
     validateModel(model);
     return model;
+}
+
+function loadStoredModel(storage, key) {
+    const storedModel = storage.getItem(key);
+    if (!storedModel) return null;
+    return deserializeModel(decodeModelFromStorage(storedModel));
+}
+
+function saveStoredModel(storage, key, model) {
+    storage.setItem(key, encodeModelForStorage(serializeModel(model)));
 }
 
 
@@ -819,9 +868,8 @@ const storageKey = 'dodle-ai-model';
 let aiInstance = null;
 
 try {
-    const storedModel = localStorage.getItem(storageKey);
-    if (storedModel) {
-        const model = JSON.parse(storedModel);
+    const model = loadStoredModel(localStorage, storageKey);
+    if (model) {
         aiInstance = new AIEngine(model);
         console.log("DODLE AI: Model loaded successfully.");
     }
@@ -833,7 +881,11 @@ try {
 if (!aiInstance) {
     const initialModel = createModel();
     aiInstance = new AIEngine(initialModel);
-    localStorage.setItem(storageKey, JSON.stringify(aiInstance.exportModel()));
+    try {
+        saveStoredModel(localStorage, storageKey, aiInstance.model);
+    } catch (error) {
+        console.error("DODLE AI: Failed to save model to storage.", error);
+    }
     console.log("DODLE AI: New model initialized and saved.");
 }
 
@@ -847,7 +899,14 @@ if (!aiInstance) {
  * This function links the browser input to the AI's perception stream.
  * @param {Event} event - The interaction event (e.g., mousemove).
  */
+let lastPointer = null;
+
 function markActivity(event) {
+    const pointer = event.touches?.[0] || event;
+    if (Number.isFinite(pointer.clientX) && Number.isFinite(pointer.clientY)) {
+        lastPointer = { x: pointer.clientX, y: pointer.clientY };
+    }
+
     // This simulates a "user_input" event for the AI
     aiInstance.step({
         type: "user_input",
@@ -895,9 +954,10 @@ window.noeEnergy = {
         const rect = pixel ? pixel.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
         const pixelX = rect.left + rect.width / 2;
         const pixelY = rect.top + rect.height / 2;
-        const dx = event ? event.clientX - pixelX : lastPointer.x - pixelX;
-        const dy = event ? event.clientY - pixelY : lastPointer.y - pixelY;
-        return { x: event ? event.clientX : lastPointer.x, y: event ? event.clientY : lastPointer.y, distance: Math.sqrt(dx * dx + dy * dy) };
+        const pointer = lastPointer || { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        const dx = pointer.x - pixelX;
+        const dy = pointer.y - pixelY;
+        return { x: pointer.x, y: pointer.y, distance: Math.sqrt(dx * dx + dy * dy) };
     },
 };
 
@@ -911,7 +971,7 @@ window.noeSelf = {
         return aiInstance.getRules();
     },
     /** Exposes the agent's core decision-making function. */
-    decide: aiInstance.decide,
+    decide: perception => aiInstance.decide(perception),
     /** Exposes the agent's state for external observation. */
     getState: () => aiInstance.getState(),
 };
