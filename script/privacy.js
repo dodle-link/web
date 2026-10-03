@@ -66,7 +66,9 @@ const privacyTranslations = {
   }
 };
 
-const languageSelect = document.querySelector('#privacy-language');
+const languageToggle = document.querySelector('.language-toggle');
+const languageMenu = document.querySelector('.language-menu');
+const languageOptions = [...document.querySelectorAll('[data-language]')];
 
 function applyPrivacyLanguage(language, savePreference = false) {
   const selectedLanguage = privacyTranslations[language] ? language : 'en';
@@ -74,7 +76,9 @@ function applyPrivacyLanguage(language, savePreference = false) {
 
   document.documentElement.lang = selectedLanguage;
   document.title = translation.pageTitle;
-  languageSelect.value = selectedLanguage;
+  languageToggle.textContent = languageOptions.find(option => option.dataset.language === selectedLanguage).textContent;
+  languageToggle.setAttribute('aria-label', `Language ${languageToggle.textContent}`);
+  languageOptions.forEach(option => option.setAttribute('aria-selected', String(option.dataset.language === selectedLanguage)));
 
   document.querySelectorAll('[data-i18n]').forEach(element => {
     element.textContent = translation[element.dataset.i18n];
@@ -91,10 +95,25 @@ function applyPrivacyLanguage(language, savePreference = false) {
   }
 }
 
+languageToggle.addEventListener('click', () => {
+  languageMenu.hidden = !languageMenu.hidden;
+  languageToggle.setAttribute('aria-expanded', String(!languageMenu.hidden));
+});
+languageOptions.forEach(option => option.addEventListener('click', () => {
+  applyPrivacyLanguage(option.dataset.language, true);
+  languageMenu.hidden = true;
+  languageToggle.setAttribute('aria-expanded', 'false');
+}));
+document.addEventListener('click', event => {
+  if (!event.target.closest('.language-switcher')) {
+    languageMenu.hidden = true;
+    languageToggle.setAttribute('aria-expanded', 'false');
+  }
+});
+
 let savedLanguage = 'en';
 try {
   savedLanguage = localStorage.getItem('dodle-language') || 'en';
 } catch {}
 
 applyPrivacyLanguage(savedLanguage);
-languageSelect.addEventListener('change', () => applyPrivacyLanguage(languageSelect.value, true));

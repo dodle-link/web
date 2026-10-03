@@ -112,11 +112,9 @@ body { background: var(--paper); color: var(--ink); }
 .nav-links { font-size: 13px; font-weight: 400; gap: 24px; margin-left: auto; }
 .nav-links a { color: var(--ink); }
 .language-switcher { align-items: center; display: flex; gap: 8px; position: relative; }
-.privacy-language-select { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; color: var(--ink); cursor: pointer; font: inherit; font-size: 13px; padding: 7px 9px; }
-.privacy-language-select:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
 .language-label { color: var(--muted); font-size: 11px; }
 .language-toggle { background: transparent; border: 0; color: var(--ink); font-size: 13px; padding: 8px 18px 8px 0; position: relative; }
-.language-toggle::after { border-bottom: 1px solid currentColor; border-right: 1px solid currentColor; content: ""; height: 5px; pointer-events: none; position: absolute; right: 3px; top: 9px; transform: rotate(45deg); width: 5px; }
+.language-toggle::after { border-bottom: 1px solid currentColor; border-right: 1px solid currentColor; content: ""; height: 5px; pointer-events: none; position: absolute; right: 3px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 5px; }
 .language-toggle:focus-visible, .language-menu button:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
 .language-menu { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 5px 14px rgba(32, 33, 36, .16); list-style: none; margin: 6px 0 0; min-width: 116px; padding: 5px; position: absolute; right: 0; top: 100%; z-index: 2; }
 .language-menu button { background: transparent; border: 0; border-radius: 4px; color: var(--ink); display: block; font-size: 12px; padding: 8px 10px; text-align: left; width: 100%; }
