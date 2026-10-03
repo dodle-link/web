@@ -144,6 +144,7 @@ h1#page-title {
 .search-form input { color: var(--ink); font-size: 16px; height: 34px; }
 .search-form input::placeholder { color: var(--muted); }
 .clear-button { color: var(--muted); }
+html[lang="th"] .clear-button { font-family: "Manrope", sans-serif; }
 .search-actions { display: flex; gap: 12px; justify-content: center; margin-top: 29px; }
 .search-button, .lucky-button { border-radius: 6px; font-size: 14px; font-weight: 600; padding: 10px 16px; transition: background .2s ease, border-color .2s ease, box-shadow .2s ease; }
 .search-button { background: var(--ink); border: 1px solid var(--ink); color: var(--paper); }
