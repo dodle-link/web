@@ -91,8 +91,7 @@
         pixel.style.left = `${left}px`;
         pixel.style.top = `${top}px`;
         pixel.style.opacity = String(0.58 + state.excitement * 0.32);
-        pixel.style.backgroundColor = excited ? "#ef785f" : "var(--ink, #202124)";
-        pixel.style.boxShadow = `0 0 ${6 + state.excitement * 10}px ${excited ? "#ef785f" : "var(--ink, #202124)"}`;
+        pixel.style.backgroundColor = excited ? "#ff0000" : "var(--ink, #202124)";
 
         window.requestAnimationFrame(update);
     }
