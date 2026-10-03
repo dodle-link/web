@@ -152,6 +152,13 @@ h1#page-title {
 .search-button:focus-visible, .lucky-button:focus-visible, .theme-toggle:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
 .search-status { color: var(--muted); font-size: 12px; min-height: 18px; margin: 8px 0 -26px; text-align: center; }
 .about-copy { color: var(--muted); font-size: 12px; margin: 105px 0 0; text-align: center; }
+.privacy-content { margin: 0 auto; max-width: 760px; min-height: calc(100vh - 130px); padding: 55px 24px 80px; }
+.privacy-content h1 { font-family: "Munson", Georgia, serif; font-size: 40px; font-weight: 400; letter-spacing: 0; line-height: 1.15; margin: 0 0 8px; }
+.privacy-content h2 { font-size: 17px; font-weight: 600; margin: 32px 0 8px; }
+.privacy-content p { color: var(--muted); font-size: 14px; line-height: 1.75; margin: 0 0 14px; }
+.privacy-content a { text-decoration: underline; text-underline-offset: 3px; }
+.privacy-content a:hover { color: var(--ink); }
+.privacy-content .privacy-updated { font-size: 12px; margin-bottom: 25px; }
 .footer { border-top: 1px solid var(--line); color: var(--muted); max-width: none; padding: 14px 28px; }
 .footer-links { gap: 20px; }
 .footer a:hover { color: var(--ink); }
@@ -185,6 +192,7 @@ html.dark .lucky-button:hover, body.dark .lucky-button:hover { background: #3031
   .topbar { padding: 20px; }
   .language-label { display: none; }
   .main-content { min-height: calc(100vh - 124px); padding: 84px 20px 50px; }
+  .privacy-content { min-height: calc(100vh - 124px); padding: 42px 20px 58px; }
   h1 { font-size: 64px; }
   .about-copy { margin-top: 85px; }
   .footer { margin: 0; padding: 14px 20px; }
