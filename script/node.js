@@ -45,7 +45,7 @@ const render = () => {
 let synced = false;
 const status = () => {
   $("status").textContent =
-    `room: ${name} | local db: ${synced ? "loaded" : "loading"} | peers: ${rtc.room?.webrtcConns.size ?? 0}`;
+    `room: ${name} | local db: ${synced ? "loaded" : "loading"} | peers: ${1 + (rtc.room?.webrtcConns.size ?? 0) + (rtc.room?.bcConns.size ?? 0)}`;
 };
 
 idb.whenSynced.then(() => { synced = true; render(); status(); });
