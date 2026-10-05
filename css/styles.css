@@ -13,10 +13,42 @@
 
 @font-face {
   font-family: "Munson";
-  src: url("../font/munson-font/Munson-MVymB.ttf") format("truetype");
+  src: url("../font/munson/Munson-MVymB.ttf") format("truetype");
   font-display: block;
   font-style: normal;
   font-weight: 400;
+}
+
+@font-face {
+  font-family: "Prompt";
+  src: url("../font/prompt/Prompt-Regular.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Prompt";
+  src: url("../font/prompt/Prompt-Medium.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Prompt";
+  src: url("../font/prompt/Prompt-SemiBold.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Prompt";
+  src: url("../font/prompt/Prompt-Bold.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
 }
 
 * { box-sizing: border-box; }
