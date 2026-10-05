@@ -24,7 +24,13 @@ $("join").onclick = () => {
 const roomId = "dodle-node-" + name;
 const doc = new Y.Doc();
 const idb = new IndexeddbPersistence(roomId, doc);
-const rtc = new WebrtcProvider(roomId, doc);
+const signalingUrls = [];
+if (new URLSearchParams(location.search).get("signal") === "on" && location.protocol !== "file:") {
+  const signalingUrl = new URL("/signal", location.href);
+  signalingUrl.protocol = location.protocol === "https:" ? "wss:" : "ws:";
+  signalingUrls.push(signalingUrl.href);
+}
+const rtc = new WebrtcProvider(roomId, doc, { signaling: signalingUrls });
 const items = doc.getMap("items");
 
 const render = () => {
