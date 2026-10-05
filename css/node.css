@@ -7,7 +7,8 @@ h1 { font-size: 1.25rem; font-weight: 500; }
 input, button { background: var(--control); border: 1px solid var(--line); border-radius: 4px; color: var(--ink); font: inherit; padding: .4rem .6rem; }
 button { cursor: pointer; }
 button:hover { border-color: var(--muted); }
-button:focus-visible, input:focus-visible { outline: 2px solid #8ab4f8; outline-offset: 2px; }
+button:focus-visible { outline: 2px solid #8ab4f8; outline-offset: 2px; }
+input:focus-visible { outline: none; }
 .theme-toggle { align-items: center; background: transparent; border: 0; display: grid; height: 40px; justify-items: center; padding: 8px; width: 40px; }
 .theme-toggle svg { grid-area: 1 / 1; height: 21px; width: 21px; }
 .moon, :root.dark .sun { display: none; }
