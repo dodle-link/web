@@ -24,7 +24,6 @@ $("join").onclick = () => {
 const roomId = "dodle-node-" + name;
 const doc = new Y.Doc();
 const idb = new IndexeddbPersistence(roomId, doc);
-// Default public signaling servers are unreliable; replace for anything beyond a prototype.
 const rtc = new WebrtcProvider(roomId, doc);
 const items = doc.getMap("items");
 
