@@ -1,33 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>dodle node</title>
-  <script>
-    document.documentElement.classList.toggle('dark', localStorage.getItem('dodle-theme') !== 'light');
-  </script>
-  <style>
-    :root { color-scheme: light; --paper: #fff; --ink: #202124; --muted: #5f6368; --line: #dadce0; --control: #fff; }
-    :root.dark { color-scheme: dark; --paper: #202124; --ink: #f1f3f4; --muted: #bdc1c6; --line: #5f6368; --control: #303134; }
-    * { box-sizing: border-box; }
-    body { background: var(--paper); color: var(--ink); font: 14px/1.5 monospace; margin: 2rem auto; max-width: 640px; min-height: calc(100vh - 4rem); padding: 0 1rem; }
-    header { align-items: center; display: flex; justify-content: space-between; }
-    h1 { font-size: 1.25rem; font-weight: 500; }
-    input, button { background: var(--control); border: 1px solid var(--line); border-radius: 4px; color: var(--ink); font: inherit; padding: .4rem .6rem; }
-    button { cursor: pointer; }
-    button:hover { border-color: var(--muted); }
-    button:focus-visible, input:focus-visible { outline: 2px solid #8ab4f8; outline-offset: 2px; }
-    .theme-toggle { align-items: center; background: transparent; border: 0; display: grid; height: 40px; justify-items: center; padding: 8px; width: 40px; }
-    .theme-toggle svg { grid-area: 1 / 1; height: 21px; width: 21px; }
-    .moon, :root.dark .sun { display: none; }
-    :root.dark .moon { display: block; }
-    #status { color: var(--muted); }
-    #list { padding-left: 1.25rem; }
-    li { align-items: center; display: flex; gap: .5rem; }
-    li button { margin-left: auto; }
-    @media (max-width: 480px) { body { margin: 1rem auto; } #room { max-width: 48%; } #key, #val { max-width: 38%; } }
-  </style>
+  <link rel="stylesheet" href="../css/node.css">
 </head>
 <body>
   <header>
@@ -45,17 +22,6 @@
     <button>Set</button>
   </form>
   <ul id="list"></ul>
-  <script>
-    const themeToggle = document.querySelector('.theme-toggle');
-    const setTheme = (dark) => {
-      document.documentElement.classList.toggle('dark', dark);
-      themeToggle.setAttribute('aria-pressed', String(dark));
-      themeToggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-      localStorage.setItem('dodle-theme', dark ? 'dark' : 'light');
-    };
-    setTheme(localStorage.getItem('dodle-theme') !== 'light');
-    themeToggle.addEventListener('click', () => setTheme(!document.documentElement.classList.contains('dark')));
-  </script>
-  <script type="module" src="script/node.js"></script>
+  <script type="module" src="../script/node.js"></script>
 </body>
 </html>

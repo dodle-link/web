@@ -3,6 +3,17 @@ import { IndexeddbPersistence } from "https://esm.sh/y-indexeddb@9?deps=yjs@13";
 import { WebrtcProvider } from "https://esm.sh/y-webrtc@10?deps=yjs@13";
 
 const $ = (id) => document.getElementById(id);
+const themeToggle = document.querySelector(".theme-toggle");
+const setTheme = (dark) => {
+  document.documentElement.classList.toggle("dark", dark);
+  themeToggle.setAttribute("aria-pressed", String(dark));
+  themeToggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+  localStorage.setItem("dodle-theme", dark ? "dark" : "light");
+};
+
+setTheme(localStorage.getItem("dodle-theme") !== "light");
+themeToggle.addEventListener("click", () => setTheme(!document.documentElement.classList.contains("dark")));
+
 const name = decodeURIComponent(location.hash.slice(1)) || "default";
 $("room").value = name;
 $("join").onclick = () => {
