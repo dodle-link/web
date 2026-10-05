@@ -8,8 +8,9 @@ import re
 import shutil
 import sys
 from pathlib import Path
+from urllib.parse import quote, urlsplit
 
-from aiohttp import WSMsgType, web
+from aiohttp import ClientError, ClientSession, ClientTimeout, WSMsgType, web
 
 
 WEB_ROOT = Path(__file__).resolve().parent.parent
@@ -70,6 +71,39 @@ async def signaling(request):
     return websocket
 
 
+async def turn_credentials(request):
+    origin = request.headers.get("Origin")
+    if origin and urlsplit(origin).netloc != request.host:
+        raise web.HTTPForbidden(text="Cross-origin request denied")
+
+    key_id = os.environ.get("CLOUDFLARE_TURN_KEY_ID")
+    api_token = os.environ.get("CLOUDFLARE_TURN_API_TOKEN")
+    if not key_id or not api_token:
+        raise web.HTTPServiceUnavailable(text="Cloudflare TURN is not configured")
+
+    endpoint = (
+        "https://rtc.live.cloudflare.com/v1/turn/keys/"
+        f"{quote(key_id, safe='')}/credentials/generate-ice-servers"
+    )
+    try:
+        async with ClientSession(timeout=ClientTimeout(total=10)) as session:
+            async with session.post(
+                endpoint,
+                headers={"Authorization": f"Bearer {api_token}"},
+                json={"ttl": 3600},
+            ) as response:
+                if response.status != 201:
+                    raise web.HTTPBadGateway(text="Cloudflare TURN credential request failed")
+                credentials = await response.json()
+    except (ClientError, asyncio.TimeoutError, ValueError) as error:
+        raise web.HTTPBadGateway(text="Could not retrieve Cloudflare TURN credentials") from error
+
+    if not isinstance(credentials, dict) or not isinstance(credentials.get("iceServers"), list):
+        raise web.HTTPBadGateway(text="Cloudflare returned invalid TURN credentials")
+
+    return web.json_response(credentials, headers={"Cache-Control": "no-store"})
+
+
 async def root(_request):
     raise web.HTTPFound("/node/")
 
@@ -84,6 +118,7 @@ def create_app():
     app.router.add_get("/node", lambda _request: web.HTTPFound("/node/"))
     app.router.add_get("/node/", node_page)
     app.router.add_get("/signal", signaling)
+    app.router.add_post("/turn-credentials", turn_credentials)
     app.router.add_static("/css/", WEB_ROOT / "css", show_index=False)
     app.router.add_static("/script/", WEB_ROOT / "script", show_index=False)
     return app

@@ -30,7 +30,29 @@ if (new URLSearchParams(location.search).get("signal") === "on" && location.prot
   signalingUrl.protocol = location.protocol === "https:" ? "wss:" : "ws:";
   signalingUrls.push(signalingUrl.href);
 }
-const rtc = new WebrtcProvider(roomId, doc, { signaling: signalingUrls });
+let turnIceServers = [];
+let turnStatus = signalingUrls.length ? "unavailable" : "off";
+if (signalingUrls.length) {
+  try {
+    const response = await fetch("/turn-credentials", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    });
+    if (!response.ok) throw new Error(`Credential request failed (${response.status})`);
+    const credentials = await response.json();
+    if (!Array.isArray(credentials.iceServers) || credentials.iceServers.length === 0) {
+      throw new Error("Cloudflare returned no ICE servers");
+    }
+    turnIceServers = credentials.iceServers;
+    turnStatus = "ready";
+  } catch (error) {
+    console.warn("Cloudflare TURN is unavailable; continuing without TURN.", error);
+  }
+}
+const rtcOptions = { signaling: signalingUrls };
+if (turnIceServers.length) rtcOptions.peerOpts = { config: { iceServers: turnIceServers } };
+const rtc = new WebrtcProvider(roomId, doc, rtcOptions);
 const items = doc.getMap("items");
 
 const render = () => {
@@ -50,7 +72,7 @@ const render = () => {
 let synced = false;
 const status = () => {
   $("status").textContent =
-    `room: ${name} | local db: ${synced ? "loaded" : "loading"} | peers: ${1 + (rtc.room?.webrtcConns.size ?? 0) + (rtc.room?.bcConns.size ?? 0)}`;
+    `room: ${name} | local db: ${synced ? "loaded" : "loading"} | turn: ${turnStatus} | peers: ${1 + (rtc.room?.webrtcConns.size ?? 0) + (rtc.room?.bcConns.size ?? 0)}`;
 };
 
 idb.whenSynced.then(() => { synced = true; render(); status(); });

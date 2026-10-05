@@ -10,11 +10,11 @@ Serve the `web` directory with any static HTTP server. For example, from the `we
 python3 -m http.server 8000
 ```
 
-Open <http://localhost:8000/node/>. Signaling is off by default, so no Python packages or signaling process are needed. IndexedDB persistence works locally, and tabs on the same browser origin can synchronize through BroadcastChannel.
+Open [http://localhost:8000/node/](http://localhost:8000/node/). Signaling is off by default, so no Python packages or signaling process are needed. IndexedDB persistence works locally, and tabs on the same browser origin can synchronize through BroadcastChannel.
 
 ## Run With Signaling and a Quick Tunnel
 
-The included server serves the page and its assets, runs the signaling relay, and starts a Cloudflare Quick Tunnel. It requires Python 3.10 or newer and `cloudflared` available on `PATH`.
+The included server serves the page and its assets, runs the signaling relay, and starts a Cloudflare Quick Tunnel. Optional Cloudflare Realtime TURN credentials let peers relay WebRTC data when direct connections are blocked. It requires Python 3.10 or newer and `cloudflared` available on `PATH`.
 
 Create and activate a virtual environment, then install the server dependency:
 
@@ -24,13 +24,20 @@ source .venv/bin/activate
 python3 -m pip install -r node/requirements.txt
 ```
 
+Follow Cloudflare's [TURN credential setup guide](https://developers.cloudflare.com/realtime/turn/generate-credentials/) to create a Realtime TURN key and an API token authorized to generate credentials. Set these environment variables before starting the server. The server uses the long-lived token to request one-hour credentials; only the short-lived ICE server configuration is returned to the browser:
+
+```sh
+export CLOUDFLARE_TURN_KEY_ID="your-turn-key-id"
+export CLOUDFLARE_TURN_API_TOKEN="your-api-token"
+```
+
 Start the server from the `web` directory:
 
 ```sh
 python3 node/server.py
 ```
 
-The terminal prints a local URL and, after Cloudflare creates the tunnel, a public URL. Open the printed `/node/?signal=on` URL to enable signaling. Keep the process running while peers use the tunnel; press Ctrl+C to stop it. The Quick Tunnel URL is temporary and changes when the tunnel is restarted.
+The terminal prints a local URL and, after Cloudflare creates the tunnel, a public URL. Open the printed `/node/?signal=on` URL to enable signaling and TURN. The page reports whether TURN credentials loaded; `ready` means credentials were retrieved, not that a connection is actively using a TURN relay. If TURN is not configured or unavailable, the page continues without it. Keep the process running while peers use the tunnel; press Ctrl+C to stop it. The Quick Tunnel URL is temporary and changes when the tunnel is restarted.
 
 To run the relay locally without launching Cloudflare Tunnel:
 
@@ -45,3 +52,5 @@ The server accepts `--host` and `--port` options. The default port is `8000`; th
 The room name is taken from the URL fragment, such as `#team-notes`. The default room is `default`. Joining a room changes the fragment in the URL, so share the same room name with peers.
 
 The signaling server only keeps active room subscriptions in memory and forwards signaling messages. It does not store Yjs documents. Document persistence is browser-local through IndexedDB, so it is not a shared server-side backup. The relay and Quick Tunnel have no authentication; anyone who can reach the public URL may attempt to join a room. Do not use this setup for sensitive data or as a production-hosted service.
+
+Cloudflare Realtime TURN includes a 1,000 GB free tier, then costs $0.05 per GB of relayed traffic to TURN clients. Check the current [Cloudflare TURN pricing and limits](https://developers.cloudflare.com/realtime/turn/faq/) before enabling it for public use.
