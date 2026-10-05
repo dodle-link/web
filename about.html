@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="About Dodle Search" data-i18n-meta="description" />
+    <title>About - dodle</title>
+    <script>
+      try {
+        document.documentElement.classList.toggle('dark', localStorage.getItem('dodle-theme') !== 'light');
+      } catch {}
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html">dodle</a>
+      <nav class="nav-links" aria-label="Primary navigation" data-i18n-aria="navLabel">
+        <a href="index.html" data-i18n="home">Home</a>
+        <div class="language-switcher">
+          <button class="language-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language English">English</button>
+          <ul class="language-menu" role="listbox" aria-label="Choose language" hidden>
+            <li><button type="button" role="option" aria-selected="true" data-language="en">English</button></li>
+            <li><button type="button" role="option" aria-selected="false" data-language="ja">日本語</button></li>
+            <li><button type="button" role="option" aria-selected="false" data-language="zh">中文</button></li>
+            <li><button type="button" role="option" aria-selected="false" data-language="th">ไทย</button></li>
+            <li><button type="button" role="option" aria-selected="false" data-language="ko">한국어</button></li>
+            <li><button type="button" role="option" aria-selected="false" data-language="fr">Français</button></li>
+            <li><button type="button" role="option" aria-selected="false" data-language="de">Deutsch</button></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main class="privacy-content">
+      <h1 data-i18n="heading">About Dodle</h1>
+      <p data-i18n="intro">Dodle is a simple search homepage designed to make the web feel a little less distracting. No account is needed to use it.</p>
+
+      <h2 data-i18n="searchHeading">Search, kept simple</h2>
+      <p data-i18n="search">Enter a query to search the web with Google, or use “I'm Feeling Curious” for a prompt that might lead somewhere unexpected. Search queries are sent directly to Google Search.</p>
+
+      <h2 data-i18n="noeHeading">A little company</h2>
+      <p data-i18n="noe">Dodle also features Noe, a small pixel companion that responds to activity on the page. Its motion and interaction are handled in your browser.</p>
+
+      <h2 data-i18n="projectHeading">The project</h2>
+      <p><span data-i18n="projectBefore">Dodle is an independent, open-source project. You can explore its source or get in touch through the </span><a href="https://github.com/dodle-link/web" data-i18n="repository">Dodle Web project repository</a>.</p>
+    </main>
+
+    <footer class="footer">
+      <span>© dodle</span>
+      <div class="footer-links"><a href="privacy.html" data-i18n="privacy">Privacy</a><a href="index.html" data-i18n="home">Home</a></div>
+    </footer>
+    <script src="script/about.js"></script>
+  </body>
+</html>
