@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dodle node</title>
+  <style>
+    body { font: 14px/1.5 monospace; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+    input, button { font: inherit; padding: .3rem .5rem; }
+    li { display: flex; gap: .5rem; align-items: center; }
+    li button { margin-left: auto; }
+    #status { color: #666; }
+  </style>
+</head>
+<body>
+  <h3>dodle node</h3>
+  <p id="status">starting...</p>
+  <p>room: <input id="room"> <button id="join">Join</button></p>
+  <form id="form">
+    <input id="key" placeholder="key" required>
+    <input id="val" placeholder="value">
+    <button>Set</button>
+  </form>
+  <ul id="list"></ul>
+  <script type="module" src="script/node.js"></script>
+</body>
+</html>
