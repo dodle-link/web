@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="description" content="A daily snapshot of popular topics across Wikipedia language editions." />
+		<meta name="description" content="A daily snapshot of popular topics across Wikipedia language editions." data-i18n-meta="description" />
 		<title>World Ideas - dodle</title>
 		<script>
 			try {
@@ -15,48 +15,60 @@
 	<body>
 		<header class="topbar">
 			<a class="brand" href="../index.html">dodle</a>
-			<nav class="nav-links" aria-label="Primary navigation">
-				<button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="true" title="Toggle color theme">
+			<nav class="nav-links" aria-label="Primary navigation" data-i18n-aria="navLabel">
+				<button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="true" title="Toggle color theme" data-i18n-aria="themeLight" data-i18n-title="themeToggle">
 					<span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg></span>
 					<span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"></path></svg></span>
 				</button>
-				<a href="../index.html">Home</a>
+				<a href="../index.html" data-i18n="home">Home</a>
+				<div class="language-switcher">
+					<button class="language-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language English">English</button>
+					<ul class="language-menu" role="listbox" aria-label="Choose language" data-i18n-aria="languageLabel" hidden>
+						<li><button type="button" role="option" aria-selected="true" data-language="en">English</button></li>
+						<li><button type="button" role="option" aria-selected="false" data-language="ja">日本語</button></li>
+						<li><button type="button" role="option" aria-selected="false" data-language="zh">中文</button></li>
+						<li><button type="button" role="option" aria-selected="false" data-language="th">ไทย</button></li>
+						<li><button type="button" role="option" aria-selected="false" data-language="ko">한국어</button></li>
+						<li><button type="button" role="option" aria-selected="false" data-language="fr">Français</button></li>
+						<li><button type="button" role="option" aria-selected="false" data-language="de">Deutsch</button></li>
+					</ul>
+				</div>
 			</nav>
 		</header>
 
 		<main class="ideas-main">
 			<section class="ideas-heading" aria-labelledby="ideas-title">
-				<p class="ideas-kicker"><span class="pulse-dot" aria-hidden="true"></span> Daily signals · Wikipedia pageviews</p>
-				<h1 id="ideas-title">What the world is reading</h1>
-				<p class="ideas-intro">A daily snapshot of popular topics across Wikipedia language editions. Select an edition to explore its most-read pages.</p>
+				<p class="ideas-kicker"><span class="pulse-dot" aria-hidden="true"></span> <span data-i18n="kicker">Daily signals · Wikipedia pageviews</span></p>
+				<h1 id="ideas-title" data-i18n="heading">What the world is reading</h1>
+				<p class="ideas-intro" data-i18n="intro">A daily snapshot of popular topics across Wikipedia language editions. Select an edition to explore its most-read pages.</p>
 			</section>
 
-			<section class="ideas-results" aria-label="Popular topics">
+			<section class="ideas-results" aria-label="Popular topics" data-i18n-aria="popularTopics">
 				<div class="ideas-toolbar">
-					<label for="edition-filter">Edition</label>
+					<label for="edition-filter" data-i18n="editionLabel">Edition</label>
 					<select id="edition-filter">
-						<option value="all">Worldwide · all editions</option>
-						<option value="en">English</option>
-						<option value="ja">日本語 · Japanese</option>
-						<option value="zh">中文 · Chinese</option>
-						<option value="th">ไทย · Thai</option>
-						<option value="ko">한국어 · Korean</option>
-						<option value="fr">Français · French</option>
-						<option value="de">Deutsch · German</option>
+						<option value="all" data-i18n="allEditions">Worldwide · all editions</option>
+						<option value="en" data-edition="en">English</option>
+						<option value="ja" data-edition="ja">日本語 · Japanese</option>
+						<option value="zh" data-edition="zh">中文 · Chinese</option>
+						<option value="th" data-edition="th">ไทย · Thai</option>
+						<option value="ko" data-edition="ko">한국어 · Korean</option>
+						<option value="fr" data-edition="fr">Français · French</option>
+						<option value="de" data-edition="de">Deutsch · German</option>
 					</select>
-					<button class="ideas-refresh" id="refresh-trends" type="button" aria-label="Refresh trends" title="Refresh trends">
+					<button class="ideas-refresh" id="refresh-trends" type="button" aria-label="Refresh trends" title="Refresh trends" data-i18n-aria="refresh" data-i18n-title="refresh">
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"></path><path d="M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"></path></svg>
 					</button>
 				</div>
-				<p class="ideas-status" id="trends-status" role="status" aria-live="polite">Loading daily topics…</p>
-				<ol class="ideas-list" id="trends-list" aria-label="Daily popular topics"></ol>
-				<p class="ideas-source">Popularity is based on pageviews from the previous UTC day, not real-time search volume. Data: <a href="https://pageviews.wmcloud.org/" target="_blank" rel="noopener noreferrer">Wikimedia pageviews</a>.</p>
+				<p class="ideas-status" id="trends-status" role="status" aria-live="polite" data-i18n="loading">Loading daily topics…</p>
+				<ol class="ideas-list" id="trends-list" aria-label="Daily popular topics" data-i18n-aria="listLabel"></ol>
+				<p class="ideas-source"><span data-i18n="sourcePrefix">Popularity is based on pageviews from the previous UTC day, not real-time search volume. Data:</span> <a href="https://pageviews.wmcloud.org/" target="_blank" rel="noopener noreferrer" data-i18n="sourceName">Wikimedia pageviews</a>.</p>
 			</section>
 		</main>
 
 		<footer class="footer">
 			<span>© dodle</span>
-			<div class="footer-links"><a href="../privacy.html">Privacy</a><a href="../blog/">Blog</a><a href="../index.html">Home</a></div>
+			<div class="footer-links"><a href="../privacy.html" data-i18n="privacy">Privacy</a><a href="../blog/" data-i18n="blog">Blog</a><a href="../index.html" data-i18n="home">Home</a></div>
 		</footer>
 		<script src="../script/ideas.js"></script>
 	</body>
