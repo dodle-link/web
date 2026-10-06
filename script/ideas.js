@@ -100,6 +100,9 @@ const ideasTranslations = {
 const trendList = document.querySelector('#trends-list');
 const trendStatus = document.querySelector('#trends-status');
 const editionFilter = document.querySelector('#edition-filter');
+const editionMenu = document.querySelector('.edition-menu');
+const editionOptions = [...document.querySelectorAll('[data-edition-value]')];
+const editionCurrentLabel = document.querySelector('#edition-current-label');
 const themeToggle = document.querySelector('.theme-toggle');
 const languageToggle = document.querySelector('.language-toggle');
 const languageMenu = document.querySelector('.language-menu');
@@ -148,6 +151,9 @@ function setLanguage(language) {
   document.querySelectorAll('[data-edition]').forEach(option => {
     option.textContent = translation.editionNames[option.dataset.edition];
   });
+  const selectedEditionOption = editionOptions.find(option => option.dataset.editionValue === editionFilter.value);
+  editionCurrentLabel.textContent = selectedEditionOption.textContent;
+  editionOptions.forEach(option => option.setAttribute('aria-selected', String(option === selectedEditionOption)));
   languageToggle.textContent = selectedOption.textContent;
   languageToggle.setAttribute('aria-label', `${translation.languageAria}: ${selectedOption.textContent}`);
   languageOptions.forEach(option => option.setAttribute('aria-selected', String(option === selectedOption)));
@@ -189,6 +195,31 @@ document.addEventListener('click', event => {
   if (!event.target.closest('.language-switcher')) {
     languageMenu.hidden = true;
     languageToggle.setAttribute('aria-expanded', 'false');
+  }
+  if (!event.target.closest('.edition-switcher')) closeEditionMenu();
+});
+
+function closeEditionMenu() {
+  editionMenu.hidden = true;
+  editionFilter.setAttribute('aria-expanded', 'false');
+}
+
+editionFilter.addEventListener('click', () => {
+  editionMenu.hidden = !editionMenu.hidden;
+  editionFilter.setAttribute('aria-expanded', String(!editionMenu.hidden));
+});
+editionOptions.forEach(option => option.addEventListener('click', () => {
+  editionFilter.value = option.dataset.editionValue;
+  editionCurrentLabel.textContent = option.textContent;
+  editionOptions.forEach(item => item.setAttribute('aria-selected', String(item === option)));
+  closeEditionMenu();
+  editionFilter.focus();
+  renderTopics();
+}));
+editionMenu.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    closeEditionMenu();
+    editionFilter.focus();
   }
 });
 
@@ -359,5 +390,4 @@ async function refreshTopics() {
   renderTopics();
 }
 
-editionFilter.addEventListener('change', renderTopics);
 refreshTopics();

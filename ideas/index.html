@@ -45,17 +45,22 @@
 
 			<section class="ideas-results" aria-label="Popular topics" data-i18n-aria="popularTopics">
 				<div class="ideas-toolbar">
-					<label for="edition-filter" data-i18n="editionLabel">Edition</label>
-					<select id="edition-filter">
-						<option value="all" data-i18n="allEditions">Worldwide · all editions</option>
-						<option value="en" data-edition="en">English</option>
-						<option value="ja" data-edition="ja">日本語 · Japanese</option>
-						<option value="zh" data-edition="zh">中文 · Chinese</option>
-						<option value="th" data-edition="th">ไทย · Thai</option>
-						<option value="ko" data-edition="ko">한국어 · Korean</option>
-						<option value="fr" data-edition="fr">Français · French</option>
-						<option value="de" data-edition="de">Deutsch · German</option>
-					</select>
+					<div class="edition-switcher">
+						<span class="edition-label" id="edition-label" data-i18n="editionLabel">Edition</span>
+						<button class="edition-toggle" id="edition-filter" type="button" value="all" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="edition-label edition-current-label">
+							<span id="edition-current-label" data-i18n="allEditions">Worldwide · all editions</span>
+						</button>
+						<ul class="edition-menu" role="listbox" aria-labelledby="edition-label" hidden>
+							<li><button type="button" role="option" aria-selected="true" data-edition-value="all" data-i18n="allEditions">Worldwide · all editions</button></li>
+							<li><button type="button" role="option" aria-selected="false" data-edition-value="en" data-edition="en">English</button></li>
+							<li><button type="button" role="option" aria-selected="false" data-edition-value="ja" data-edition="ja">日本語 · Japanese</button></li>
+							<li><button type="button" role="option" aria-selected="false" data-edition-value="zh" data-edition="zh">中文 · Chinese</button></li>
+							<li><button type="button" role="option" aria-selected="false" data-edition-value="th" data-edition="th">ไทย · Thai</button></li>
+							<li><button type="button" role="option" aria-selected="false" data-edition-value="ko" data-edition="ko">한국어 · Korean</button></li>
+							<li><button type="button" role="option" aria-selected="false" data-edition-value="fr" data-edition="fr">Français · French</button></li>
+							<li><button type="button" role="option" aria-selected="false" data-edition-value="de" data-edition="de">Deutsch · German</button></li>
+						</ul>
+					</div>
 				</div>
 				<p class="ideas-status" id="trends-status" role="status" aria-live="polite" data-i18n="loading">Loading daily topics…</p>
 				<ol class="ideas-list" id="trends-list" aria-label="Daily popular topics" data-i18n-aria="listLabel"></ol>

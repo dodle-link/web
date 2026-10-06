@@ -145,12 +145,14 @@ body { background: var(--paper); color: var(--ink); }
 .nav-links a { color: var(--ink); }
 .language-switcher { align-items: center; display: flex; gap: 8px; position: relative; }
 .language-label { color: var(--muted); font-size: 11px; }
-.language-toggle { background: transparent; border: 0; color: var(--ink); font-size: 13px; padding: 8px 18px 8px 0; position: relative; }
-.language-toggle::after { border-bottom: 1px solid currentColor; border-right: 1px solid currentColor; content: ""; height: 5px; pointer-events: none; position: absolute; right: 3px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 5px; }
-.language-toggle:focus-visible, .language-menu button:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
-.language-menu { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 5px 14px rgba(32, 33, 36, .16); list-style: none; margin: 6px 0 0; min-width: 116px; padding: 5px; position: absolute; right: 0; top: 100%; z-index: 2; }
-.language-menu button { background: transparent; border: 0; border-radius: 4px; color: var(--ink); display: block; font-size: 12px; padding: 8px 10px; text-align: left; width: 100%; }
-.language-menu button:hover, .language-menu button[aria-selected="true"] { background: var(--line); }
+.language-toggle, .edition-toggle { background: transparent; border: 0; color: var(--ink); font-size: 13px; padding: 8px 18px 8px 0; position: relative; text-align: left; }
+.language-toggle::after, .edition-toggle::after { border-bottom: 1px solid currentColor; border-right: 1px solid currentColor; content: ""; height: 5px; pointer-events: none; position: absolute; right: 3px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 5px; }
+.language-menu, .edition-menu { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 5px 14px rgba(32, 33, 36, .16); list-style: none; margin: 6px 0 0; min-width: 116px; padding: 5px; position: absolute; top: 100%; z-index: 2; }
+.language-menu { right: 0; }
+.edition-menu { left: 0; min-width: 190px; }
+.language-menu button, .edition-menu button { background: transparent; border: 0; border-radius: 4px; color: var(--ink); display: block; font-size: 12px; padding: 8px 10px; text-align: left; width: 100%; }
+.language-menu button:hover, .language-menu button[aria-selected="true"], .edition-menu button:hover, .edition-menu button[aria-selected="true"] { background: var(--line); }
+.language-toggle:focus-visible, .edition-toggle:focus-visible, .language-menu button:focus-visible, .edition-menu button:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
 .theme-toggle { align-items: center; background: transparent; border: 0; border-radius: 999px; color: var(--ink); display: inline-grid; font: inherit; height: 38px; justify-items: center; padding: 0; width: 38px; }
 .theme-toggle-icon { align-items: center; display: grid; grid-area: 1 / 1; height: 20px; justify-items: center; width: 20px; }
 .theme-toggle-icon svg { height: 100%; width: 100%; }
@@ -195,8 +197,8 @@ html[lang="th"] .clear-button { font-family: "Manrope", sans-serif; }
 .ideas-results { margin: 0 auto; max-width: 760px; }
 .ideas-toolbar { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 12px; padding: 0 0 15px; }
 .ideas-toolbar label { color: var(--muted); font-size: 12px; }
-.ideas-toolbar select { appearance: none; background: var(--paper); border: 1px solid var(--line); border-radius: 5px; color: var(--ink); font-size: 12px; min-height: 36px; padding: 0 32px 0 11px; }
-.ideas-toolbar select:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
+.edition-switcher { align-items: center; display: flex; gap: 8px; position: relative; }
+.edition-label { color: var(--muted); font-size: 12px; }
 .ideas-status { color: var(--muted); font-size: 12px; min-height: 18px; margin: 15px 0 0; }
 .ideas-list { list-style: none; margin: 0; padding: 0; }
 .ideas-item { align-items: center; border-bottom: 1px solid var(--line); display: grid; gap: 16px; grid-template-columns: 32px minmax(0, 1fr) auto; min-height: 72px; padding: 12px 0; }
