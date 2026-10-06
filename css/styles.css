@@ -196,12 +196,7 @@ html[lang="th"] .clear-button { font-family: "Manrope", sans-serif; }
 .ideas-toolbar { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 12px; padding: 0 0 15px; }
 .ideas-toolbar label { color: var(--muted); font-size: 12px; }
 .ideas-toolbar select { appearance: none; background: var(--paper); border: 1px solid var(--line); border-radius: 5px; color: var(--ink); font-size: 12px; min-height: 36px; padding: 0 32px 0 11px; }
-.ideas-toolbar select:focus-visible, .ideas-refresh:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
-.ideas-refresh { align-items: center; background: transparent; border: 1px solid var(--line); border-radius: 5px; color: var(--ink); display: inline-flex; height: 36px; justify-content: center; margin-left: auto; width: 38px; }
-.ideas-refresh:hover { background: var(--line); }
-.ideas-refresh:disabled { cursor: wait; opacity: .55; }
-.ideas-refresh svg { height: 17px; width: 17px; }
-.ideas-refresh.is-loading svg { animation: ideas-spin .8s linear infinite; }
+.ideas-toolbar select:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
 .ideas-status { color: var(--muted); font-size: 12px; min-height: 18px; margin: 15px 0 0; }
 .ideas-list { list-style: none; margin: 0; padding: 0; }
 .ideas-item { align-items: center; border-bottom: 1px solid var(--line); display: grid; gap: 16px; grid-template-columns: 32px minmax(0, 1fr) auto; min-height: 72px; padding: 12px 0; }
@@ -214,7 +209,6 @@ html[lang="th"] .clear-button { font-family: "Manrope", sans-serif; }
 .ideas-source { color: var(--muted); font-size: 11px; line-height: 1.6; margin: 18px 0 0; }
 .ideas-source a { text-decoration: underline; text-underline-offset: 2px; }
 .ideas-empty { border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; padding: 24px 0; }
-@keyframes ideas-spin { to { transform: rotate(360deg); } }
 .privacy-content h1 { font-family: "Munson", Georgia, serif; font-size: 40px; font-weight: 400; letter-spacing: 0; line-height: 1.15; margin: 0 0 8px; }
 .privacy-content h2 { font-size: 17px; font-weight: 600; margin: 32px 0 8px; }
 .privacy-content p { color: var(--muted); font-size: 14px; line-height: 1.75; margin: 0 0 14px; }

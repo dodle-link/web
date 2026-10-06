@@ -100,7 +100,6 @@ const ideasTranslations = {
 const trendList = document.querySelector('#trends-list');
 const trendStatus = document.querySelector('#trends-status');
 const editionFilter = document.querySelector('#edition-filter');
-const refreshButton = document.querySelector('#refresh-trends');
 const themeToggle = document.querySelector('.theme-toggle');
 const languageToggle = document.querySelector('.language-toggle');
 const languageMenu = document.querySelector('.language-menu');
@@ -111,6 +110,8 @@ let hasLoadedTopics = false;
 let trendStatusType = 'loading';
 let statusDate;
 let loadedEditionCount = 0;
+const editionCacheKey = 'dodle-ideas-editions-v1';
+const editionCacheDuration = 24 * 60 * 60 * 1000;
 
 function setTheme(isDark) {
   document.documentElement.classList.toggle('dark', isDark);
@@ -166,8 +167,7 @@ function updateTrendStatus() {
     trendStatus.textContent = translation.loadError;
   } else {
     const dateLabel = new Intl.DateTimeFormat(currentLanguage, {
-      dateStyle: 'long',
-      timeZone: 'UTC'
+      dateStyle: 'long'
     }).format(statusDate);
     const partialNote = loadedEditionCount < Object.keys(trendEditions).length
       ? translation.partialLoaded(loadedEditionCount, Object.keys(trendEditions).length)
@@ -208,6 +208,29 @@ function getPreviousUtcDate() {
     day: String(date.getUTCDate()).padStart(2, '0'),
     value: date
   };
+}
+
+function getCachedEditions() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(editionCacheKey));
+    const age = Date.now() - cached.savedAt;
+    const cachedDate = new Date(cached.statusDate);
+    if (!Number.isFinite(cached.savedAt) || age < 0 || age >= editionCacheDuration || Number.isNaN(cachedDate.getTime())) {
+      return null;
+    }
+
+    const editions = Object.entries(cached.editionResults || {})
+      .filter(([code, articles]) => Object.hasOwn(trendEditions, code) && Array.isArray(articles));
+    if (editions.length === 0) return null;
+
+    return {
+      editionResults: Object.fromEntries(editions),
+      statusDate: cachedDate,
+      loadedEditionCount: editions.length
+    };
+  } catch {
+    return null;
+  }
 }
 
 function isUsefulArticle(article) {
@@ -292,8 +315,18 @@ function renderTopics() {
 }
 
 async function refreshTopics() {
-  refreshButton.disabled = true;
-  refreshButton.classList.add('is-loading');
+  const cached = getCachedEditions();
+  if (cached) {
+    editionResults = cached.editionResults;
+    statusDate = cached.statusDate;
+    loadedEditionCount = cached.loadedEditionCount;
+    hasLoadedTopics = true;
+    trendStatusType = 'loaded';
+    updateTrendStatus();
+    renderTopics();
+    return;
+  }
+
   trendStatusType = 'loading';
   updateTrendStatus();
   const date = getPreviousUtcDate();
@@ -312,13 +345,19 @@ async function refreshTopics() {
   loadedEditionCount = Object.keys(editionResults).length;
   trendStatusType = loadedEditionCount === 0 ? 'error' : 'loaded';
   statusDate = date.value;
+  if (loadedEditionCount > 0) {
+    try {
+      localStorage.setItem(editionCacheKey, JSON.stringify({
+        savedAt: Date.now(),
+        statusDate: statusDate.toISOString(),
+        editionResults
+      }));
+    } catch {}
+  }
   updateTrendStatus();
 
   renderTopics();
-  refreshButton.disabled = false;
-  refreshButton.classList.remove('is-loading');
 }
 
 editionFilter.addEventListener('change', renderTopics);
-refreshButton.addEventListener('click', refreshTopics);
 refreshTopics();
