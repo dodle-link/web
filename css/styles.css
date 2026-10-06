@@ -192,6 +192,15 @@ html[lang="th"] .clear-button { font-family: "Manrope", sans-serif; }
 .privacy-content a { text-decoration: underline; text-underline-offset: 3px; }
 .privacy-content a:hover { color: var(--ink); }
 .privacy-content .privacy-updated { font-size: 12px; margin-bottom: 25px; }
+.blog-list { list-style: none; margin: 32px 0 0; padding: 0; }
+.blog-list-item { border-top: 1px solid var(--line); }
+.blog-list-item:last-child { border-bottom: 1px solid var(--line); }
+.privacy-content .blog-list-link { display: block; padding: 22px 0; text-decoration: none; }
+.blog-list h2 { font-family: "Munson", Georgia, serif; font-size: 25px; font-weight: 400; margin: 0 0 8px; }
+.blog-list p { margin: 0 0 12px; }
+.blog-read-more { color: var(--ink); font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.blog-list-link:hover .blog-read-more { color: var(--muted); }
+.blog-list-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 .footer { border-top: 1px solid var(--line); color: var(--muted); max-width: none; padding: 14px 28px; }
 .footer-links { gap: 20px; }
 .footer a:hover { color: var(--ink); }
