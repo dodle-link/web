@@ -1,5 +1,20 @@
 window.noeWebPixel = true;
-document.documentElement.classList.toggle('dark', localStorage.getItem('dodle-theme') !== 'light');
+
+function readPreference(key, fallback) {
+  try {
+    return window.localStorage.getItem(key) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function savePreference(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {}
+}
+
+document.documentElement.classList.toggle('dark', readPreference('dodle-theme', 'dark') !== 'light');
 
 function init() {
   const form = document.querySelector('.search-form');
@@ -33,10 +48,10 @@ function init() {
     themeToggle.setAttribute('aria-pressed', String(isDark));
     const language = translations[document.documentElement.lang] || translations.en;
     themeToggle.setAttribute('aria-label', isDark ? language.themeLight : language.themeDark);
-    localStorage.setItem('dodle-theme', isDark ? 'dark' : 'light');
+    savePreference('dodle-theme', isDark ? 'dark' : 'light');
   }
 
-  setTheme(localStorage.getItem('dodle-theme') !== 'light');
+  setTheme(readPreference('dodle-theme', 'dark') !== 'light');
   themeToggle.addEventListener('click', () => setTheme(!document.body.classList.contains('dark')));
 
   function setLanguage(language) {
@@ -59,7 +74,7 @@ function init() {
     languageToggle.setAttribute('aria-label', `Language ${languageToggle.textContent}`);
     themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? translation.themeLight : translation.themeDark);
     languageOptions.forEach(option => option.setAttribute('aria-selected', String(option.dataset.language === selectedLanguage)));
-    localStorage.setItem('dodle-language', selectedLanguage);
+    savePreference('dodle-language', selectedLanguage);
   }
 
   function closeLanguageMenu() {
@@ -78,7 +93,7 @@ function init() {
   document.addEventListener('click', event => {
     if (!event.target.closest('.language-switcher')) closeLanguageMenu();
   });
-  setLanguage(localStorage.getItem('dodle-language') || 'en');
+  setLanguage(readPreference('dodle-language', 'en'));
 
   function updateClearButton() {
     clearButton.classList.toggle('visible', input.value.length > 0);

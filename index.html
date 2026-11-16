@@ -14,7 +14,11 @@
     <meta name="apple-mobile-web-app-title" content="dodle" />
     <link rel="manifest" href="site.webmanifest" />
     <script>
-      document.documentElement.classList.toggle('dark', localStorage.getItem('dodle-theme') !== 'light');
+      try {
+        document.documentElement.classList.toggle('dark', localStorage.getItem('dodle-theme') !== 'light');
+      } catch {
+        document.documentElement.classList.add('dark');
+      }
     </script>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/noe-pixel.css" />
