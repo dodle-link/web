@@ -54,6 +54,20 @@
           <input id="search-query" type="hidden" name="q" />
           <button class="clear-button" type="button" aria-label="Clear search">×</button>
         </form>
+        <details class="operator-help">
+          <summary data-i18n="operatorHelp">Search operators</summary>
+          <div class="operator-tools" aria-label="Search operators" data-i18n-aria="operatorHelp">
+            <button type="button" data-insert-operator="site:" data-i18n="operatorSite">Site</button>
+            <button type="button" data-insert-operator="filetype:" data-i18n="operatorFiletype">File type</button>
+            <button type="button" data-insert-operator="after:" data-i18n="operatorAfter">After date</button>
+            <button type="button" data-insert-operator="before:" data-i18n="operatorBefore">Before date</button>
+            <button type="button" data-insert-operator="intitle:" data-i18n="operatorIntitle">In title</button>
+            <button type="button" data-insert-operator="inurl:" data-i18n="operatorInurl">In URL</button>
+            <button type="button" data-insert-operator="-" data-i18n="operatorExclude">Exclude</button>
+            <button type="button" data-insert-operator="&quot;&quot;" data-insert-cursor="-1" data-i18n="operatorExact">Exact phrase</button>
+          </div>
+          <p class="operator-examples"><span data-i18n="operatorExamples">Examples:</span> <code>site:example.com report</code> · <code>filetype:pdf climate report</code></p>
+        </details>
         <p class="search-status" aria-live="polite" aria-atomic="true"></p>
         <div class="search-actions">
           <button class="search-button" form="search-form" type="submit" data-i18n="searchButton">Search</button>

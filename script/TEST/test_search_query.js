@@ -1,0 +1,43 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const test = require('node:test');
+const vm = require('node:vm');
+
+const script = fs.readFileSync(path.join(__dirname, '..', 'script.js'), 'utf8');
+const context = {
+  window: { localStorage: { getItem() { return null; } } },
+  document: {
+    documentElement: { classList: { toggle() {} } },
+    readyState: 'loading',
+    addEventListener() {}
+  }
+};
+vm.runInNewContext(script, context);
+
+test('preserves explicit operators', () => {
+  assert.equal(context.interpretQuery('filetype:pdf climate report'), 'filetype:pdf climate report');
+  assert.equal(context.interpretQuery('site:example.com climate pdf'), 'site:example.com climate pdf');
+});
+
+test('does not rewrite filenames or ordinary file-type mentions', () => {
+  assert.equal(context.interpretQuery('report.pdf'), 'report.pdf');
+  assert.equal(context.interpretQuery('PDF accessibility'), 'PDF accessibility');
+  assert.equal(context.interpretQuery('meaning of pdf'), 'meaning of pdf');
+});
+
+test('converts clear natural-language file-type requests', () => {
+  assert.equal(context.interpretQuery('climate report pdf files'), 'climate report filetype:pdf');
+  assert.equal(context.interpretQuery('climate report as pdf'), 'climate report filetype:pdf');
+});
+
+test('preserves quoted phrases', () => {
+  assert.equal(context.interpretQuery('"pdf about climate"'), '"pdf about climate"');
+});
+
+test('keeps existing natural-language operator conversions', () => {
+  assert.equal(context.interpretQuery('reports after 2020'), 'reports after:2020-01-01');
+  assert.equal(context.interpretQuery('birds without cats'), 'birds -cats');
+});

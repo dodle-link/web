@@ -177,6 +177,14 @@ h1#page-title {
 .search-form input::placeholder { color: var(--muted); }
 .clear-button { color: var(--muted); }
 html[lang="th"] .clear-button { font-family: "Manrope", sans-serif; }
+.operator-help { color: var(--muted); font-size: 12px; margin: 14px auto 0; max-width: 584px; text-align: left; }
+.operator-help summary { cursor: pointer; display: table; margin: 0 auto; padding: 5px 8px; }
+.operator-tools { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; padding: 9px 0 2px; }
+.operator-tools button { background: transparent; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); font-size: 12px; padding: 7px 10px; }
+.operator-tools button:hover { background: var(--line); }
+.operator-tools button:focus-visible, .operator-help summary:focus-visible { outline: 2px solid #8ab4f8; outline-offset: 2px; }
+.operator-examples { line-height: 1.8; margin: 8px 0 0; text-align: center; }
+.operator-examples code { color: var(--ink); font-size: 11px; }
 .search-actions { display: flex; gap: 12px; justify-content: center; margin-top: 29px; }
 .search-button, .lucky-button { border-radius: 6px; font-size: 14px; font-weight: 600; padding: 10px 16px; transition: background .2s ease, border-color .2s ease, box-shadow .2s ease; }
 .search-button { background: var(--ink); border: 1px solid var(--ink); color: var(--paper); }
