@@ -19,6 +19,7 @@ document.documentElement.classList.toggle('dark', readPreference('dodle-theme', 
 function init() {
   const form = document.querySelector('.search-form');
   const input = document.querySelector('#search-input');
+  const searchQuery = document.querySelector('#search-query');
   const clearButton = document.querySelector('.clear-button');
   const searchButton = document.querySelector('.search-button');
   const themeToggle = document.querySelector('.theme-toggle');
@@ -150,7 +151,7 @@ function init() {
 
     nextAllowedSearchAt = now + minimumSearchIntervalMs;
     searchStatus.textContent = '';
-    input.value = interpretQuery(input.value);
+    searchQuery.value = interpretQuery(input.value);
     form.target = '_blank';
     startSearchCooldown();
   });
