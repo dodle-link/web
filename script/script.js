@@ -31,15 +31,18 @@ function init() {
   let nextAllowedSearchAt = 0;
   let cooldownTimeout;
   let currentLanguage = 'en';
+  let hasGeneratedPrompt = false;
+  const recentPrompts = [];
+  const recentPromptLimit = 10;
 
   const translations = {
-    en: { pageTitle: 'dodle - Search', navLabel: 'Primary navigation', themeDark: 'Switch to dark mode', themeLight: 'Switch to light mode', searchLabel: 'Search the web', searchPlaceholder: 'Search the web', searchButton: 'Search', curiousButton: "I'm Feeling Curious", clear: 'Clear search', cooldown: 'Please wait before searching again.', privacy: 'Privacy', about: 'About', blog: 'Blog' },
-    ja: { pageTitle: 'dodle - 検索', navLabel: 'メインナビゲーション', themeDark: 'ダークモードに切り替え', themeLight: 'ライトモードに切り替え', searchLabel: 'ウェブを検索', searchPlaceholder: 'ウェブを検索', searchButton: '検索', curiousButton: '気になる検索', clear: '検索をクリア', cooldown: '次の検索までお待ちください。', description: '気を散らさずに検索できるシンプルな検索ページです。', privacy: 'プライバシー', about: '概要', blog: 'ブログ' },
-    zh: { pageTitle: 'dodle - 搜索', navLabel: '主导航', themeDark: '切换到深色模式', themeLight: '切换到浅色模式', searchLabel: '搜索网页', searchPlaceholder: '搜索网页', searchButton: '搜索', curiousButton: '我很好奇', clear: '清除搜索', cooldown: '请稍候再搜索。', description: '简单搜索，远离纷扰的网络。', privacy: '隐私', about: '关于', blog: '博客' },
-    th: { pageTitle: 'dodle - ค้นหา', navLabel: 'การนำทางหลัก', themeDark: 'เปลี่ยนเป็นโหมดมืด', themeLight: 'เปลี่ยนเป็นโหมดสว่าง', searchLabel: 'ค้นหาเว็บ', searchPlaceholder: 'ค้นหาเว็บ', searchButton: 'ค้นหา', curiousButton: 'ฉันอยากรู้', clear: 'ล้างการค้นหา', cooldown: 'โปรดรอสักครู่ก่อนค้นหาอีกครั้ง', description: 'การค้นหาที่เรียบง่ายสำหรับเว็บที่วุ่นวายน้อยลง', privacy: 'ความเป็นส่วนตัว', about: 'เกี่ยวกับ', blog: 'บล็อก' },
-    ko: { pageTitle: 'dodle - 검색', navLabel: '주요 탐색', themeDark: '다크 모드로 전환', themeLight: '라이트 모드로 전환', searchLabel: '웹 검색', searchPlaceholder: '웹 검색', searchButton: '검색', curiousButton: '궁금한 것이 있어요', clear: '검색어 지우기', cooldown: '잠시 후 다시 검색해 주세요.', description: '방해 요소를 줄인 간단한 웹 검색입니다.', privacy: '개인정보 보호', about: '소개', blog: '블로그' },
-    fr: { pageTitle: 'dodle - Recherche', navLabel: 'Navigation principale', themeDark: 'Passer au mode sombre', themeLight: 'Passer au mode clair', searchLabel: 'Rechercher sur le Web', searchPlaceholder: 'Rechercher sur le Web', searchButton: 'Rechercher', curiousButton: 'Je suis curieux', clear: 'Effacer la recherche', cooldown: 'Veuillez attendre avant de relancer une recherche.', description: 'Une recherche simple pour un Web moins distrayant.', privacy: 'Confidentialité', about: 'À propos', blog: 'Blog' },
-    de: { pageTitle: 'dodle - Suche', navLabel: 'Hauptnavigation', themeDark: 'Dunklen Modus aktivieren', themeLight: 'Hellen Modus aktivieren', searchLabel: 'Im Web suchen', searchPlaceholder: 'Im Web suchen', searchButton: 'Suchen', curiousButton: 'Ich bin neugierig', clear: 'Suche löschen', cooldown: 'Bitte warten Sie kurz, bevor Sie erneut suchen.', description: 'Eine einfache Suche für ein weniger ablenkendes Web.', privacy: 'Datenschutz', about: 'Über uns', blog: 'Blog' }
+    en: { pageTitle: 'dodle - Search', navLabel: 'Primary navigation', themeDark: 'Switch to dark mode', themeLight: 'Switch to light mode', searchLabel: 'Search the web', searchPlaceholder: 'Search the web', searchButton: 'Search', curiousButton: "I'm Feeling Curious", curiousAgain: 'Try another', promptReady: 'A curious prompt is ready. Edit it or search when you’re ready.', clear: 'Clear search', cooldown: 'Please wait before searching again.', privacy: 'Privacy', about: 'About', blog: 'Blog' },
+    ja: { pageTitle: 'dodle - 検索', navLabel: 'メインナビゲーション', themeDark: 'ダークモードに切り替え', themeLight: 'ライトモードに切り替え', searchLabel: 'ウェブを検索', searchPlaceholder: 'ウェブを検索', searchButton: '検索', curiousButton: '気になる検索', curiousAgain: '別の候補', promptReady: '検索候補を用意しました。編集するか、そのまま検索できます。', clear: '検索をクリア', cooldown: '次の検索までお待ちください。', description: '気を散らさずに検索できるシンプルな検索ページです。', privacy: 'プライバシー', about: '概要', blog: 'ブログ' },
+    zh: { pageTitle: 'dodle - 搜索', navLabel: '主导航', themeDark: '切换到深色模式', themeLight: '切换到浅色模式', searchLabel: '搜索网页', searchPlaceholder: '搜索网页', searchButton: '搜索', curiousButton: '我很好奇', curiousAgain: '再来一个', promptReady: '已生成一个好奇主题。你可以修改后再搜索。', clear: '清除搜索', cooldown: '请稍候再搜索。', description: '简单搜索，远离纷扰的网络。', privacy: '隐私', about: '关于', blog: '博客' },
+    th: { pageTitle: 'dodle - ค้นหา', navLabel: 'การนำทางหลัก', themeDark: 'เปลี่ยนเป็นโหมดมืด', themeLight: 'เปลี่ยนเป็นโหมดสว่าง', searchLabel: 'ค้นหาเว็บ', searchPlaceholder: 'ค้นหาเว็บ', searchButton: 'ค้นหา', curiousButton: 'ฉันอยากรู้', curiousAgain: 'ลองอีกครั้ง', promptReady: 'สร้างหัวข้อชวนค้นหาแล้ว แก้ไขหรือค้นหาได้เลย', clear: 'ล้างการค้นหา', cooldown: 'โปรดรอสักครู่ก่อนค้นหาอีกครั้ง', description: 'การค้นหาที่เรียบง่ายสำหรับเว็บที่วุ่นวายน้อยลง', privacy: 'ความเป็นส่วนตัว', about: 'เกี่ยวกับ', blog: 'บล็อก' },
+    ko: { pageTitle: 'dodle - 검색', navLabel: '주요 탐색', themeDark: '다크 모드로 전환', themeLight: '라이트 모드로 전환', searchLabel: '웹 검색', searchPlaceholder: '웹 검색', searchButton: '검색', curiousButton: '궁금한 것이 있어요', curiousAgain: '다른 주제', promptReady: '궁금한 검색어를 준비했어요. 수정하거나 바로 검색할 수 있어요.', clear: '검색어 지우기', cooldown: '잠시 후 다시 검색해 주세요.', description: '방해 요소를 줄인 간단한 웹 검색입니다.', privacy: '개인정보 보호', about: '소개', blog: '블로그' },
+    fr: { pageTitle: 'dodle - Recherche', navLabel: 'Navigation principale', themeDark: 'Passer au mode sombre', themeLight: 'Passer au mode clair', searchLabel: 'Rechercher sur le Web', searchPlaceholder: 'Rechercher sur le Web', searchButton: 'Rechercher', curiousButton: 'Je suis curieux', curiousAgain: 'Une autre idée', promptReady: 'Une idée est prête. Modifiez-la ou lancez la recherche.', clear: 'Effacer la recherche', cooldown: 'Veuillez attendre avant de relancer une recherche.', description: 'Une recherche simple pour un Web moins distrayant.', privacy: 'Confidentialité', about: 'À propos', blog: 'Blog' },
+    de: { pageTitle: 'dodle - Suche', navLabel: 'Hauptnavigation', themeDark: 'Dunklen Modus aktivieren', themeLight: 'Hellen Modus aktivieren', searchLabel: 'Im Web suchen', searchPlaceholder: 'Im Web suchen', searchButton: 'Suchen', curiousButton: 'Ich bin neugierig', curiousAgain: 'Noch eine Idee', promptReady: 'Eine Idee ist bereit. Bearbeite sie oder starte die Suche.', clear: 'Suche löschen', cooldown: 'Bitte warten Sie kurz, bevor Sie erneut suchen.', description: 'Eine einfache Suche für ein weniger ablenkendes Web.', privacy: 'Datenschutz', about: 'Über uns', blog: 'Blog' }
   };
 
   function setTheme(isDark) {
@@ -69,6 +72,7 @@ function init() {
       if (translation[key]) element.setAttribute('aria-label', translation[key]);
     });
     input.placeholder = translation.searchPlaceholder;
+    luckyButton.textContent = hasGeneratedPrompt ? translation.curiousAgain : translation.curiousButton;
     clearButton.setAttribute('aria-label', translation.clear);
     languageToggle.textContent = languageOptions.find(option => option.dataset.language === selectedLanguage).textContent;
     languageToggle.setAttribute('aria-label', `Language ${languageToggle.textContent}`);
@@ -108,8 +112,21 @@ function init() {
 
   luckyButton.addEventListener('click', () => {
     const languageWords = window.lazyCuriousWordsByLanguage[currentLanguage];
-    input.value = (languageWords || window.lazyCuriousWordsByLanguage.en).getRandom();
-    form.requestSubmit();
+    const promptSource = languageWords || window.lazyCuriousWordsByLanguage.en;
+    let prompt;
+    for (let attempt = 0; attempt < 20; attempt++) {
+      prompt = promptSource.getRandom();
+      if (!recentPrompts.includes(prompt)) break;
+    }
+    if (!prompt) return;
+
+    recentPrompts.push(prompt);
+    if (recentPrompts.length > recentPromptLimit) recentPrompts.shift();
+    hasGeneratedPrompt = true;
+    input.value = prompt;
+    updateClearButton();
+    searchStatus.textContent = (translations[currentLanguage] || translations.en).promptReady;
+    luckyButton.textContent = (translations[currentLanguage] || translations.en).curiousAgain;
   });
 
   function startSearchCooldown() {
