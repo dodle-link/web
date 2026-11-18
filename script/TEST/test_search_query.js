@@ -6,6 +6,7 @@ const path = require('node:path');
 const test = require('node:test');
 const vm = require('node:vm');
 
+const root = path.join(__dirname, '..', '..');
 const script = fs.readFileSync(path.join(__dirname, '..', 'script.js'), 'utf8');
 const context = {
   window: { localStorage: { getItem() { return null; } } },
@@ -16,6 +17,17 @@ const context = {
   }
 };
 vm.runInNewContext(script, context);
+
+test('keeps the homepage version aligned with the README', () => {
+  const homepage = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const readme = fs.readFileSync(path.join(root, 'readme.md'), 'utf8');
+  const homepageVersion = homepage.match(/<meta name="version" content="([^"]+)"/);
+  const readmeVersion = readme.match(/^Version: `([^`]+)`$/m);
+
+  assert.ok(homepageVersion, 'homepage version metadata exists');
+  assert.ok(readmeVersion, 'README version exists');
+  assert.equal(homepageVersion[1], readmeVersion[1]);
+});
 
 test('preserves explicit operators', () => {
   assert.equal(context.interpretQuery('filetype:pdf climate report'), 'filetype:pdf climate report');

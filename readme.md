@@ -10,8 +10,9 @@ This directory is maintained as a separate Git repository:
 
 `git@github.com:dodle-link/web.git`
 
-It is independent from the sibling `noesis` repository. Noesis browser assets
-are loaded from `https://noesis.dodle.link/` at runtime.
+It is independent from the sibling `noesis` repository. The pixel experience is
+served from this repository and does not load browser assets from
+`https://noesis.dodle.link/` at runtime.
 
 ## Features
 
@@ -21,12 +22,12 @@ are loaded from `https://noesis.dodle.link/` at runtime.
 - Search suggestions and a "I'm Feeling Curious" shortcut with localized, deduplicated prompts
 - The curiosity shortcut provides 100,000 lazily generated prompts per supported language
 - Search results open in a new tab
-- The hosted Noe pixel responds to the visitor's real-time presence: movement, keyboard activity, and visibility all feed its energy state
+- The local Noe pixel responds to the visitor's real-time presence: movement, keyboard activity, and visibility all feed its energy state
 - This page does not render a literal energy cube; instead, the current cursor acts as the virtual energy source when the pixel needs energy
 
 ## Run locally
 
-This is a static site with no build step or dependencies. Serve it with a static file server. The Noe pixel JavaScript and CSS are loaded from the hosted Noesis UI, not from a local `noesis` checkout:
+This is a static site with no build step or dependencies. Serve it with a static file server. The Noe pixel JavaScript and CSS are served from this repository; a local `noesis` checkout is not required:
 
 ```sh
 python3 -m http.server 8000 -d ..
@@ -36,7 +37,7 @@ Then visit `http://localhost:8000/web/index.html`.
 
 ## Noe pixel behavior
 
-The local bridge in `script/me.js` creates a lightweight "here and now" state for the hosted Noe pixel. It tracks:
+The local bridge in `script/me.js` creates a lightweight "here and now" state for the Noe pixel. It tracks:
 
 - active pointer movement and keyboard input
 - idle time and tab visibility
@@ -88,7 +89,7 @@ appropriate.
 
 ## Files
 
-- `index.html` - Page structure and hosted Noe pixel bootstrap
+- `index.html` - Page structure and local Noe pixel bootstrap
 - `css/styles.css` - Responsive layout and theme styles
 - `script/me.js` - Cursor-driven "here and now" energy bridge for the Noe pixel
 - `script/script.js` - Search controls and theme persistence
