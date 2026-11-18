@@ -194,6 +194,7 @@ html[lang="th"] .clear-button { font-family: "Manrope", sans-serif; }
 .lucky-button:not(:disabled):hover { background: #f8f9fa; border-color: #9aa0a6; color: var(--ink); transform: none; }
 .search-button:focus-visible, .lucky-button:focus-visible, .theme-toggle:focus-visible { outline: 3px solid #8ab4f8; outline-offset: 3px; }
 .search-status { color: var(--muted); font-size: 12px; min-height: 18px; margin: 8px 0 -26px; text-align: center; }
+.search-status:not(:empty) { margin-bottom: 0; }
 .about-copy { color: var(--muted); font-size: 12px; margin: 105px 0 0; text-align: center; }
 .privacy-content { margin: 0 auto; max-width: 760px; min-height: calc(100vh - 130px); padding: 55px 24px 80px; }
 .ideas-main { margin: 0 auto; max-width: 1040px; min-height: calc(100vh - 128px); padding: 74px 28px 64px; }
