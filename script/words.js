@@ -31,14 +31,6 @@ const curiosityLanguageConfig = {
       'The biggest challenges facing {topic}', 'How {topic} connects to other fields', 'A case study of {topic}',
       'The tools and methods used in {topic}', 'What experts get wrong about {topic}'
     ],
-    contexts: [
-      'for beginners', 'in everyday life', 'through history', 'from a scientific perspective', 'with real examples',
-      'in simple terms', 'around the world', 'and its cultural meaning', 'and its environmental impact',
-      'and the latest discoveries', 'compared with related ideas', 'and what may happen next',
-      'with practical applications', 'from an expert perspective', 'with common misconceptions explained',
-      'in a historical context', 'with a focus on real-world challenges', 'and its role in the future',
-      'with a step-by-step overview', 'across different cultures'
-    ]
   },
   ja: {
     topics: [
@@ -73,12 +65,6 @@ const curiosityLanguageConfig = {
       '{topic}を始める方法', '{topic}が抱える最大の課題', '{topic}と他の分野のつながり',
       '{topic}の事例研究', '{topic}で使われる道具と方法', '{topic}の専門家が誤解していること'
     ],
-    contexts: [
-      '初心者向け', '日常生活との関係', '歴史的な背景', '科学的な視点', '実例を通して', '簡単な言葉で',
-      '世界各地の例', '文化的な意味', '環境への影響', '最新の発見', '関連するテーマとの比較', 'これからの展望',
-      '実際の応用例とともに', '専門家の視点から', 'よくある誤解を解きながら', '歴史的な背景を踏まえて',
-      '現実の課題に焦点を当てて', '未来における役割', '順を追って解説', '異なる文化を通して'
-    ]
   },
   zh: {
     topics: [
@@ -113,12 +99,6 @@ const curiosityLanguageConfig = {
       '{topic}面临的最大挑战', '{topic}与其他领域的联系', '{topic}案例研究', '研究{topic}所用的工具和方法',
       '专家对{topic}的误解'
     ],
-    contexts: [
-      '适合初学者', '与日常生活的关系', '历史背景', '科学视角', '通过真实案例', '用简单语言解释',
-      '世界各地的例子', '文化意义', '环境影响', '最新发现', '与相关主题比较', '未来展望',
-      '实际应用', '从专家角度出发', '解释常见误解', '结合历史背景', '关注现实世界的挑战',
-      '对未来的作用', '分步骤介绍', '不同文化中的表现'
-    ]
   },
   th: {
     topics: [
@@ -153,12 +133,6 @@ const curiosityLanguageConfig = {
       'วิธีเริ่มต้นเรียนรู้เกี่ยวกับ{topic}', 'ความท้าทายที่ใหญ่ที่สุดของ{topic}', '{topic}เชื่อมโยงกับศาสตร์อื่นอย่างไร',
       'กรณีศึกษาของ{topic}', 'เครื่องมือและวิธีการที่ใช้ใน{topic}', 'สิ่งที่ผู้เชี่ยวชาญเข้าใจผิดเกี่ยวกับ{topic}'
     ],
-    contexts: [
-      'สำหรับผู้เริ่มต้น', 'ในชีวิตประจำวัน', 'เบื้องหลังทางประวัติศาสตร์', 'ในมุมมองทางวิทยาศาสตร์', 'จากตัวอย่างจริง', 'อธิบายด้วยภาษาง่ายๆ',
-      'ตัวอย่างจากทั่วโลก', 'ความหมายทางวัฒนธรรม', 'ผลกระทบต่อสิ่งแวดล้อม', 'การค้นพบล่าสุด', 'เปรียบเทียบกับหัวข้อที่เกี่ยวข้อง', 'แนวโน้มในอนาคต',
-      'พร้อมตัวอย่างการประยุกต์ใช้จริง', 'จากมุมมองของผู้เชี่ยวชาญ', 'พร้อมอธิบายความเข้าใจผิดที่พบบ่อย',
-      'ในบริบททางประวัติศาสตร์', 'โดยเน้นความท้าทายในโลกจริง', 'บทบาทในอนาคต', 'อธิบายทีละขั้นตอน', 'ผ่านวัฒนธรรมที่หลากหลาย'
-    ]
   },
   ko: {
     topics: [
@@ -193,12 +167,6 @@ const curiosityLanguageConfig = {
       '{topic}이 직면한 가장 큰 과제', '{topic}과 다른 분야의 연결', '{topic}의 사례 연구',
       '{topic}에서 사용하는 도구와 방법', '{topic}에 대해 전문가들이 잘못 알고 있는 것'
     ],
-    contexts: [
-      '초보자를 위한 안내', '일상생활에서', '역사적 배경', '과학적 관점', '실제 사례와 함께', '쉬운 말로 설명',
-      '세계 각지의 사례', '문화적 의미', '환경에 미치는 영향', '최신 발견', '관련 주제와 비교', '앞으로의 전망',
-      '실제 응용 사례와 함께', '전문가의 관점에서', '흔한 오해를 설명하며', '역사적 맥락에서',
-      '현실의 과제에 초점을 맞춰', '미래에서의 역할', '단계별로 살펴보기', '다양한 문화 속에서'
-    ]
   },
   fr: {
     topics: [
@@ -235,12 +203,6 @@ const curiosityLanguageConfig = {
       'Les liens entre {topic} et d’autres domaines', 'Une étude de cas sur {topic}', 'Les outils et méthodes de {topic}',
       'Ce que les experts se trompent sur {topic}'
     ],
-    contexts: [
-      'pour débutants', 'dans la vie quotidienne', 'dans son contexte historique', 'd un point de vue scientifique', 'avec des exemples concrets', 'en termes simples',
-      'dans le monde', 'et sa signification culturelle', 'et son impact environnemental', 'et les dernières découvertes', 'comparé aux sujets proches', 'et ses perspectives futures',
-      'avec des applications concrètes', 'du point de vue des experts', 'en expliquant les idées reçues',
-      'dans son contexte historique', 'face aux défis du monde réel', 'et son rôle à l’avenir', 'étape par étape', 'à travers différentes cultures'
-    ]
   },
   de: {
     topics: [
@@ -276,12 +238,6 @@ const curiosityLanguageConfig = {
       'Die größten Herausforderungen von {topic}', 'Wie {topic} mit anderen Bereichen verbunden ist', 'Eine Fallstudie zu {topic}',
       'Werkzeuge und Methoden in {topic}', 'Was Experten über {topic} falsch verstehen'
     ],
-    contexts: [
-      'für Anfänger', 'im Alltag', 'vor dem historischen Hintergrund', 'aus wissenschaftlicher Sicht', 'mit echten Beispielen', 'einfach erklärt',
-      'aus aller Welt', 'und seine kulturelle Bedeutung', 'und seine Auswirkungen auf die Umwelt', 'und die neuesten Entdeckungen', 'im Vergleich zu verwandten Themen', 'und seine Zukunft',
-      'mit praktischen Anwendungen', 'aus Sicht von Fachleuten', 'mit einer Erklärung häufiger Irrtümer',
-      'im historischen Kontext', 'mit Blick auf reale Herausforderungen', 'und seine Rolle in der Zukunft', 'Schritt für Schritt', 'in verschiedenen Kulturen'
-    ]
   }
 };
 
@@ -292,30 +248,41 @@ const fillTemplate = (template, values) => Object.entries(values).reduce(
   template
 );
 
-const buildLanguagePromptSource = (topics, patterns, contexts) => {
+const buildLanguagePromptSource = (topics, patterns) => {
   const topicPatternCount = topics.length * patterns.length;
-  const combinations = topicPatternCount * contexts.length;
+  const combinations = topicPatternCount;
 
   if (!Number.isSafeInteger(combinations) || combinations < 1) {
     throw new Error('Invalid curiosity prompt source dimensions');
   }
+
+  let remaining = combinations;
+  const swappedIndices = new Map();
 
   return {
     length: combinations,
     get(index) {
       if (!Number.isInteger(index) || index < 0 || index >= this.length) return undefined;
 
-      const contextIndex = Math.floor(index / topicPatternCount);
-      const remainder = index % topicPatternCount;
-      const patternIndex = Math.floor(remainder / topics.length);
-      const topicIndex = remainder % topics.length;
-      const prompt = fillTemplate(patterns[patternIndex], { topic: topics[topicIndex] });
-      return normalizePrompt(`${prompt} ${contexts[contextIndex]}`);
+      const patternIndex = Math.floor(index / topics.length);
+      const topicIndex = index % topics.length;
+      return normalizePrompt(fillTemplate(patterns[patternIndex], { topic: topics[topicIndex] }));
     },
     getRandom() {
       if (this.length < 1) return undefined;
-      const randomIndex = Math.min(this.length - 1, Math.floor(Math.random() * this.length));
-      return this.get(randomIndex);
+      if (remaining === 0) {
+        remaining = this.length;
+        swappedIndices.clear();
+      }
+
+      const randomIndex = Math.floor(Math.random() * remaining);
+      const selectedIndex = swappedIndices.get(randomIndex) ?? randomIndex;
+      const lastIndex = remaining - 1;
+      const replacementIndex = swappedIndices.get(lastIndex) ?? lastIndex;
+      if (randomIndex !== lastIndex) swappedIndices.set(randomIndex, replacementIndex);
+      swappedIndices.delete(lastIndex);
+      remaining -= 1;
+      return this.get(selectedIndex);
     }
   };
 };
@@ -335,7 +302,7 @@ const validatePromptSource = (language, source) => {
 window.lazyCuriousWordsByLanguage = {};
 
 for (const [language, config] of Object.entries(curiosityLanguageConfig)) {
-  const source = buildLanguagePromptSource(config.topics, config.patterns, config.contexts);
+  const source = buildLanguagePromptSource(config.topics, config.patterns);
 
   validatePromptSource(language, source);
   window.lazyCuriousWordsByLanguage[language] = source;

@@ -19,8 +19,8 @@ served from this repository and does not load browser assets from
 - Clean responsive layout for desktop and mobile
 - Dark mode enabled by default
 - Light mode preference persisted in `localStorage`
-- Search suggestions and a "I'm Feeling Curious" shortcut with localized, deduplicated prompts
-- The curiosity shortcut provides 100,000 lazily generated prompts per supported language
+- Search suggestions and a "I'm Feeling Curious" shortcut with localized prompts that avoid repeats until each language's prompt set is exhausted
+- The curiosity shortcut lazily generates thousands of topic-and-question combinations per supported language
 - Search results open in a new tab
 - The local Noe pixel responds to the visitor's real-time presence: movement, keyboard activity, and visibility all feed its energy state
 - This page does not render a literal energy cube; instead, the current cursor acts as the virtual energy source when the pixel needs energy

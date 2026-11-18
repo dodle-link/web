@@ -33,8 +33,6 @@ function init() {
   let cooldownTimeout;
   let currentLanguage = 'en';
   let hasGeneratedPrompt = false;
-  const recentPrompts = [];
-  const recentPromptLimit = 10;
 
   const translations = {
     en: { pageTitle: 'dodle - Search', navLabel: 'Primary navigation', themeDark: 'Switch to dark mode', themeLight: 'Switch to light mode', searchLabel: 'Search the web', searchPlaceholder: 'Search the web', searchButton: 'Search', curiousButton: "I'm Feeling Curious", curiousAgain: 'Try another', promptReady: 'A curious prompt is ready. Edit it or search when you’re ready.', clear: 'Clear search', cooldown: 'Please wait before searching again.', operatorHelp: 'Search operators', operatorSite: 'Site', operatorFiletype: 'File type', operatorAfter: 'After date', operatorBefore: 'Before date', operatorIntitle: 'In title', operatorInurl: 'In URL', operatorExclude: 'Exclude', operatorExact: 'Exact phrase', operatorExamples: 'Examples:', privacy: 'Privacy', about: 'About', blog: 'Blog' },
@@ -128,15 +126,9 @@ function init() {
   luckyButton.addEventListener('click', () => {
     const languageWords = window.lazyCuriousWordsByLanguage[currentLanguage];
     const promptSource = languageWords || window.lazyCuriousWordsByLanguage.en;
-    let prompt;
-    for (let attempt = 0; attempt < 20; attempt++) {
-      prompt = promptSource.getRandom();
-      if (!recentPrompts.includes(prompt)) break;
-    }
+    const prompt = promptSource.getRandom();
     if (!prompt) return;
 
-    recentPrompts.push(prompt);
-    if (recentPrompts.length > recentPromptLimit) recentPrompts.shift();
     hasGeneratedPrompt = true;
     input.value = prompt;
     updateClearButton();
