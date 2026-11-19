@@ -36,6 +36,13 @@ test('preserves explicit operators', () => {
   assert.equal(context.interpretQuery('define:serendipity'), 'define:serendipity');
 });
 
+test('detects an existing operator without matching ordinary words', () => {
+  assert.equal(context.hasSearchOperator('site:example.com climate', 'site:'), true);
+  assert.equal(context.hasSearchOperator('site:example.com climate', 'filetype:'), false);
+  assert.equal(context.hasSearchOperator('research:climate', 'site:'), false);
+  assert.equal(context.hasSearchOperator('climate -weather', '-'), false);
+});
+
 test('does not rewrite filenames or ordinary file-type mentions', () => {
   assert.equal(context.interpretQuery('report.pdf'), 'report.pdf');
   assert.equal(context.interpretQuery('PDF accessibility'), 'PDF accessibility');

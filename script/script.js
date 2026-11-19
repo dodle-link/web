@@ -126,14 +126,26 @@ function init() {
     clearButton.classList.toggle('visible', input.value.length > 0);
   }
 
+  const operatorExamples = document.querySelector('.operator-examples');
+  const operatorExample = operatorExamples.querySelector('code');
+  const operatorExampleSeparator = operatorExamples.querySelector('.operator-example-separator');
+  const secondaryOperatorExample = operatorExamples.querySelectorAll('code')[1];
   input.addEventListener('input', updateClearButton);
   document.querySelectorAll('[data-insert-operator]').forEach(button => {
     button.addEventListener('click', () => {
+      const insertion = button.dataset.insertOperator;
+      operatorExample.textContent = button.dataset.example;
+      operatorExampleSeparator.hidden = true;
+      secondaryOperatorExample.hidden = true;
+      if (hasSearchOperator(input.value, insertion)) {
+        input.focus();
+        return;
+      }
+
       const start = input.selectionStart ?? input.value.length;
       const end = input.selectionEnd ?? input.value.length;
       const before = input.value.slice(0, start);
       const separator = before && !/\s$/.test(before) ? ' ' : '';
-      const insertion = button.dataset.insertOperator;
       input.value = `${before}${separator}${insertion}${input.value.slice(end)}`;
       const cursor = before.length + separator.length + insertion.length + Number(button.dataset.insertCursor || 0);
       input.setSelectionRange(cursor, cursor);
@@ -219,5 +231,11 @@ function interpretQuery(value) {
   query = query.replace(/\s+or\s+/gi, ' OR ');
 
   return query.replace(/\s+/g, ' ').trim();
+}
+
+function hasSearchOperator(query, operator) {
+  if (!operator.endsWith(':')) return false;
+  const escapedOperator = operator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?:^|\\s)${escapedOperator}`, 'i').test(query);
 }
 
