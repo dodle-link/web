@@ -32,6 +32,8 @@ test('keeps the homepage version aligned with the README', () => {
 test('preserves explicit operators', () => {
   assert.equal(context.interpretQuery('filetype:pdf climate report'), 'filetype:pdf climate report');
   assert.equal(context.interpretQuery('site:example.com climate pdf'), 'site:example.com climate pdf');
+  assert.equal(context.interpretQuery('intext:accessibility report'), 'intext:accessibility report');
+  assert.equal(context.interpretQuery('define:serendipity'), 'define:serendipity');
 });
 
 test('does not rewrite filenames or ordinary file-type mentions', () => {

@@ -9,6 +9,7 @@
   --mint: #f5f5f5;
   --lavender: #f5f5f5;
   --yellow: #f5f5f5;
+  --operator-edge-shadow: rgba(32, 33, 36, .24);
 }
 
 @font-face {
@@ -177,10 +178,14 @@ h1#page-title {
 .search-form input::placeholder { color: var(--muted); }
 .clear-button { color: var(--muted); }
 html[lang="th"] .clear-button { font-family: "Manrope", sans-serif; }
-.operator-help { color: var(--muted); font-size: 12px; margin: 14px auto 0; max-width: 584px; text-align: left; }
+.operator-help { color: var(--muted); font-size: 12px; margin: 8px auto 0; max-width: 584px; text-align: left; }
 .operator-help summary { cursor: pointer; display: table; margin: 0 auto; padding: 5px 8px; }
-.operator-tools { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; padding: 9px 0 2px; }
-.operator-tools button { background: transparent; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); font-size: 12px; padding: 7px 10px; }
+.operator-tools { display: flex; flex-wrap: nowrap; gap: 7px; justify-content: flex-start; overflow-x: auto; padding: 9px 0 2px; scrollbar-width: none; }
+.operator-tools::-webkit-scrollbar { display: none; }
+.operator-tools.has-left-shadow { box-shadow: inset 10px 0 8px -8px var(--operator-edge-shadow); }
+.operator-tools.has-right-shadow { box-shadow: inset -10px 0 8px -8px var(--operator-edge-shadow); }
+.operator-tools.has-left-shadow.has-right-shadow { box-shadow: inset 10px 0 8px -8px var(--operator-edge-shadow), inset -10px 0 8px -8px var(--operator-edge-shadow); }
+.operator-tools button { background: transparent; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); flex: 0 0 auto; font-size: 12px; padding: 7px 10px; }
 .operator-tools button:hover { background: var(--line); }
 .operator-tools button:focus-visible, .operator-help summary:focus-visible { outline: 2px solid #8ab4f8; outline-offset: 2px; }
 .operator-examples { line-height: 1.8; margin: 8px 0 0; text-align: center; }
@@ -248,6 +253,7 @@ body.dark {
   --cream: #202124;
   --coral: #f1f3f4;
   --coral-deep: #ffffff;
+  --operator-edge-shadow: rgba(241, 243, 244, .48);
 }
 html.dark {
   --ink: #f1f3f4;
@@ -257,6 +263,7 @@ html.dark {
   --cream: #202124;
   --coral: #f1f3f4;
   --coral-deep: #ffffff;
+  --operator-edge-shadow: rgba(241, 243, 244, .48);
 }
 html.dark .search-form, body.dark .search-form { box-shadow: 0 1px 6px rgba(0, 0, 0, .5); }
 html.dark .search-button, body.dark .search-button { background: #f1f3f4; border-color: #f1f3f4; color: #202124; }
