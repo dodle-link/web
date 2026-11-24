@@ -18,8 +18,8 @@
       <nav class="nav-links" aria-label="Primary navigation" data-i18n-aria="navLabel">
         <a href="index.html" data-i18n="home">Home</a>
         <div class="language-switcher">
-          <button class="language-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language English">English</button>
-          <ul class="language-menu" role="listbox" aria-label="Choose language" hidden>
+          <button class="language-toggle" type="button" aria-haspopup="listbox" aria-controls="language-menu" aria-expanded="false" aria-label="Choose language">English</button>
+          <ul class="language-menu" id="language-menu" role="listbox" aria-label="Choose language" hidden>
             <li><button type="button" role="option" aria-selected="true" data-language="en">English</button></li>
             <li><button type="button" role="option" aria-selected="false" data-language="ja">日本語</button></li>
             <li><button type="button" role="option" aria-selected="false" data-language="zh">中文</button></li>
@@ -50,6 +50,7 @@
       <span>© dodle</span>
       <div class="footer-links"><a href="privacy.html" data-i18n="privacy">Privacy</a><a href="index.html" data-i18n="home">Home</a></div>
     </footer>
+    <script src="script/language-menu.js"></script>
     <script src="script/about.js"></script>
   </body>
 </html>

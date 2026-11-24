@@ -1,23 +1,54 @@
 name: Deploy to GitHub Pages
 
 on:
+  pull_request:
   push:
     branches: [main]
-    paths-ignore:
-      - 'spider/**'
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test browser scripts
+        run: node --test script/TEST/*.js
+
+      - name: Test local site references
+        run: python -m unittest discover -s TEST -p 'test_*.py'
+
+      - name: Test Spider
+        working-directory: spider
+        run: python -m unittest discover -s TEST -p 'test_*.py'
+
+      - name: Compile Python sources
+        run: python -m compileall -q spider
+
   deploy:
+    if: github.event_name != 'pull_request'
+    needs: test
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

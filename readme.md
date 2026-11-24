@@ -35,6 +35,30 @@ python3 -m http.server 8000 -d ..
 
 Then visit `http://localhost:8000/web/index.html`.
 
+## Test and release
+
+Run the browser-script, site-reference, and Spider tests before opening a pull
+request:
+
+```sh
+node --test script/TEST/*.js
+python3 -m unittest discover -s TEST -p 'test_*.py'
+(cd spider && python3 -m unittest discover -s TEST -p 'test_*.py')
+python3 -m compileall -q spider
+```
+
+Release checklist:
+
+- Update the relevant changelog and homepage/README version together. Spider has
+	its own package version in `spider/pyproject.toml`.
+- Run the checks above and verify all local page assets and links.
+- Manually check keyboard operation, language switching, theme persistence, and
+	search submission on desktop and mobile.
+- Review privacy statements if browser storage, interaction handling, search
+	destinations, or hosting configuration changes.
+- For a Spider release, verify the installed `dodle` and `dodle-spider` commands
+	from a clean Python environment.
+
 ## Noe pixel behavior
 
 The local bridge in `script/me.js` creates a lightweight "here and now" state for the Noe pixel. It tracks:

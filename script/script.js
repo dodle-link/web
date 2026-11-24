@@ -14,6 +14,11 @@ function savePreference(key, value) {
   } catch {}
 }
 
+const languageControlLabels = {
+  en: 'Choose language', ja: '言語を選択', zh: '选择语言', th: 'เลือกภาษา',
+  ko: '언어 선택', fr: 'Choisir la langue', de: 'Sprache auswählen'
+};
+
 document.documentElement.classList.toggle('dark', readPreference('dodle-theme', 'dark') !== 'light');
 
 function init() {
@@ -74,28 +79,16 @@ function init() {
     luckyButton.textContent = hasGeneratedPrompt ? translation.curiousAgain : translation.curiousButton;
     clearButton.setAttribute('aria-label', translation.clear);
     languageToggle.textContent = languageOptions.find(option => option.dataset.language === selectedLanguage).textContent;
-    languageToggle.setAttribute('aria-label', `Language ${languageToggle.textContent}`);
+    languageToggle.setAttribute('aria-label', languageControlLabels[selectedLanguage]);
+    languageMenu.setAttribute('aria-label', languageControlLabels[selectedLanguage]);
+    const description = document.querySelector('[data-i18n-meta="description"]');
+    if (description) description.content = translation.description || 'A simple search page for a less distracting web.';
     themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? translation.themeLight : translation.themeDark);
     languageOptions.forEach(option => option.setAttribute('aria-selected', String(option.dataset.language === selectedLanguage)));
     savePreference('dodle-language', selectedLanguage);
   }
 
-  function closeLanguageMenu() {
-    languageMenu.hidden = true;
-    languageToggle.setAttribute('aria-expanded', 'false');
-  }
-
-  languageToggle.addEventListener('click', () => {
-    languageMenu.hidden = !languageMenu.hidden;
-    languageToggle.setAttribute('aria-expanded', String(!languageMenu.hidden));
-  });
-  languageOptions.forEach(option => option.addEventListener('click', () => {
-    setLanguage(option.dataset.language);
-    closeLanguageMenu();
-  }));
-  document.addEventListener('click', event => {
-    if (!event.target.closest('.language-switcher')) closeLanguageMenu();
-  });
+  window.initLanguageMenu(languageToggle, languageMenu, languageOptions, setLanguage);
   setLanguage(readPreference('dodle-language', 'en'));
 
   const operatorTools = document.querySelector('.operator-tools');
@@ -193,7 +186,7 @@ function init() {
 
     nextAllowedSearchAt = now + minimumSearchIntervalMs;
     searchStatus.textContent = '';
-    searchQuery.value = interpretQuery(input.value);
+    searchQuery.value = interpretQuery(input.value, currentLanguage);
     form.target = '_blank';
     startSearchCooldown();
   });
@@ -205,14 +198,67 @@ if (document.readyState === 'loading') {
   init();
 }
 
-function interpretQuery(value) {
+const localizedQueryRules = {
+  ja: [
+    [/^(?:検索して|検索|探して)\s*/u, ''],
+    [/([\w.-]+\.[a-z]{2,})\s*で/u, 'site:$1 '],
+    [/([\p{L}\p{N}_-]+)\s*を除く/u, '-$1'],
+    [/([0-9]{4})年以降/u, 'after:$1-01-01'],
+    [/([0-9]{4})年以前/u, 'before:$1-01-01']
+  ],
+  zh: [
+    [/^(?:请)?(?:搜索|查找)\s*/u, ''],
+    [/在\s*([\w.-]+\.[a-z]{2,})\s*(?:网站|上)/u, 'site:$1 '],
+    [/(?:排除|不含)\s*([\p{L}\p{N}_-]+)/u, '-$1'],
+    [/([0-9]{4})年以后/u, 'after:$1-01-01'],
+    [/([0-9]{4})年之前/u, 'before:$1-01-01']
+  ],
+  th: [
+    [/^(?:ช่วย)?ค้นหา\s*/u, ''],
+    [/บน\s*([\w.-]+\.[a-z]{2,})(?:\s*เว็บไซต์)?/u, 'site:$1 '],
+    [/ไม่รวม\s*([\p{L}\p{N}_-]+)/u, '-$1'],
+    [/หลังปี\s*([0-9]{4})/u, 'after:$1-01-01'],
+    [/ก่อนปี\s*([0-9]{4})/u, 'before:$1-01-01']
+  ],
+  ko: [
+    [/^(?:검색해(?:줘| 주세요)?|찾아줘)\s*/u, ''],
+    [/([\w.-]+)\s*사이트에서/u, 'site:$1 '],
+    [/([\p{L}\p{N}_-]+)\s*제외/u, '-$1'],
+    [/([0-9]{4})년\s*이후/u, 'after:$1-01-01'],
+    [/([0-9]{4})년\s*이전/u, 'before:$1-01-01']
+  ],
+  fr: [
+    [/^(?:rechercher|cherche|trouve)\s+/iu, ''],
+    [/\bsur\s+([\w.-]+\.[a-z]{2,})/iu, 'site:$1'],
+    [/\bsans\s+([\p{L}\p{N}_-]+)/iu, '-$1'],
+    [/\baprès\s+([0-9]{4})\b/iu, 'after:$1-01-01'],
+    [/\bavant\s+([0-9]{4})\b/iu, 'before:$1-01-01']
+  ],
+  de: [
+    [/^(?:suche nach|finde)\s+/iu, ''],
+    [/\bauf\s+([\w.-]+\.[a-z]{2,})/iu, 'site:$1'],
+    [/\bohne\s+([\p{L}\p{N}_-]+)/iu, '-$1'],
+    [/\bnach\s+([0-9]{4})\b/iu, 'after:$1-01-01'],
+    [/\bvor\s+([0-9]{4})\b/iu, 'before:$1-01-01']
+  ]
+};
+
+function interpretQuery(value, language = 'en') {
   let query = value.trim();
   if (!query) return query;
 
   // drop conversational wrappers so the rest of the operators can match cleanly
   query = query.replace(/^(?:please\s+)?(?:can you\s+)?(?:search for|look up|find me|find|show me|tell me about)\s+/gi, '');
 
-  if (/["']/.test(query) || /(?:^|\s)(?:site|filetype|after|before|define|intitle|inurl):/i.test(query)) {
+  if (/["']/.test(query)) {
+    return query.replace(/\s+/g, ' ').trim();
+  }
+
+  for (const [pattern, replacement] of localizedQueryRules[language] || []) {
+    query = query.replace(pattern, replacement);
+  }
+
+  if (/(?:^|\s)(?:site|filetype|after|before|define|intitle|inurl):/i.test(query)) {
     return query.replace(/\s+/g, ' ').trim();
   }
 

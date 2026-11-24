@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Dodle Search" />
+    <meta name="description" content="Dodle Search" data-i18n-meta="description" />
     <meta name="version" content="1.4.0" />
     <title>dodle - Search</title>
     <link rel="preload" href="font/munson/Munson-MVymB.ttf" as="font" type="font/ttf" crossorigin />
@@ -31,8 +31,8 @@
           <span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"></path></svg></span>
         </button>
         <div class="language-switcher">
-          <button class="language-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language English">English</button>
-          <ul class="language-menu" role="listbox" aria-label="Choose language" hidden>
+          <button class="language-toggle" type="button" aria-haspopup="listbox" aria-controls="language-menu" aria-expanded="false" aria-label="Choose language">English</button>
+          <ul class="language-menu" id="language-menu" role="listbox" aria-label="Choose language" hidden>
             <li><button type="button" role="option" aria-selected="true" data-language="en">English</button></li>
             <li><button type="button" role="option" aria-selected="false" data-language="ja">日本語</button></li>
             <li><button type="button" role="option" aria-selected="false" data-language="zh">中文</button></li>
@@ -83,6 +83,7 @@
       <div class="footer-links"><a href="privacy.html" data-i18n="privacy">Privacy</a><a href="about.html" data-i18n="about">About</a><a href="blog/" data-i18n="blog">Blog</a></div>
     </footer>
     <script src="script/words.js"></script>
+    <script src="script/language-menu.js"></script>
     <script src="script/script.js"></script>
     <script src="script/me.js"></script>
     <script src="script/noe-pixel.js"></script>

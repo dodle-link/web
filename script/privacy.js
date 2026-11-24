@@ -77,7 +77,8 @@ function applyPrivacyLanguage(language, savePreference = false) {
   document.documentElement.lang = selectedLanguage;
   document.title = translation.pageTitle;
   languageToggle.textContent = languageOptions.find(option => option.dataset.language === selectedLanguage).textContent;
-  languageToggle.setAttribute('aria-label', `Language ${languageToggle.textContent}`);
+  languageToggle.setAttribute('aria-label', translation.languageLabel);
+  languageMenu.setAttribute('aria-label', translation.languageLabel);
   languageOptions.forEach(option => option.setAttribute('aria-selected', String(option.dataset.language === selectedLanguage)));
 
   document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -95,21 +96,7 @@ function applyPrivacyLanguage(language, savePreference = false) {
   }
 }
 
-languageToggle.addEventListener('click', () => {
-  languageMenu.hidden = !languageMenu.hidden;
-  languageToggle.setAttribute('aria-expanded', String(!languageMenu.hidden));
-});
-languageOptions.forEach(option => option.addEventListener('click', () => {
-  applyPrivacyLanguage(option.dataset.language, true);
-  languageMenu.hidden = true;
-  languageToggle.setAttribute('aria-expanded', 'false');
-}));
-document.addEventListener('click', event => {
-  if (!event.target.closest('.language-switcher')) {
-    languageMenu.hidden = true;
-    languageToggle.setAttribute('aria-expanded', 'false');
-  }
-});
+window.initLanguageMenu(languageToggle, languageMenu, languageOptions, language => applyPrivacyLanguage(language, true));
 
 let savedLanguage = 'en';
 try {
