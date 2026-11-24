@@ -30,6 +30,37 @@ test('search opens an isolated tab with the interpreted query', async ({ page })
   });
 });
 
+test('search submits the visible query without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await context.route('https://www.google.com/search**', route => route.fulfill({ body: 'Search results' }));
+  await page.goto('/index.html');
+  await page.locator('#search-input').fill('climate report');
+  const [results] = await Promise.all([
+    context.waitForEvent('page'),
+    page.getByRole('button', { name: 'Search', exact: true }).click()
+  ]);
+  await results.waitForLoadState();
+  expect(new URL(results.url()).searchParams.get('q')).toBe('climate report');
+  await context.close();
+});
+
+test('consecutive searches and curiosity prompts remain available', async ({ page }) => {
+  await page.locator('#search-form').evaluate(form => {
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      window.searchCount = (window.searchCount || 0) + 1;
+    });
+  });
+  await page.locator('#search-input').fill('climate');
+  const search = page.getByRole('button', { name: 'Search', exact: true });
+  await search.click();
+  await search.click();
+  expect(await page.evaluate(() => window.searchCount)).toBe(2);
+  await page.getByRole('button', { name: "I'm Feeling Curious" }).click();
+  await page.getByRole('button', { name: 'Try another' }).click();
+});
+
 test('theme and language preferences survive reloads', async ({ page }) => {
   await page.getByRole('button', { name: 'Switch to light mode' }).click();
   await expect(page.locator('html')).not.toHaveClass(/dark/);
@@ -132,7 +163,8 @@ test('Noe recovers from corrupt storage and round-trips valid models', async ({ 
   await page.evaluate(() => localStorage.setItem('dodle-ai-model', 'not-a-model'));
   await page.reload();
   const result = await page.evaluate(() => {
-    const exported = new window.noeAI().exportModel();
+    const agent = new window.noeAI();
+    const exported = agent.exportModel();
     const imported = window.noeAI.importModel(exported);
     let invalidModelRejected = false;
     try {
@@ -142,6 +174,7 @@ test('Noe recovers from corrupt storage and round-trips valid models', async ({ 
     }
     return {
       state: window.noeEnergy.aiState,
+      sourceState: agent.getState(),
       importedState: imported.getState(),
       invalidModelRejected,
       storedModel: localStorage.getItem('dodle-ai-model')
@@ -150,7 +183,7 @@ test('Noe recovers from corrupt storage and round-trips valid models', async ({ 
 
   expect(result.state.energy).toBeGreaterThanOrEqual(0);
   expect(result.state.energy).toBeLessThanOrEqual(100);
-  expect(result.importedState.energy).toBe(result.state.energy);
+  expect(result.importedState.energy).toBe(result.sourceState.energy);
   expect(result.invalidModelRejected).toBe(true);
   expect(result.storedModel).not.toBe('not-a-model');
 });
@@ -185,6 +218,31 @@ test('Noe coalesces rapid mouse movement into one step per frame', async ({ page
     return count;
   });
   expect(steps).toBe(1);
+});
+
+test('Noe can be disabled, persists, and starts again on demand', async ({ page }) => {
+  const toggle = page.getByRole('checkbox', { name: 'Noe' });
+  await expect(toggle).toBeChecked();
+  await toggle.uncheck();
+  await expect(page.locator('#conscious-pixel')).toHaveCount(0);
+  await page.evaluate(() => localStorage.removeItem('dodle-ai-model'));
+  await page.reload();
+  await expect(toggle).not.toBeChecked();
+  await expect(page.locator('#conscious-pixel')).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem('dodle-ai-model'))).toBeNull();
+  const steps = await page.evaluate(async () => {
+    let count = 0;
+    window.noeAI.prototype.step = () => { count++; return Promise.resolve(); };
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 10, clientY: 10 }));
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    return count;
+  });
+  expect(steps).toBe(0);
+  await toggle.check();
+  await expect(page.locator('#conscious-pixel')).toHaveCount(1);
+  await page.reload();
+  await expect(toggle).toBeChecked();
 });
 
 test('privacy page loads without third-party requests', async ({ page }) => {

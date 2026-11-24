@@ -18,7 +18,8 @@
     const pixel = document.createElement("div");
     pixel.id = "conscious-pixel";
     pixel.setAttribute("aria-hidden", "true");
-    document.body.appendChild(pixel);
+    let enabled = false;
+    let animationFrame = null;
 
     function trackPointer(event) {
         state.pointerX = event.clientX;
@@ -93,12 +94,28 @@
         pixel.style.opacity = String(0.58 + state.excitement * 0.32);
         pixel.style.backgroundColor = excited ? "#ff0000" : "var(--ink, #202124)";
 
-        window.requestAnimationFrame(update);
+        animationFrame = window.requestAnimationFrame(update);
     }
 
-    window.addEventListener("pointermove", trackPointer, { passive: true });
-    window.addEventListener("pointerdown", trackPointer, { passive: true });
-    window.addEventListener("pointerleave", clearPointer, { passive: true });
-    window.addEventListener("blur", clearPointer);
-    window.requestAnimationFrame(update);
+    window.noePixel = {
+        setEnabled(value) {
+            if (value === enabled) return;
+            enabled = value;
+            const method = enabled ? "addEventListener" : "removeEventListener";
+            window[method]("pointermove", trackPointer, { passive: true });
+            window[method]("pointerdown", trackPointer, { passive: true });
+            window[method]("pointerleave", clearPointer, { passive: true });
+            window[method]("blur", clearPointer);
+            if (enabled) {
+                document.body.appendChild(pixel);
+                state.lastFrame = 0;
+                animationFrame = window.requestAnimationFrame(update);
+            } else {
+                window.cancelAnimationFrame(animationFrame);
+                clearPointer();
+                pixel.remove();
+            }
+        }
+    };
+    window.noePixel.setEnabled(readPreference('dodle-noe', 'on') === 'on');
 })();

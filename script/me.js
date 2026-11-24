@@ -866,27 +866,30 @@ window.noeAI = AIEngine;
 // Storage key for persistent identity.
 const storageKey = 'dodle-ai-model';
 let aiInstance = null;
+let noeActivityEnabled = false;
 
-try {
-    const model = loadStoredModel(localStorage, storageKey);
-    if (model) {
-        aiInstance = new AIEngine(model);
-        console.log("DODLE AI: Model loaded successfully.");
-    }
-} catch (error) {
-    console.error("DODLE AI: Failed to load model from storage.", error);
-}
-
-// Initialize instance if no model was loaded
-if (!aiInstance) {
-    const initialModel = createModel();
-    aiInstance = new AIEngine(initialModel);
+function initializeNoe() {
+    if (aiInstance) return;
     try {
-        saveStoredModel(localStorage, storageKey, aiInstance.model);
+        const model = loadStoredModel(localStorage, storageKey);
+        if (model) {
+            aiInstance = new AIEngine(model);
+            console.log("DODLE AI: Model loaded successfully.");
+        }
     } catch (error) {
-        console.error("DODLE AI: Failed to save model to storage.", error);
+        console.error("DODLE AI: Failed to load model from storage.", error);
     }
-    console.log("DODLE AI: New model initialized and saved.");
+
+    if (!aiInstance) {
+        const initialModel = createModel();
+        aiInstance = new AIEngine(initialModel);
+        try {
+            saveStoredModel(localStorage, storageKey, aiInstance.model);
+        } catch (error) {
+            console.error("DODLE AI: Failed to save model to storage.", error);
+        }
+        console.log("DODLE AI: New model initialized and saved.");
+    }
 }
 
 
@@ -900,6 +903,7 @@ if (!aiInstance) {
  * @param {Event} event - The interaction event (e.g., mousemove).
  */
 function markActivity(event) {
+    if (!noeActivityEnabled) return;
     const pointer = event.touches?.[0] || event;
 
     // This simulates a "user_input" event for the AI
@@ -929,10 +933,21 @@ function queuePointerActivity(event) {
     });
 }
 
-window.addEventListener('mousemove', queuePointerActivity, { passive: true });
-['keydown', 'scroll', 'touchstart', 'focus'].forEach(eventName => {
-    window.addEventListener(eventName, markActivity, { passive: true });
-});
+window.noeActivity = {
+    setEnabled(enabled) {
+        if (enabled === noeActivityEnabled) return;
+        noeActivityEnabled = enabled;
+        if (enabled) initializeNoe();
+        const method = enabled ? 'addEventListener' : 'removeEventListener';
+        window[method]('mousemove', queuePointerActivity, { passive: true });
+        ['keydown', 'scroll', 'touchstart', 'focus'].forEach(eventName => {
+            window[method](eventName, markActivity, { passive: true });
+        });
+        if (!enabled) pendingPointerEvent = null;
+    }
+};
+
+window.noeActivity.setEnabled(readPreference('dodle-noe', 'on') === 'on');
 
 // =========================================================
 // PUBLIC API BRIDGE (window.noe)

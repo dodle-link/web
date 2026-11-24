@@ -33,6 +33,7 @@
   <body>
     <header class="topbar">
       <nav class="nav-links" aria-label="Primary navigation" data-i18n-aria="navLabel">
+        <label class="noe-toggle" hidden><input type="checkbox" id="noe-toggle" /> Noe</label>
         <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" data-i18n-aria="themeDark">
           <span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg></span>
           <span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 15.5A9 9 0 0 1 8.5 3.6 9 9 0 1 0 20.4 15.5Z"></path></svg></span>
@@ -57,8 +58,8 @@
         <h1 id="page-title">dodle</h1>
         <form class="search-form" id="search-form" action="https://www.google.com/search" method="get" target="_blank" rel="noopener noreferrer" role="search">
           <label class="sr-only" for="search-input" data-i18n="searchLabel">Search the web</label>
-          <input id="search-input" type="search" maxlength="500" placeholder="Search the web" autocomplete="off" spellcheck="false" />
-          <input id="search-query" type="hidden" name="q" />
+          <input id="search-input" name="q" type="search" maxlength="500" placeholder="Search the web" autocomplete="off" spellcheck="false" />
+          <input id="search-query" type="hidden" name="q" disabled />
           <button class="clear-button" type="button" aria-label="Clear search">×</button>
         </form>
         <details class="operator-help">
@@ -86,11 +87,12 @@
     </main>
 
     <footer class="footer">
-      <span>© <span data-i18n="brand">dodle</span></span>
+      <span>© dodle</span>
       <div class="footer-links"><a href="privacy.html" data-i18n="privacy">Privacy</a><a href="about.html" data-i18n="about">About</a><a href="blog/" data-i18n="blog">Blog</a></div>
     </footer>
     <script src="script/words.js"></script>
     <script src="script/language-menu.js"></script>
+    <script src="script/translations.js"></script>
     <script src="script/script.js"></script>
     <script src="script/me.js"></script>
     <script src="script/noe-pixel.js"></script>

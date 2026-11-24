@@ -23,6 +23,7 @@ served from this repository and does not load browser assets from
 - The curiosity shortcut lazily generates thousands of topic-and-question combinations per supported language
 - Search results open in a new tab
 - The local Noe pixel responds to the visitor's real-time presence: movement, keyboard activity, and visibility all feed its energy state
+- Noe can be turned off on the homepage; the preference is stored locally, and an existing model is retained
 - This page does not render a literal energy cube; instead, the current cursor acts as the virtual energy source when the pixel needs energy
 
 ## Run locally
@@ -42,7 +43,7 @@ request:
 
 ```sh
 npm ci
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 node --test script/TEST/*.js
 npm run test:browser
 python3 -m unittest discover -s TEST -p 'test_*.py'
@@ -50,7 +51,7 @@ python3 -m unittest discover -s TEST -p 'test_*.py'
 python3 -m compileall -q spider
 ```
 
-The Playwright suite runs in Chromium and includes axe checks on the main,
+The Playwright suite runs in Chromium, Firefox, and WebKit and includes axe checks on the main,
 About, and Privacy pages in both themes. It also checks the core localized
 flows, keyboard operation, reduced motion, narrow viewports, Noe model
 recovery/state bounds, search submission, and that page visits make no

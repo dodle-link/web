@@ -161,6 +161,9 @@ body { background: var(--paper); color: var(--ink); }
 html.dark .theme-toggle-sun, body.dark .theme-toggle-sun { display: none; }
 html.dark .theme-toggle-moon, body.dark .theme-toggle-moon { display: grid; }
 .theme-toggle:hover { border-color: var(--coral); color: var(--coral); }
+.noe-toggle { align-items: center; cursor: pointer; display: flex; gap: 5px; }
+.noe-toggle[hidden] { display: none; }
+.noe-toggle input { accent-color: var(--ink); }
 .main-content { min-height: calc(100vh - 128px); padding: 92px 24px 70px; }
 .search-stage { max-width: 584px; }
 h1 { font-size: 48px; font-weight: 500; letter-spacing: -.08em; line-height: 1; margin: 0 0 28px; }

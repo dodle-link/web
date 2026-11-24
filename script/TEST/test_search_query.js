@@ -18,6 +18,24 @@ const context = {
 };
 vm.runInNewContext(script, context);
 
+test('homepage translations have complete matching keys', () => {
+  const translationContext = { window: {} };
+  const translationsScript = fs.readFileSync(path.join(__dirname, '..', 'translations.js'), 'utf8');
+  vm.runInNewContext(translationsScript, translationContext);
+  const translations = translationContext.window.dodleTranslations;
+  const expectedKeys = Object.keys(translations.en).sort();
+  const homepage = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const declaredKeys = [...homepage.matchAll(/data-i18n(?:-aria|-meta)?="([^"]+)"/g)].map(match => match[1]);
+
+  for (const [language, entries] of Object.entries(translations)) {
+    assert.deepEqual(Object.keys(entries).sort(), expectedKeys, language);
+    for (const key of declaredKeys) {
+      assert.equal(typeof entries[key], 'string', `${language}: ${key}`);
+      assert.ok(entries[key].trim(), `${language}: ${key}`);
+    }
+  }
+});
+
 test('keeps the homepage version aligned with the README', () => {
   const homepage = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const readme = fs.readFileSync(path.join(root, 'readme.md'), 'utf8');

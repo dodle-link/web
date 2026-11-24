@@ -30,8 +30,8 @@ jobs:
       - name: Install browser-test dependencies
         run: npm ci
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Test browser scripts
         run: node --test script/TEST/*.js
