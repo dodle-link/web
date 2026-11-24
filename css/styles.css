@@ -299,5 +299,10 @@ html.dark .lucky-button:hover, body.dark .lucky-button:hover { background: #3031
 }
 
 @media (prefers-reduced-motion: reduce) {
-  h1#page-title { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -37,15 +37,26 @@ Then visit `http://localhost:8000/web/index.html`.
 
 ## Test and release
 
-Run the browser-script, site-reference, and Spider tests before opening a pull
+Install the browser-test tools once, then run the checks before opening a pull
 request:
 
 ```sh
+npm ci
+npx playwright install chromium
 node --test script/TEST/*.js
+npm run test:browser
 python3 -m unittest discover -s TEST -p 'test_*.py'
 (cd spider && python3 -m unittest discover -s TEST -p 'test_*.py')
 python3 -m compileall -q spider
 ```
+
+The Playwright suite runs in Chromium and includes axe checks on the main,
+About, and Privacy pages in both themes. It also checks the core localized
+flows, keyboard operation, reduced motion, narrow viewports, Noe model
+recovery/state bounds, search submission, and that page visits make no
+third-party requests. These automated checks do not replace manual assistive
+technology testing. Before a release, spot-check the current Chrome, Firefox,
+and Safari releases, including mobile Safari and Chrome.
 
 Release checklist:
 
@@ -77,8 +88,10 @@ release.
 
 ## Dodle Spider
 
-`spider/dodle.py` is a Python command-line client for HTTP and HTTPS requests.
-It provides a style request interface using Python's standard library.
+`spider/dodle.py` is an independently installable Python command-line client
+for HTTP and HTTPS requests. It uses Python's standard library. The Pages
+workflow excludes `spider/` from the deployed site. See the dedicated
+[Spider guide](spider/README.md) for installation, options, and testing.
 
 Run it from the Spider directory:
 

@@ -13,3 +13,6 @@ env/
 
 # Editor / local tooling
 .vscode/
+node_modules/
+playwright-report/
+test-results/

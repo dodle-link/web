@@ -77,7 +77,7 @@ function applyPrivacyLanguage(language, savePreference = false) {
   document.documentElement.lang = selectedLanguage;
   document.title = translation.pageTitle;
   languageToggle.textContent = languageOptions.find(option => option.dataset.language === selectedLanguage).textContent;
-  languageToggle.setAttribute('aria-label', translation.languageLabel);
+  languageToggle.setAttribute('aria-label', `${languageToggle.textContent}, ${translation.languageLabel}`);
   languageMenu.setAttribute('aria-label', translation.languageLabel);
   languageOptions.forEach(option => option.setAttribute('aria-selected', String(option.dataset.language === selectedLanguage)));
 

@@ -20,14 +20,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
+      - name: Install browser-test dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Test browser scripts
         run: node --test script/TEST/*.js
+
+      - name: Test browser workflows and accessibility
+        run: npm run test:browser
 
       - name: Test local site references
         run: python -m unittest discover -s TEST -p 'test_*.py'
@@ -38,6 +48,13 @@ jobs:
 
       - name: Compile Python sources
         run: python -m compileall -q spider
+
+      - name: Install Spider in an isolated environment
+        run: |
+          python -m venv "$RUNNER_TEMP/dodle-venv"
+          "$RUNNER_TEMP/dodle-venv/bin/python" -m pip install ./spider
+          "$RUNNER_TEMP/dodle-venv/bin/dodle" --help
+          "$RUNNER_TEMP/dodle-venv/bin/dodle-spider" --help
 
   deploy:
     if: github.event_name != 'pull_request'
@@ -63,7 +80,17 @@ jobs:
       - name: Stage site files
         run: |
           mkdir _site
-          rsync -a --exclude='spider' --exclude='.git' --exclude='_site' ./ _site/
+          rsync -a \
+            --exclude='spider' \
+            --exclude='node_modules' \
+            --exclude='browser-tests' \
+            --exclude='playwright.config.js' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='test-results' \
+            --exclude='playwright-report' \
+            --exclude='.git' \
+            --exclude='_site' ./ _site/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

@@ -913,8 +913,24 @@ function markActivity(event) {
     });
 }
 
-// Bind activity tracking to relevant input events.
-['mousemove', 'keydown', 'scroll', 'touchstart', 'focus'].forEach(eventName => {
+let pendingPointerEvent = null;
+let pointerFramePending = false;
+
+function queuePointerActivity(event) {
+    pendingPointerEvent = event;
+    if (pointerFramePending) return;
+
+    pointerFramePending = true;
+    requestAnimationFrame(() => {
+        pointerFramePending = false;
+        const latestEvent = pendingPointerEvent;
+        pendingPointerEvent = null;
+        if (latestEvent) markActivity(latestEvent);
+    });
+}
+
+window.addEventListener('mousemove', queuePointerActivity, { passive: true });
+['keydown', 'scroll', 'touchstart', 'focus'].forEach(eventName => {
     window.addEventListener(eventName, markActivity, { passive: true });
 });
 

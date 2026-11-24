@@ -4,11 +4,17 @@ import http.server
 import io
 import json
 from pathlib import Path
+import shutil
+import ssl
+import subprocess
 import tempfile
 import threading
+import time
 import unittest
+from unittest.mock import patch
+from urllib.error import URLError
 
-from dodle import NativeError, build_parser, parse_cookie, prepare_data, request_headers, run_native
+from dodle import NativeError, build_parser, open_connection, parse_cookie, prepare_data, request_headers, run_native
 
 
 class TrackingServer(http.server.ThreadingHTTPServer):
@@ -117,6 +123,112 @@ class RequestOptionTests(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(run_native(args), 0)
             self.assertEqual(output.read_bytes(), b"decoded response")
+
+    def test_retry_recovers_after_a_transient_server_error(self):
+        class RetryHandler(http.server.BaseHTTPRequestHandler):
+            attempts = 0
+
+            def do_GET(self):
+                type(self).attempts += 1
+                if type(self).attempts == 1:
+                    self.send_error(503)
+                    return
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b"recovered")
+
+            def log_message(self, format, *args):
+                pass
+
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), RetryHandler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            url = f"http://127.0.0.1:{server.server_port}"
+            output = io.StringIO()
+            output.buffer = io.BytesIO()
+            with patch("sys.stdout", output), contextlib.redirect_stderr(io.StringIO()):
+                args = build_parser().parse_args(["--silent", "--retry", "1", url])
+                with patch("dodle.time.sleep") as wait:
+                    self.assertEqual(run_native(args), 0)
+            self.assertEqual(RetryHandler.attempts, 2)
+            self.assertEqual(output.buffer.getvalue(), b"recovered")
+            wait.assert_called_once_with(2)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join()
+
+    def test_request_timeout_is_enforced(self):
+        class SlowHandler(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                time.sleep(0.2)
+                try:
+                    self.send_response(200)
+                    self.end_headers()
+                except OSError:
+                    pass
+
+            def log_message(self, format, *args):
+                pass
+
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), SlowHandler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            url = f"http://127.0.0.1:{server.server_port}"
+            args = build_parser().parse_args(["--connect-timeout", "0.03", url])
+            with self.assertRaises((URLError, TimeoutError)):
+                with open_connection(url, "GET", {}, None, args.connect_timeout, args):
+                    self.fail("slow response unexpectedly completed")
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join()
+
+    def test_tls_verification_is_enabled_unless_insecure_is_requested(self):
+        openssl = shutil.which("openssl")
+        if not openssl:
+            self.skipTest("openssl is required to generate a temporary self-signed certificate")
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b"secure test response")
+
+            def log_message(self, format, *args):
+                pass
+
+        with tempfile.TemporaryDirectory() as directory:
+            certificate = Path(directory) / "certificate.pem"
+            private_key = Path(directory) / "private-key.pem"
+            subprocess.run([
+                openssl, "req", "-x509", "-newkey", "rsa:2048", "-nodes",
+                "-keyout", str(private_key), "-out", str(certificate), "-days", "1",
+                "-subj", "/CN=127.0.0.1", "-addext", "subjectAltName=IP:127.0.0.1"
+            ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+            context.load_cert_chain(certificate, private_key)
+            server.socket = context.wrap_socket(server.socket, server_side=True)
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+
+            try:
+                url = f"https://127.0.0.1:{server.server_port}"
+                verified_args = build_parser().parse_args([url])
+                with self.assertRaises((URLError, ssl.SSLError)):
+                    with open_connection(url, "GET", {}, None, 5.0, verified_args):
+                        self.fail("untrusted certificate was unexpectedly accepted")
+
+                insecure_args = build_parser().parse_args(["--insecure", url])
+                with open_connection(url, "GET", {}, None, 5.0, insecure_args) as response:
+                    self.assertEqual(response.read(), b"secure test response")
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join()
 
 
 if __name__ == "__main__":

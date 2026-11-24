@@ -2,6 +2,7 @@ import http.server
 import socketserver
 import threading
 import unittest
+from urllib.error import HTTPError
 
 from dodle import build_parser, open_connection
 
@@ -40,6 +41,33 @@ class RedirectDefaultTests(unittest.TestCase):
         finally:
             httpd.shutdown()
             httpd.server_close()
+
+    def test_redirect_limit_stops_a_redirect_loop(self):
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(302)
+                self.send_header("Location", "/redirect")
+                self.end_headers()
+
+            def log_message(self, format, *args):
+                pass
+
+        httpd = socketserver.TCPServer(("127.0.0.1", 0), Handler)
+        port = httpd.server_address[1]
+        thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+
+        try:
+            url = f"http://127.0.0.1:{port}/redirect"
+            args = build_parser().parse_args(["--max-redirs", "1", url])
+            with self.assertRaises(HTTPError) as error:
+                with open_connection(url, "GET", {}, None, 5.0, args):
+                    self.fail("redirect loop unexpectedly completed")
+            error.exception.close()
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+            thread.join()
 
 
 if __name__ == "__main__":

@@ -79,7 +79,7 @@ function init() {
     luckyButton.textContent = hasGeneratedPrompt ? translation.curiousAgain : translation.curiousButton;
     clearButton.setAttribute('aria-label', translation.clear);
     languageToggle.textContent = languageOptions.find(option => option.dataset.language === selectedLanguage).textContent;
-    languageToggle.setAttribute('aria-label', languageControlLabels[selectedLanguage]);
+    languageToggle.setAttribute('aria-label', `${languageToggle.textContent}, ${languageControlLabels[selectedLanguage]}`);
     languageMenu.setAttribute('aria-label', languageControlLabels[selectedLanguage]);
     const description = document.querySelector('[data-i18n-meta="description"]');
     if (description) description.content = translation.description || 'A simple search page for a less distracting web.';
@@ -187,7 +187,6 @@ function init() {
     nextAllowedSearchAt = now + minimumSearchIntervalMs;
     searchStatus.textContent = '';
     searchQuery.value = interpretQuery(input.value, currentLanguage);
-    form.target = '_blank';
     startSearchCooldown();
   });
 }
