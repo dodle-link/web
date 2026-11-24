@@ -19,22 +19,26 @@ served from this repository and does not load browser assets from
 - Clean responsive layout for desktop and mobile
 - Dark mode enabled by default
 - Light mode preference persisted in `localStorage`
-- Search suggestions and a "I'm Feeling Curious" shortcut with localized prompts that avoid repeats until each language's prompt set is exhausted
-- The curiosity shortcut lazily generates thousands of topic-and-question combinations per supported language
+- Seven interface languages with a locally stored language preference
+- Search operator controls and interpretation of supported natural-language queries
+- An "I'm Feeling Curious" shortcut that fills the search field with a localized prompt, drawing topic-and-pattern combinations without replacement until each language's set is exhausted
 - Search results open in a new tab
-- The local Noe pixel responds to the visitor's real-time presence: movement, keyboard activity, and visibility all feed its energy state
+- The local Noe pixel responds to pointer, keyboard, scroll, touch, and focus activity through a browser-side agent
 - Noe can be turned off on the homepage; the preference is stored locally, and an existing model is retained
-- This page does not render a literal energy cube; instead, the current cursor acts as the virtual energy source when the pixel needs energy
+- The pixel responds to a nearby pointer, while the agent's energy affects its speed
+- A [World Ideas page](ideas/index.html) showing popular Wikipedia articles based on the previous UTC day's pageviews, fetched from Wikimedia
+- A [blog](blog/index.html) with articles about discovery
+- A [Node page](node/readme.md) for a locally stored, optionally synchronized key-value document
 
 ## Run locally
 
-This is a static site with no build step or dependencies. Serve it with a static file server. The Noe pixel JavaScript and CSS are served from this repository; a local `noesis` checkout is not required:
+The site has no build step and can be served with a static file server. The Noe pixel JavaScript and CSS are served from this repository; a local `noesis` checkout is not required. From this directory, run:
 
 ```sh
-python3 -m http.server 8000 -d ..
+python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000/web/index.html`.
+Then visit `http://localhost:8000/index.html`.
 
 ## Test and release
 
@@ -54,8 +58,8 @@ python3 -m compileall -q spider
 The Playwright suite runs in Chromium, Firefox, and WebKit and includes axe checks on the main,
 About, and Privacy pages in both themes. It also checks the core localized
 flows, keyboard operation, reduced motion, narrow viewports, Noe model
-recovery/state bounds, search submission, and that page visits make no
-third-party requests. These automated checks do not replace manual assistive
+recovery/state bounds, search submission, and the absence of third-party requests
+on the homepage and Privacy page. These automated checks do not replace manual assistive
 technology testing. Before a release, spot-check the current Chrome, Firefox,
 and Safari releases, including mobile Safari and Chrome.
 
@@ -73,13 +77,13 @@ Release checklist:
 
 ## Noe pixel behavior
 
-The local bridge in `script/me.js` creates a lightweight "here and now" state for the Noe pixel. It tracks:
+The local bridge in `script/me.js` runs a browser-side agent for the Noe pixel. It includes:
 
-- active pointer movement and keyboard input
-- idle time and tab visibility
-- a live `window.noeEnergy` value that decays when the visitor is idle and recharges when they are interacting
+- pointer movement, keyboard input, scrolling, touch, and focus activity
+- energy and curiosity state, rules, bounded memory, and mutable behavior
+- a model stored locally, with state and rules exposed through `window.noeEnergy` and `window.noeSelf`
 
-When the pixel needs energy, it targets the current cursor position as a virtual energy source rather than expecting a real cube element to exist in the page. This keeps the experience self-contained to the browser and lets the page feel responsive without adding extra DOM objects.
+The pixel's movement reacts to a nearby pointer and its speed varies with the agent's energy. It does not use a separate energy cube element.
 
 ## Changelog
 
@@ -131,6 +135,10 @@ appropriate.
 - `css/styles.css` - Responsive layout and theme styles
 - `script/me.js` - Cursor-driven "here and now" energy bridge for the Noe pixel
 - `script/script.js` - Search controls and theme persistence
+- `script/words.js` - Localized curiosity prompt sources
+- `ideas/index.html` and `script/ideas.js` - Wikipedia pageview trends
+- `blog/index.html` - Blog index
+- `node/index.html` - Shared key-value page; see the [Node guide](node/readme.md)
 - `spider/dodle.py` - Command-line HTTP and HTTPS client
 - `spider/install.py` - Spider command installer
 - `spider/pyproject.toml` - Spider package metadata
