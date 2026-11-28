@@ -4,12 +4,18 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="Stories about food traditions, ingredients, and everyday food culture." data-i18n-meta="description" />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Dodle Search" />
+		<meta property="og:title" content="Blog - dodle" />
+		<meta property="og:description" content="Stories about food traditions, ingredients, and everyday food culture." />
+		<meta property="og:url" content="https://dodle.link/blog/" />
+		<meta property="og:image" content="https://dodle.link/web-app-manifest-512x512.png" />
+		<meta name="twitter:card" content="summary" />
+		<link rel="canonical" href="https://dodle.link/blog/" />
+		<link rel="alternate" type="application/atom+xml" title="dodle blog" href="feed.xml" />
 		<title>Blog - dodle</title>
-		<script>
-			try {
-				document.documentElement.classList.toggle('dark', localStorage.getItem('dodle-theme') !== 'light');
-			} catch {}
-		</script>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; object-src 'none'" />
+		<script src="../script/theme-init.js"></script>
 		<link rel="stylesheet" href="../css/styles.css" />
 	</head>
 	<body>

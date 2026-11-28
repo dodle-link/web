@@ -1,11 +1,19 @@
 {
   "name": "dodle-web-tests",
+  "version": "1.4.0",
   "private": true,
   "scripts": {
-    "test:browser": "playwright test"
+    "lint": "eslint .",
+    "test:unit": "node --test script/TEST/*.js",
+    "test:browser": "playwright test",
+    "test:python": "python3 -m unittest discover -s TEST -p 'test_*.py' && (cd spider && python3 -m unittest discover -s TEST -p 'test_*.py') && python3 -m compileall -q spider",
+    "test": "npm run lint && npm run test:unit && npm run test:python && npm run test:browser"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
-    "@playwright/test": "^1.55.0"
+    "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.55.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0"
   }
 }

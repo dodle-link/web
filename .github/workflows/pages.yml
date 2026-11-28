@@ -33,6 +33,9 @@ jobs:
       - name: Install browser engines
         run: npx playwright install --with-deps chromium firefox webkit
 
+      - name: Lint
+        run: npm run lint
+
       - name: Test browser scripts
         run: node --test script/TEST/*.js
 
@@ -85,6 +88,7 @@ jobs:
             --exclude='node_modules' \
             --exclude='browser-tests' \
             --exclude='playwright.config.js' \
+            --exclude='eslint.config.js' \
             --exclude='package.json' \
             --exclude='package-lock.json' \
             --exclude='test-results' \

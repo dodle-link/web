@@ -11,22 +11,20 @@
     <meta property="og:title" content="dodle - Search" />
     <meta property="og:description" content="A simple search page for a less distracting web." />
     <meta property="og:url" content="https://dodle.link/" />
+    <meta property="og:image" content="https://dodle.link/web-app-manifest-512x512.png" />
+    <meta name="twitter:card" content="summary" />
     <link rel="canonical" href="https://dodle.link/" />
+    <link rel="alternate" type="application/atom+xml" title="dodle blog" href="blog/feed.xml" />
     <title>dodle - Search</title>
-    <link rel="preload" href="font/munson/Munson-MVymB.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="font/munson/Munson-MVymB.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="dodle" />
     <link rel="manifest" href="site.webmanifest" />
-    <script>
-      try {
-        document.documentElement.classList.toggle('dark', localStorage.getItem('dodle-theme') !== 'light');
-      } catch {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self' https://*.google.com; base-uri 'self'; object-src 'none'" />
+    <script src="script/theme-init.js"></script>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/noe-pixel.css" />
   </head>

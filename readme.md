@@ -48,12 +48,12 @@ request:
 ```sh
 npm ci
 npx playwright install chromium firefox webkit
-node --test script/TEST/*.js
-npm run test:browser
-python3 -m unittest discover -s TEST -p 'test_*.py'
-(cd spider && python3 -m unittest discover -s TEST -p 'test_*.py')
-python3 -m compileall -q spider
+npm test
 ```
+
+`npm test` runs ESLint, the Node unit tests, the Python tests (site links and
+Spider), and the Playwright suite. The individual steps are available as
+`npm run lint`, `test:unit`, `test:python`, and `test:browser`.
 
 The Playwright suite runs in Chromium, Firefox, and WebKit and includes axe checks on the main,
 About, and Privacy pages in both themes. It also checks the core localized

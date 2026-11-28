@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>dodle blog</title>
+  <subtitle>Stories about food traditions, ingredients, and everyday food culture.</subtitle>
+  <link href="https://dodle.link/blog/feed.xml" rel="self" />
+  <link href="https://dodle.link/blog/" />
+  <id>https://dodle.link/blog/</id>
+  <updated>2026-11-24T00:00:00Z</updated>
+  <entry>
+    <title>Traditional Snacks</title>
+    <link href="https://dodle.link/blog/traditional-snacks/" />
+    <id>https://dodle.link/blog/traditional-snacks/</id>
+    <updated>2026-11-24T00:00:00Z</updated>
+    <summary>From onigiri and poha to samosas and arepas, explore the local ingredients and shared traditions behind familiar small bites.</summary>
+  </entry>
+</feed>

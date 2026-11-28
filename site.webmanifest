@@ -1,6 +1,9 @@
 {
   "name": "Dodle Search",
   "short_name": "Dodle",
+  "description": "A simple search page for a less distracting web.",
+  "start_url": "/index.html",
+  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +18,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#202124",
+  "background_color": "#202124",
   "display": "standalone"
 }

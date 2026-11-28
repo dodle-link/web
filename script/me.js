@@ -450,12 +450,13 @@ class BehaviorEngine {
                 case "GREATER_THAN":
                     stack.push(Number(stack.pop()) > arg);
                     break;
-                case "IF":
+                case "IF": {
                     const condition = Boolean(stack.pop());
                     stack.push({ type: "if", condition, active: condition });
                     skip = !condition;
                     break;
-                case "ELSE":
+                }
+                case "ELSE": {
                     const block = stack.pop();
                     if (block && block.type === "if") {
                         block.active = !block.condition;
@@ -463,6 +464,7 @@ class BehaviorEngine {
                         skip = !block.active;
                     }
                     break;
+                }
                 case "ACTION":
                     if (!skip) {
                         action = arg;
